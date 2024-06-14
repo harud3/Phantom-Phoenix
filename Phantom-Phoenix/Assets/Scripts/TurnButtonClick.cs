@@ -8,11 +8,14 @@ public class TurnButtonClick : MonoBehaviour
 {
     [SerializeField]
     Button button;
-    [SerializeField]
-    GameManager gameManager;
     // Start is called before the first frame update
     private void Start()
     {
-        button.onClick.AddListener(() => { gameManager.ChangeTurn(); });
+        button.onClick.AddListener(() => {
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.ChangeTurn();
+            }
+        });
     }
 }

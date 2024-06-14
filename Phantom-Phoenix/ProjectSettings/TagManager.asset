@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PlayerHero
+  - EnemyHero
+  - PlayerHand
+  - EnemyHand
+  - PlayerField
+  - EnemyField
   layers:
   - Default
   - TransparentFX

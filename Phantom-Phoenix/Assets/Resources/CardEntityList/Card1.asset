@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
   m_Name: Card1
   m_EditorClassIdentifier: 
-  name: Dwarf
-  hp: 3
-  atk: 1
+  name: 122
+  hp: 2
+  atk: 2
   cost: 1
-  icon: {fileID: 21300000, guid: f450e37a3d78aa140b8cd107e0026791, type: 3}
+  icon: {fileID: 21300000, guid: e46df68a41f76c94da669bbd8faab7ce, type: 3}

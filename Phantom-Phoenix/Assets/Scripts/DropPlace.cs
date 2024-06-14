@@ -4,11 +4,26 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 public class DropPlace : MonoBehaviour, IDropHandler
 {
+    [SerializeField]
+    bool isPlayerField;
     public void OnDrop(PointerEventData eventData)
     {
-        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
+        CardController card = eventData.pointerDrag.GetComponent<CardController>();
+        if (isPlayerField != card.model.isPlayerCard || card.model.isFieldCard)
+        {
+            return;
+        }
         if (card != null) {
-            card.defaultParent = this.transform;
+            
+            if (card.movement.isDraggable && this.transform.childCount == 0)
+            {
+                card.movement.defaultParent = this.transform;
+                if (!card.model.isFieldCard)
+                {
+                    GameManager.instance.ReduceMP(card.model.cost, true);
+                    card.model.isFieldCard = true;
+                }
+            }
         }
     }
 }
