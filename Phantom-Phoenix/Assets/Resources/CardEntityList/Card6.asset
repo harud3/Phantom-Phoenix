@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
   m_Name: Card6
   m_EditorClassIdentifier: 
-  name: 223
-  hp: 2
-  atk: 3
-  cost: 2
   icon: {fileID: 21300000, guid: d9675f1f640d76e4daf821a925e63b3b, type: 3}
+  name: 223
+  cost: 2
+  atk: 2
+  hp: 3
+  categoryRarity: 0
+  skill1: 2
+  skill2: 0
+  skill3: 0
+  cardText: "\u6311\u767A"

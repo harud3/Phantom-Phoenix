@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+/// <summary>
+/// ヒーローの見た目
+/// </summary>
 public class HeroView : MonoBehaviour
 {
     [SerializeField] Image iconImage;
@@ -11,9 +13,14 @@ public class HeroView : MonoBehaviour
     [SerializeField] Image mpIcon1;
     [SerializeField] Image mpIcon2;
     // Start is called before the first frame update
+    /// <summary>
+    /// 基本的にControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="heroModel"></param>
     public void Show(HeroModel heroModel)
     {
         iconImage.sprite = heroModel.icon;
+        //ヒーローHP/MPの表示は、桁位置固定の二桁　よって、二桁目が0の時はImageを見えなくする　ex) HP9 → ×09, 〇 9
         int hp1 = heroModel.hp / 10;
         hpIcon1.sprite = Resources.Load<Sprite>($"Numbers/s{hp1}");
         if (hp1 == 0) { hpIcon1.enabled = false; } else { hpIcon1.enabled = true; }
@@ -23,6 +30,10 @@ public class HeroView : MonoBehaviour
         mpIcon1.sprite = Resources.Load<Sprite>($"Numbers/s{mp1}");
         mpIcon2.sprite = Resources.Load<Sprite>($"Numbers/s{heroModel.mp % 10}");
     }
+    /// <summary>
+    /// 基本的にControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="heroModel"></param>
     public void ReShow(HeroModel heroModel)
     {
         int hp1 = heroModel.hp / 10;

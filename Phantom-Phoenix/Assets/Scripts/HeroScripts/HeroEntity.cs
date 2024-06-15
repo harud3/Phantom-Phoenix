@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ヒーローデータ
+/// </summary>
 [CreateAssetMenu(fileName = "HeroEntity", menuName = "Create HeroEntity")]
-//カードデータ
 public class HeroEntity : ScriptableObject
 {
     public new string name;

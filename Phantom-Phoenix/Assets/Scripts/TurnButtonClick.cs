@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-
+/// <summary>
+/// TurnButton‚ğ‰Ÿ‚µ‚½‚Æ‚«‚Ìˆ—
+/// </summary>
 public class TurnButtonClick : MonoBehaviour
 {
     [SerializeField]

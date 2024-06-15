@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
   m_Name: Card8
   m_EditorClassIdentifier: 
-  name: Cerberus
-  hp: 1
-  atk: 4
-  cost: 2
   icon: {fileID: 21300000, guid: 0ad3da242248b51499f3d876033ded57, type: 3}
+  name: Cerberus
+  cost: 2
+  atk: 4
+  hp: 1
+  categoryRarity: 2
+  skill1: 1
+  skill2: 0
+  skill3: 0
+  cardText: "\u5373\u6483"

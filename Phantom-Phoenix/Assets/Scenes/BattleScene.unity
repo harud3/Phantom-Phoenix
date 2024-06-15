@@ -1061,14 +1061,14 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1489626060}
-  - {fileID: 1180896658}
-  - {fileID: 1371586486}
-  - {fileID: 550862158}
-  - {fileID: 305668703}
-  - {fileID: 2033490419}
   - {fileID: 232050810}
   - {fileID: 315854575}
+  - {fileID: 1371586486}
+  - {fileID: 550862158}
+  - {fileID: 1489626060}
+  - {fileID: 1180896658}
+  - {fileID: 305668703}
+  - {fileID: 2033490419}
   - {fileID: 866599087}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.056}
@@ -1426,6 +1426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 1
+  _fieldID: 2
 --- !u!114 &654613863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1439,7 +1440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1747,6 +1748,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 0
+  _fieldID: 10
 --- !u!114 &772933922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1760,7 +1762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1837,6 +1839,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 0
+  _fieldID: 12
 --- !u!114 &789070770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1850,7 +1853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2241,6 +2244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 1
+  _fieldID: 3
 --- !u!114 &986022714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2254,7 +2258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2357,6 +2361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 0
+  _fieldID: 8
 --- !u!114 &1035092301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2370,7 +2375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2473,6 +2478,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 1
+  _fieldID: 6
 --- !u!114 &1102544862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2486,7 +2492,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2739,6 +2745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 1
+  _fieldID: 5
 --- !u!114 &1112559210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2752,7 +2759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3288,6 +3295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 1
+  _fieldID: 1
 --- !u!114 &1296472948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3301,7 +3309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3479,6 +3487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 0
+  _fieldID: 9
 --- !u!114 &1355445706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3492,7 +3501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4231,6 +4240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 1
+  _fieldID: 4
 --- !u!114 &1841819514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4244,7 +4254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4502,6 +4512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 0
+  _fieldID: 11
 --- !u!114 &2081932943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4515,7 +4526,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4671,23 +4682,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: addb65c51bc6a31479db50cbe63df6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerHeroController: {fileID: 1180896660}
+  enemyHeroController: {fileID: 550862160}
+  playerFields:
+  - {fileID: 1296472946}
+  - {fileID: 654613861}
+  - {fileID: 986022712}
+  - {fileID: 1841819511}
+  - {fileID: 1112559208}
+  - {fileID: 1102544860}
+  enemyFields:
+  - {fileID: 2136200151}
+  - {fileID: 1035092299}
+  - {fileID: 1355445704}
+  - {fileID: 772933919}
+  - {fileID: 2081932941}
+  - {fileID: 789070768}
   playerHandTransform: {fileID: 1489626060}
-  playerFieldTranform1: {fileID: 1296472946}
-  playerFieldTranform2: {fileID: 654613861}
-  playerFieldTranform3: {fileID: 986022712}
-  playerFieldTranform4: {fileID: 1841819511}
-  playerFieldTranform5: {fileID: 1112559208}
-  playerFieldTranform6: {fileID: 1102544860}
   enemyHandTransform: {fileID: 1371586486}
-  enemyFieldTranform7: {fileID: 2136200151}
-  enemyFieldTranform8: {fileID: 1035092299}
-  enemyFieldTranform9: {fileID: 1355445704}
-  enemyFieldTranform10: {fileID: 772933919}
-  enemyFieldTranform11: {fileID: 2081932941}
-  enemyFieldTranform12: {fileID: 789070768}
   cardPrefab: {fileID: -7060814915658875771, guid: 64e3b038805b8464890da531d00aedd7,
     type: 3}
-  button: {fileID: 305668704}
+  turnButton: {fileID: 305668704}
   playerTurnSprite: {fileID: 21300000, guid: f33fb07f71c9cde4f9b266e5507fc02c, type: 3}
   enemyTurnSprite: {fileID: 21300000, guid: dfda8870bd4efba45b4c29399b410a31, type: 3}
   TimeLimit1: {fileID: 727509833}
@@ -4696,8 +4711,6 @@ MonoBehaviour:
   timeLimit: 12
   resultPanel: {fileID: 866599086}
   resultImage: {fileID: 914853796}
-  playerHeroController: {fileID: 1180896660}
-  enemyHeroController: {fileID: 550862160}
 --- !u!4 &2118492113
 Transform:
   m_ObjectHideFlags: 0
@@ -4791,6 +4804,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerField: 0
+  _fieldID: 7
 --- !u!114 &2136200154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4804,7 +4818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

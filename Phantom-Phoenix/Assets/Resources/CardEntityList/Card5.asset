@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
   m_Name: Card5
   m_EditorClassIdentifier: 
-  name: Behemoth
-  hp: 3
-  atk: 3
-  cost: 1
   icon: {fileID: 21300000, guid: 76c77563f6dadd6488c133b1c80059c3, type: 3}
+  name: Behemoth
+  cost: 1
+  atk: 2
+  hp: 3
+  categoryRarity: 2
+  skill1: 0
+  skill2: 0
+  skill3: 0
+  cardText: 

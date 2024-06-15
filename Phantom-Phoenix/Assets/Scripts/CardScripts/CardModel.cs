@@ -2,36 +2,54 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// カードの実体
+/// </summary>
 public class CardModel
 {
-    public string name;
-    public int hp;
-    public int atk;
-    public int cost;
-    public Sprite icon;
-    [NonSerialized]
-    public bool isAlive;
-    [NonSerialized]
-    public bool canAttack;
-    [NonSerialized]
-    public bool isFieldCard;
-    [NonSerialized]
-    public bool isPlayerCard;
+    public Sprite icon { get; private set; }
+    public string name {  get; private set; }
+    public int cost { get; private set; }
+    public int atk { get; private set; }
+    public int hp {  get; private set; }
+    
+    public CardEntity.CategoryRarity categoryRarity { get; private set; }
+    public CardEntity.skill skill1 { get; private set; }
+    public CardEntity.skill skill2 { get; private set; }
+    public CardEntity.skill skill3 { get; private set; }
+    public string cardText { get; private set; }
+    public bool isPlayerCard { get; private set; }
+    public bool isFieldCard { get; private set; }
+    public int fieldID { get; private set; }
+    public bool isAlive {  get; private set; }
+    public bool canAttack {  get; private set; }
+    public bool is挑発 { get; private set; }
+    
     public CardModel(int cardID, bool isPlayer)
     {
+        //cardIDを基に対象のカードデータを取得する
         CardEntity cardEntity = Resources.Load<CardEntity>($"CardEntityList/Card{cardID}");
-        name = cardEntity.name;
-        hp = cardEntity.hp;
-        atk = cardEntity.atk;
-        cost = cardEntity.cost;
         icon = cardEntity.icon;
+        name = cardEntity.name;
+        cost = cardEntity.cost;
+        atk = cardEntity.atk;
+        hp = cardEntity.hp;
+        skill1 = cardEntity.skill1;
+        skill2 = cardEntity.skill2;
+        skill3 = cardEntity.skill3;
+        cardText = cardEntity.cardText;
+        categoryRarity = cardEntity.categoryRarity; 
+        isPlayerCard = isPlayer;
+        isFieldCard = false;
+        fieldID = 0;
         isAlive = true;
         canAttack = false;
-        isFieldCard = false;
-        isPlayerCard = isPlayer;
+        is挑発 = false;
     }
-
+    /// <summary>
+    /// カードがダメージを受けた時の処理
+    /// </summary>
+    /// <param name="dmg"></param>
     void Damage(int dmg)
     {
         hp -= dmg;
@@ -41,8 +59,33 @@ public class CardModel
             isAlive = false;
         }
     }
+    /// <summary>
+    /// view側の処理があるので、CC以外から直接呼ぶのは非推奨
+    /// </summary>
     public void Attack(CardController card)
     {
         card.model.Damage(atk);
+    }
+    /// <summary>
+    /// view側の処理があるので、CC以外から直接呼ぶのは非推奨
+    /// </summary>
+    public void SetCanAttack(bool canAttack)
+    {
+        this.canAttack = canAttack;
+    }
+    /// <summary>
+    /// view側の処理があるので、CC以外から直接呼ぶのは非推奨
+    /// </summary>
+    /// <param name="isFieldCard"></param>
+    public void SetIsFieldCard(bool isFieldCard) { 
+        this.isFieldCard = isFieldCard;
+    }
+    public void SetIsFieldID(int fieldID)
+    {
+        this.fieldID = fieldID;
+    }
+    public void SetIs挑発(bool is挑発)
+    {
+        this.is挑発 = is挑発;
     }
 }
