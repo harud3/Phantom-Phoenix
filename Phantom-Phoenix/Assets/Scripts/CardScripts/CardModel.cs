@@ -23,7 +23,7 @@ public class CardModel
     public int fieldID { get; private set; }
     public bool isAlive {  get; private set; }
     public bool canAttack {  get; private set; }
-    public bool is挑発 { get; private set; }
+    public bool isTaunt { get; private set; }
     
     public CardModel(int cardID, bool isPlayer)
     {
@@ -44,7 +44,7 @@ public class CardModel
         fieldID = 0;
         isAlive = true;
         canAttack = false;
-        is挑発 = false;
+        isTaunt = false;
     }
     /// <summary>
     /// カードがダメージを受けた時の処理
@@ -84,8 +84,8 @@ public class CardModel
     {
         this.fieldID = fieldID;
     }
-    public void SetIs挑発(bool is挑発)
+    public void SetisTaunt(bool isTaunt)
     {
-        this.is挑発 = is挑発;
+        this.isTaunt = isTaunt;
     }
 }

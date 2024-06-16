@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 8737879978531760286}
   - component: {fileID: 6196824929824536912}
   m_Layer: 5
-  m_Name: "Frame\u6311\u767A"
+  m_Name: FrameTaunt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -375,7 +375,7 @@ MonoBehaviour:
   hpIcon: {fileID: 96510242816155768}
   cardText: {fileID: 1918496475515222403}
   selectablePanel: {fileID: 58156062978928197}
-  "frame\u6311\u767A": {fileID: 1041388108661729903}
+  frameTaunt: {fileID: 0}
 --- !u!114 &3922260373383917843
 MonoBehaviour:
   m_ObjectHideFlags: 0

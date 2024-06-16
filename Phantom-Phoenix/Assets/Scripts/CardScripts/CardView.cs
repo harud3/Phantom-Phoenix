@@ -15,7 +15,7 @@ public class CardView : MonoBehaviour
     [SerializeField] Image hpIcon;
     [SerializeField] TextMeshProUGUI cardText;
     [SerializeField] GameObject selectablePanel;
-    [SerializeField] GameObject frame’§”­;
+    [SerializeField] GameObject frameTaunt;
     /// <summary>
     /// Šî–{“I‚ÉController‚ð’Ê‚µ‚ÄŒÄ‚Ô‚±‚Æ‚É‚È‚é
     /// </summary>
@@ -54,8 +54,8 @@ public class CardView : MonoBehaviour
     {
         selectablePanel.SetActive(isActive);
     }
-    public void SetViewFrame’§”­(bool isView)
+    public void SetViewFrameTaunt(bool isView)
     {
-        frame’§”­.SetActive(isView);
+        frameTaunt.SetActive(isView);
     }
 }

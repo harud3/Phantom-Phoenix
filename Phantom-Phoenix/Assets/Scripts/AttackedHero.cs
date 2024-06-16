@@ -30,14 +30,14 @@ public class AttackedHero : MonoBehaviour, IDropHandler
 
             if (heroController.model.isPlayer) //heroがplayerなら、確認するfieldもplayer側
             {
-                if (GameManager.instance.isAny挑発(true)) { return; }
+                if (GameManager.instance.isAnyTaunt(true)) { return; }
 
                 //ウォール
                 if (GameManager.instance.isWall(true)) { return; }
             }
             else //それ以外はenemy側
             {
-                if (GameManager.instance.isAny挑発(false)) { return; }
+                if (GameManager.instance.isAnyTaunt(false)) { return; }
 
                 //ウォール
                 if (GameManager.instance.isWall(false)) { return; }

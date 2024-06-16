@@ -28,17 +28,17 @@ public class AttackedCard : MonoBehaviour, IDropHandler
             var thisFieldID = this.transform.parent.GetComponent<DropField>().fieldID;
 
             //挑発
-            if (!target.model.is挑発) //is挑発はfield1,2,3またはfield7,8,9にいる時にtrueとなる　よって、targetがis挑発してるなら即開戦でOK　
+            if (!target.model.isTaunt) //isTauntはfield1,2,3またはfield7,8,9にいる時にtrueとなる　よって、targetがisTauntしてるなら即開戦でOK　
             {
                 if (target.model.isPlayerCard) //targetがplayerCardなら、攻撃対象側のfieldもplayer側
                 {
-                    if (GameManager.instance.isAny挑発(true)) { return; }
+                    if (GameManager.instance.isAnyTaunt(true)) { return; }
                     
                     if(GameManager.instance.isBlock(true, thisFieldID)) {  return; }
                 }
                 else //それ以外のfieldはenemy側
                 {
-                    if (GameManager.instance.isAny挑発(false)) { return; }
+                    if (GameManager.instance.isAnyTaunt(false)) { return; }
 
                     if (GameManager.instance.isBlock(false, thisFieldID)) { return; }
 

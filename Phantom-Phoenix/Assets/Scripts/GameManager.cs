@@ -220,9 +220,9 @@ public class GameManager : MonoBehaviour
                 {
                     if( playerField.GetComponentInChildren<CardController>() is var cc && cc.model.isAlive)
                     {
-                        if (!cc.model.is挑発)
+                        if (!cc.model.isTaunt)
                         {
-                            if (isAny挑発(true)) { continue; }
+                            if (isAnyTaunt(true)) { continue; }
                             if (isBlock(true, playerField.GetComponent<DropField>().fieldID)) { continue; }
                         }
 
@@ -237,7 +237,7 @@ public class GameManager : MonoBehaviour
             }
             if (canAttackFieldEnemyCard.model.canAttack && playerHeroController.model.isAlive)
             {
-                if (isAny挑発(true)) { continue; }
+                if (isAnyTaunt(true)) { continue; }
                 if (isWall(true)) { continue; }
 
                 StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerHeroController.transform));
@@ -326,18 +326,18 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
-    public bool isAny挑発(bool isPlayerField)
+    public bool isAnyTaunt(bool isPlayerField)
     {
         
         if (isPlayerField)
         {
-            //playerFieldsのfieldID1,2,3のうち、カードが紐づいているfieldを抽出し、そのカード群の中に is挑発 == true なものがあるなら、trueを返す
-            if (playerFields.Take(3).Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.is挑発).Count() > 0) { return true; }
+            //playerFieldsのfieldID1,2,3のうち、カードが紐づいているfieldを抽出し、そのカード群の中に isTaunt == true なものがあるなら、trueを返す
+            if (playerFields.Take(3).Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.isTaunt).Count() > 0) { return true; }
         }
         else
         {
-            //enemyFieldsのfieldID1,2,3のうち、カードが紐づいているfieldを抽出し、そのカード群の中に is挑発 == true なものがあるなら、trueを返す
-            if (enemyFields.Take(3).Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.is挑発).Count() > 0) { return true; }
+            //enemyFieldsのfieldID1,2,3のうち、カードが紐づいているfieldを抽出し、そのカード群の中に isTaunt == true なものがあるなら、trueを返す
+            if (enemyFields.Take(3).Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.isTaunt).Count() > 0) { return true; }
         }
         return false;
     }

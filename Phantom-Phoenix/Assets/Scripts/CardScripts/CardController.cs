@@ -38,8 +38,8 @@ public class CardController : MonoBehaviour
                 || (isPlayerField && (model.fieldID == 1 || model.fieldID == 2 || model.fieldID == 3))
                 )
             {
-                model.SetIs’§”­(true);
-                view.SetViewFrame’§”­(true);
+                model.SetisTaunt(true);
+                view.SetViewFrameTaunt(true);
             }
         }
     }
