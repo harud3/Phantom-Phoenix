@@ -55,18 +55,20 @@ public class HeroModel
     /// </summary>
     public void ResetMP()
     {
-        UpMaxMP();
+        ChangeMaxMP(1);
         mp = maxMP;
     }
     /// <summary>
     /// (主にターン開始時に)最大MP上限＋ view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない
     /// </summary>
-    public void UpMaxMP()
+    public void ChangeMaxMP(int up)
     {
-        if(maxMP < 10)
+        maxMP += up;
+        if (maxMP > 10)
         {
-            maxMP += 1;
+            maxMP = 10;
         }
+        else if(maxMP < 0){ maxMP = 0; }
     }
     /// <summary>
     /// (主にカードを出した時に)MPを減らす view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない

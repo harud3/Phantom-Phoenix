@@ -24,24 +24,25 @@ public class CardController : MonoBehaviour
     }
     public void putOnField(bool isPlayerField)
     {
-        GameManager.instance.ReduceMP(model.cost, isPlayerField);
+        GameManager.instance.ReduceMP(model.cost, model.isPlayerCard);
         model.SetIsFieldCard(true);
         view.HideCost(false);
 
-        if (model.skill1 == CardEntity.skill.ë¶åÇ || model.skill2 == CardEntity.skill.ë¶åÇ || model.skill3 == CardEntity.skill.ë¶åÇ)
+        SkillManager.instance.specialSkills(model.cardID, model.isPlayerCard);
+
+        if (SkillManager.instance.isFast(model))
         {
-            SetCanAttack(true);
+            SetCanAttack(true, false);
         }
-        if (model.skill1 == CardEntity.skill.íßî≠ || model.skill2 == CardEntity.skill.íßî≠ || model.skill3 == CardEntity.skill.íßî≠)
+        if (SkillManager.instance.isTaunt(model, model.isPlayerCard))
         {
-            if(!isPlayerField && (model.fieldID == 7 || model.fieldID == 8 || model.fieldID == 9)
-                || (isPlayerField && (model.fieldID == 1 || model.fieldID == 2 || model.fieldID == 3))
-                )
-            {
-                model.SetisTaunt(true);
-                view.SetViewFrameTaunt(true);
-            }
+            model.SetisTaunt(true);
+            view.SetViewFrameTaunt(true);
         }
+        if (SkillManager.instance.isDoubleAction(model)){
+            model.SetisActiveDoubleAction(true);
+        }
+
     }
     /// <summary>
     /// fieldIDÇÕ1Å`12 player1Å`6 enemy7Å`12
@@ -51,15 +52,39 @@ public class CardController : MonoBehaviour
     {
         model.SetIsFieldID(fieldID);
     }
+    public void Damage(int dmg)
+    {
+        model.Damage(dmg);
+        view.ReShow(model);
+        CheckAlive();
+    }
     public void Attack(CardController enemyCard)
     {
         model.Attack(enemyCard);
-        SetCanAttack(false);
+        if (SkillManager.instance.isActiveDoubleAction(model))
+        {
+            SetCanAttack(true, false);
+            model.SetisActiveDoubleAction(false);
+        }
+        else { SetCanAttack(false, false); }
     }
-    public void SetCanAttack(bool canAttack)
+    public void Attack(HeroController enemyHero)
+    {
+        enemyHero.Damage(model.atk);
+        if (SkillManager.instance.isActiveDoubleAction(model))
+        {
+            SetCanAttack(true, false);
+            model.SetisActiveDoubleAction(false);
+        }
+        else { SetCanAttack(false, false); }
+    }
+    public void SetCanAttack(bool canAttack, bool ResetIsActiveDoubleAction)
     {
         model.SetCanAttack(canAttack);
         view.SetActiveSelectablePanel(canAttack);
+        if(ResetIsActiveDoubleAction && SkillManager.instance.isDoubleAction(model)) {
+            model.SetisActiveDoubleAction(true);
+        }
     }
     public void CheckAlive()
     {
@@ -72,4 +97,5 @@ public class CardController : MonoBehaviour
             
         }
     }
+
 }

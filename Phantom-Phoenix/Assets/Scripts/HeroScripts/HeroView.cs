@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 /// <summary>
 /// ヒーローの見た目
 /// </summary>
@@ -12,6 +13,7 @@ public class HeroView : MonoBehaviour
     [SerializeField] Image hpIcon2;
     [SerializeField] Image mpIcon1;
     [SerializeField] Image mpIcon2;
+    [SerializeField] TextMeshProUGUI maxMPText;
     // Start is called before the first frame update
     /// <summary>
     /// 基本的にControllerを通して呼ぶことになる
@@ -29,6 +31,7 @@ public class HeroView : MonoBehaviour
         if (mp1 == 0) { mpIcon1.enabled = false; } else { mpIcon1.enabled = true; }
         mpIcon1.sprite = Resources.Load<Sprite>($"Numbers/s{mp1}");
         mpIcon2.sprite = Resources.Load<Sprite>($"Numbers/s{heroModel.mp % 10}");
+        maxMPText.text = heroModel.maxMP.ToString();
     }
     /// <summary>
     /// 基本的にControllerを通して呼ぶことになる
@@ -44,6 +47,6 @@ public class HeroView : MonoBehaviour
         if (mp1 == 0) { mpIcon1.enabled = false; } else { mpIcon1.enabled = true; }
         mpIcon1.sprite = Resources.Load<Sprite>($"Numbers/s{mp1}");
         mpIcon2.sprite = Resources.Load<Sprite>($"Numbers/s{heroModel.mp % 10}");
-
+        maxMPText.text = heroModel.maxMP.ToString();
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class CardModel
 {
+    public int cardID {  get; private set; }
     public Sprite icon { get; private set; }
     public string name {  get; private set; }
     public int cost { get; private set; }
@@ -24,11 +25,13 @@ public class CardModel
     public bool isAlive {  get; private set; }
     public bool canAttack {  get; private set; }
     public bool isTaunt { get; private set; }
-    
+    public bool isActiveDoubleAction {  get; private set; }
+
     public CardModel(int cardID, bool isPlayer)
     {
         //cardIDを基に対象のカードデータを取得する
         CardEntity cardEntity = Resources.Load<CardEntity>($"CardEntityList/Card{cardID}");
+        this.cardID = cardID;
         icon = cardEntity.icon;
         name = cardEntity.name;
         cost = cardEntity.cost;
@@ -45,12 +48,13 @@ public class CardModel
         isAlive = true;
         canAttack = false;
         isTaunt = false;
+        isActiveDoubleAction = true;
     }
     /// <summary>
     /// カードがダメージを受けた時の処理
     /// </summary>
     /// <param name="dmg"></param>
-    void Damage(int dmg)
+    public void Damage(int dmg)
     {
         hp -= dmg;
         if (hp <= 0)
@@ -87,5 +91,9 @@ public class CardModel
     public void SetisTaunt(bool isTaunt)
     {
         this.isTaunt = isTaunt;
+    }
+    public void SetisActiveDoubleAction(bool isActiveDoubleAction)
+    {
+        this.isActiveDoubleAction = isActiveDoubleAction;
     }
 }

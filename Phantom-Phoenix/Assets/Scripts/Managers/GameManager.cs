@@ -10,6 +10,8 @@ using System.Data;
 using UnityEditor.UIElements;
 using UnityEditor.Experimental.GraphView;
 using static UnityEngine.Rendering.DebugUI;
+using TMPro;
+using static UnityEngine.GraphicsBuffer;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,7 +34,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button turnButton;
     [SerializeField] private Sprite playerTurnSprite,enemyTurnSprite; //ターン終了、相手のターンのスプライト
 
-    [SerializeField] private Image TimeLimit1, TimeLimit2, TimeLimit3; //時間制限の表示部
+    [SerializeField] private TextMeshProUGUI timeCountText; //ターンの残り時間の表示部
     [SerializeField] int timeLimit; //ターンの時間制限
     int timeCount; //ターンの残り時間
 
@@ -42,10 +44,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Image resultImage;
 
-    //TODO:あとあと外部から決められるように
-    int playerHeroID  = 1, enemyHeroID = 1;
-    List<int> playerDeck = new List<int>(){1, 1, 6,7, 8,5,2,5,6,7,8,8,7, 2, 2,4,4,5,5,5};
-    List<int> enemyDeck = new List<int>(){ 1,1,1,1,1,1,1, 2,3,3,4,5};
+    DeckModel playerDeck;
+    DeckModel enemyDeck;
     #region 初期設定
     void Start()
     {
@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
     }
     void StartGame()
     {
+        playerDeck = new DeckModel().Init(Resources.Load<DeckEntity>($"DeckEntityList/player"));
+        enemyDeck = new DeckModel().Init(Resources.Load<DeckEntity>($"DeckEntityList/enemy"));
         SetTime();
         SettingInitHero();
         SettingInitHand();
@@ -62,8 +64,8 @@ public class GameManager : MonoBehaviour
     //ヒーローの設定
     void SettingInitHero()
     {
-        playerHeroController.Init(playerHeroID);
-        enemyHeroController.Init(enemyHeroID);
+        playerHeroController.Init(playerDeck.useHeroID);
+        enemyHeroController.Init(enemyDeck.useHeroID);
     }
     /// <summary>
     /// 初期手札の設定
@@ -72,21 +74,15 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < 3; i++) //初期手札は3枚
         {
-            GiveCardToHand(playerDeck, playerHandTransform, playerHeroController.model.isPlayer);
-            GiveCardToHand(enemyDeck, enemyHandTransform, enemyHeroController.model.isPlayer);
+            GiveCardToHand(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer);
+            GiveCardToHand(enemyDeck.deck, enemyHandTransform, enemyHeroController.model.isPlayer);
         }
     }
     #endregion
     #region　時間管理
     void SetTime()
     {
-        int tl1 = timeCount / 100;
-        TimeLimit1.sprite = Resources.Load<Sprite>($"Numbers/s{tl1}");
-        if (tl1 == 0) { TimeLimit1.enabled = false; } else { TimeLimit1.enabled = true; }
-        int tl2 = timeCount / 10;
-        TimeLimit2.sprite = Resources.Load<Sprite>($"Numbers/s{tl2}");
-        if (tl2 == 0) { TimeLimit2.enabled = false; } else { TimeLimit2.enabled = true; }
-        TimeLimit3.sprite = Resources.Load<Sprite>($"Numbers/s{timeCount % 10}");
+        timeCountText.text = timeCount.ToString();
     }
     IEnumerator CountDown()
     {
@@ -126,7 +122,7 @@ public class GameManager : MonoBehaviour
     /// <param name="isPlayer"></param>
     void CreateCard(int cardID, Transform hand, bool isPlayer)
     {
-        if (hand.childCount == 10) { return; }
+        if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました");  return; }
         CardController card = Instantiate(cardPrefab, hand, false);
         card.Init(cardID, isPlayer);
     }
@@ -138,11 +134,11 @@ public class GameManager : MonoBehaviour
         isPlayerTurn = !isPlayerTurn;
         if (isPlayerTurn)
         {
-            GiveCardToHand(playerDeck, playerHandTransform, playerHeroController.model.isPlayer);
+            GiveCardToHand(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer);
         }
         else
         {
-            GiveCardToHand(enemyDeck, enemyHandTransform, enemyHeroController.model.isPlayer);
+            GiveCardToHand(enemyDeck.deck, enemyHandTransform, enemyHeroController.model.isPlayer);
         }
         TurnCalc();
     }
@@ -159,13 +155,13 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     #region より具体的なターン制御
-    void SetCanAttackAllFieldUnit(Transform[] fields, bool CanAttack)
+    void SetCanAttackAllFieldUnit(Transform[] fields, bool CanAttack, bool ResetIsActiveDoubleAciton)
     {
         foreach (var field in fields)
         {
             if (field.childCount != 0)
             {
-                field.GetChild(0).GetComponent<CardController>().SetCanAttack(CanAttack);
+                field.GetChild(0).GetComponent<CardController>().SetCanAttack(CanAttack, ResetIsActiveDoubleAciton);
             }
         }
     }
@@ -174,16 +170,19 @@ public class GameManager : MonoBehaviour
         turnButton.image.sprite = playerTurnSprite;
         Debug.Log("味方ターン");
         playerHeroController.ResetMP();
-        SetCanAttackAllFieldUnit(playerFields, true);
-        SetCanAttackAllFieldUnit(enemyFields, false);
+        SetCanAttackAllFieldUnit(playerFields, true, true);
+        SetCanAttackAllFieldUnit(enemyFields, false, false);
     }
     IEnumerator EnemyTurn()
     {
+        
         turnButton.image.sprite = enemyTurnSprite;
         Debug.Log("相手ターン");
         enemyHeroController.ResetMP();
-        SetCanAttackAllFieldUnit(playerFields, false);
-        SetCanAttackAllFieldUnit(enemyFields, true);
+        SetCanAttackAllFieldUnit(playerFields, false, false);
+        SetCanAttackAllFieldUnit(enemyFields, true, true);
+
+        yield return new WaitForSeconds(1f);
 
         //enemyAIが動かす
         //手札から出せるカードを出す
@@ -218,17 +217,14 @@ public class GameManager : MonoBehaviour
             {
                 if (playerField.childCount != 0)
                 {
-                    if( playerField.GetComponentInChildren<CardController>() is var cc && cc.model.isAlive)
+                    if( playerField.GetComponentInChildren<CardController>() is var pcc && pcc.model.isAlive)
                     {
-                        if (!cc.model.isTaunt)
-                        {
-                            if (isAnyTaunt(true)) { continue; }
-                            if (isBlock(true, playerField.GetComponent<DropField>().fieldID)) { continue; }
-                        }
+                        if(!SkillManager.instance.CheckCanAttackUnit(canAttackFieldEnemyCard, pcc)) { continue; }
 
                         StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerField));
                         yield return new WaitForSeconds(1f);
-                        CardsBattle(canAttackFieldEnemyCard,cc);
+                        CardsBattle(canAttackFieldEnemyCard,pcc);
+                        SkillManager.instance.DealAnySkillByAttack(canAttackFieldEnemyCard, pcc);
                         yield return null;
                         break;
                     }
@@ -237,8 +233,7 @@ public class GameManager : MonoBehaviour
             }
             if (canAttackFieldEnemyCard.model.canAttack && playerHeroController.model.isAlive)
             {
-                if (isAnyTaunt(true)) { continue; }
-                if (isWall(true)) { continue; }
+                if (!SkillManager.instance.CheckCanAttackHero(canAttackFieldEnemyCard ,playerHeroController)) { continue; }
 
                 StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerHeroController.transform));
                 yield return new WaitForSeconds(1f);
@@ -269,15 +264,15 @@ public class GameManager : MonoBehaviour
     }
     public void AttackTohero(CardController attacker, bool isPlayerCard)
     {
-        if (isPlayerCard) { 
-            enemyHeroController.Damage(attacker);
+        if (isPlayerCard) {
+            attacker.Attack(enemyHeroController);
             //勝利判定も
             if (!enemyHeroController.model.isAlive) { 
                 Invoke("ViewResultPanel",1f);
             }
         }
         else {
-            playerHeroController.Damage(attacker);
+            attacker.Attack(playerHeroController);
             //勝利判定も
             if (!playerHeroController.model.isAlive) {
                 Invoke("ViewResultPanel", 1f);
@@ -301,91 +296,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    #endregion
-    #region 盤面取得
-    /// <summary>
-    /// FieldIDは1～12 1～6がplayer 7～12がenemy
-    /// </summary>
-    /// <param name="FieldID"></param>
-    /// <returns></returns>
-    public CardController GetCardbyFieldID(int FieldID)
-    {
-        if (1 <= FieldID && FieldID <= 6)
-        {
-            if (playerFields[FieldID - 1].childCount != 0)
-            {
-                return playerFields[FieldID-1].GetComponentInChildren<CardController>(); ;
-            }
-        }
-        else if(FieldID <= 12)
-        {
-            if (enemyFields[FieldID - 7].childCount != 0)
-            {
-                return enemyFields[FieldID - 7].GetComponentInChildren<CardController>(); ;
-            }
-        }
-        return null;
-    }
-    public bool isAnyTaunt(bool isPlayerField)
-    {
-        
-        if (isPlayerField)
-        {
-            //playerFieldsのfieldID1,2,3のうち、カードが紐づいているfieldを抽出し、そのカード群の中に isTaunt == true なものがあるなら、trueを返す
-            if (playerFields.Take(3).Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.isTaunt).Count() > 0) { return true; }
-        }
-        else
-        {
-            //enemyFieldsのfieldID1,2,3のうち、カードが紐づいているfieldを抽出し、そのカード群の中に isTaunt == true なものがあるなら、trueを返す
-            if (enemyFields.Take(3).Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.isTaunt).Count() > 0) { return true; }
-        }
-        return false;
-    }
-    public bool isBlock(bool isPlayerField, int thisFieldID) {
-        //fieldIDは、　
-        //             後列前列    前列後列
-        //              4   1   |   7   10
-        //playerHero    5   2   |   8   11  enemyHero
-        //              6   3   |   9   12
-        //となっている
-        if (isPlayerField) {
-            //ブロック
-            //cardがnull以外なら、すぐ前にユニットがいるためブロックが成立している
-            if ((thisFieldID == 4 && GameManager.instance.GetCardbyFieldID(1) != null)
-                || (thisFieldID == 5 && GameManager.instance.GetCardbyFieldID(2) != null)
-                || (thisFieldID == 6 && GameManager.instance.GetCardbyFieldID(3) != null)
-                ) { return true; }
-        }
-        else
-        {
-            //ブロック
-            if ((thisFieldID == 10 && GameManager.instance.GetCardbyFieldID(7) != null)
-                || (thisFieldID == 11 && GameManager.instance.GetCardbyFieldID(8) != null)
-                || (thisFieldID == 12 && GameManager.instance.GetCardbyFieldID(9) != null)
-                ) { return true; }
-        }
-        
-        return false;
-    }
-    public bool isWall(bool isPlayerField) {
-        if (isPlayerField
-            && (GetCardbyFieldID(1) != null || GetCardbyFieldID(4) != null)
-            && (GetCardbyFieldID(2) != null || GetCardbyFieldID(5) != null)
-            && (GetCardbyFieldID(3) != null || GetCardbyFieldID(6) != null)
-            )
-        {
-            return true;
-        }
-        else if(!isPlayerField
-            && (GetCardbyFieldID(7) != null || GetCardbyFieldID(10) != null)
-            && (GetCardbyFieldID(8) != null || GetCardbyFieldID(11) != null)
-            && (GetCardbyFieldID(9) != null || GetCardbyFieldID(12) != null)
-            )
-        {
-            return true;
-        }
-        return false; 
-    }
     #endregion
     #region resultとメニューへの遷移
     private void ViewResultPanel()

@@ -16,37 +16,14 @@ public class AttackedCard : MonoBehaviour, IDropHandler
             && attacker.model.canAttack
             && attacker.model.isPlayerCard != target.model.isPlayerCard)
         {
-
-            //ブロックや挑発がされているならをゴリ押し構文で判定する スマートな方法を思いつけなかった…
-            //このスクリプトがアタッチされているカードの親(つまり置かれているfield)のfieldIDを取得する
-            //fieldIDは、　
-            //             後列前列    前列後列
-            //              4   1   |   7   10
-            //playerHero    5   2   |   8   11  enemyHero
-            //              6   3   |   9   12
-            //となっている
-            var thisFieldID = this.transform.parent.GetComponent<DropField>().fieldID;
-
-            //挑発
-            if (!target.model.isTaunt) //isTauntはfield1,2,3またはfield7,8,9にいる時にtrueとなる　よって、targetがisTauntしてるなら即開戦でOK　
+            if (SkillManager.instance.CheckCanAttackUnit(attacker, target))
             {
-                if (target.model.isPlayerCard) //targetがplayerCardなら、攻撃対象側のfieldもplayer側
-                {
-                    if (GameManager.instance.isAnyTaunt(true)) { return; }
-                    
-                    if(GameManager.instance.isBlock(true, thisFieldID)) {  return; }
-                }
-                else //それ以外のfieldはenemy側
-                {
-                    if (GameManager.instance.isAnyTaunt(false)) { return; }
-
-                    if (GameManager.instance.isBlock(false, thisFieldID)) { return; }
-
-                }
+                //開戦の儀
+                GameManager.instance.CardsBattle(attacker, target);
+                SkillManager.instance.DealAnySkillByAttack(attacker, target);
             }
 
-            //開戦の儀
-            GameManager.instance.CardsBattle(attacker, target);
+            
         }
     }
 }

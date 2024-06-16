@@ -30,13 +30,12 @@ public class HeroController : MonoBehaviour
         view.ReShow(model);
     }
     /// <summary>
-    /// ダメージを受けたら、被ダメ処理と敵の行動済処理をこなす
+    /// ダメージを受ける
     /// </summary>
     /// <param name="enemyCard"></param>
-    public void Damage(CardController enemyCard)
+    public void Damage(int atk)
     {
-        model.Damage(enemyCard.model.atk);
-        enemyCard.SetCanAttack(false);
+        model.Damage(atk);
         ReShow();
     }
     public void ResetMP()
@@ -47,6 +46,11 @@ public class HeroController : MonoBehaviour
     public void ReduceMP(int reduce)
     {
         model.ReduceMP(reduce);
+        view.ReShow(model);
+    }
+    public void ChangeMaxMP(int up)
+    {
+        model.ChangeMaxMP(up);
         view.ReShow(model);
     }
 }
