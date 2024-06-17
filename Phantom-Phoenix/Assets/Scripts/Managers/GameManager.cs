@@ -253,8 +253,8 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"{(isPlayerTurn? "味方ターン" :"相手ターン")} {attacker.model.name}から{target.model.name}に攻撃");
         
-        attacker.Attack(target);
-        target.Attack(attacker);
+        attacker.Attack(target,true);
+        target.Attack(attacker, false);
 
         Debug.Log($"{target.model.name}に{attacker.model.atk}ダメージ {target.model.name}の残りHP{target.model.hp}");
         Debug.Log($"{attacker.model.name}に{target.model.atk}ダメージ {attacker.model.name}の残りHP{attacker.model.hp}");
@@ -265,14 +265,14 @@ public class GameManager : MonoBehaviour
     public void AttackTohero(CardController attacker, bool isPlayerCard)
     {
         if (isPlayerCard) {
-            attacker.Attack(enemyHeroController);
+            attacker.Attack(enemyHeroController, true);
             //勝利判定も
             if (!enemyHeroController.model.isAlive) { 
                 Invoke("ViewResultPanel",1f);
             }
         }
         else {
-            attacker.Attack(playerHeroController);
+            attacker.Attack(playerHeroController, true);
             //勝利判定も
             if (!playerHeroController.model.isAlive) {
                 Invoke("ViewResultPanel", 1f);

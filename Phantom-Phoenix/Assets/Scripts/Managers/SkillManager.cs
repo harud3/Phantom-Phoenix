@@ -232,10 +232,10 @@ public class SkillManager : MonoBehaviour
             ) { GetCardbyFieldID(target.model.fieldID + 3)?.Damage(attacker.model.atk); }
     }
     #endregion
-    public void specialSkills(int cardID, bool isPlayer)
+    public void specialSkills(CardController cc)
     {
-        HeroController hero = isPlayer ? playerHeroController : enemyHeroController;
-        switch (cardID)
+        HeroController hero = cc.model.isPlayerCard ? playerHeroController : enemyHeroController;
+        switch (cc.model.cardID)
         {
             case 1:
                 {
@@ -251,6 +251,7 @@ public class SkillManager : MonoBehaviour
                 }
             case 4:
                 {
+                    //cc.SpecialSkillAfterAttack = (isAttacker) => { if (isAttacker) { hero.ChangeMaxMP(-1); } };
                     break;
                 }
             case 5:

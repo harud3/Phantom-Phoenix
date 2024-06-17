@@ -66,9 +66,16 @@ public class CardModel
     /// <summary>
     /// view側の処理があるので、CC以外から直接呼ぶのは非推奨
     /// </summary>
-    public void Attack(CardController card)
+    public void Attack<T>(T card) where T : Controller
     {
-        card.model.Damage(atk);
+        if (card is CardController cc)
+        {
+            cc.Damage(atk);
+        }
+        else if (card is HeroController hc)
+        {
+            hc.Damage(atk);
+        }
     }
     /// <summary>
     /// view側の処理があるので、CC以外から直接呼ぶのは非推奨

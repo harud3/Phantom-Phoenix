@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
-public class CardController : MonoBehaviour
+public class CardController : Controller
 {
     CardView view;
     public CardModel model {  get; private set; }
@@ -28,7 +28,7 @@ public class CardController : MonoBehaviour
         model.SetIsFieldCard(true);
         view.HideCost(false);
 
-        SkillManager.instance.specialSkills(model.cardID, model.isPlayerCard);
+        SkillManager.instance.specialSkills(this);
 
         if (SkillManager.instance.isFast(model))
         {
@@ -58,9 +58,23 @@ public class CardController : MonoBehaviour
         view.ReShow(model);
         CheckAlive();
     }
-    public void Attack(CardController enemyCard)
+    public void CheckAlive()
     {
-        model.Attack(enemyCard);
+        if (model.isAlive)
+        {
+            view.ReShow(model);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+
+        }
+    }
+    public void Attack<T>(T enemy, bool isAttacker) where T : Controller
+    {
+        ExecuteSpecialSkillBeforeAttack(isAttacker);
+        model.Attack(enemy);
+        ExecuteSpecialSkillAfterAttack(isAttacker);
         if (SkillManager.instance.isActiveDoubleAction(model))
         {
             SetCanAttack(true, false);
@@ -68,15 +82,16 @@ public class CardController : MonoBehaviour
         }
         else { SetCanAttack(false, false); }
     }
-    public void Attack(HeroController enemyHero)
+    
+    public Action<bool> SpecialSkillBeforeAttack = new Action<bool>((isAttacker) => { });
+    public void ExecuteSpecialSkillBeforeAttack(bool isAttacker)
     {
-        enemyHero.Damage(model.atk);
-        if (SkillManager.instance.isActiveDoubleAction(model))
-        {
-            SetCanAttack(true, false);
-            model.SetisActiveDoubleAction(false);
-        }
-        else { SetCanAttack(false, false); }
+        SpecialSkillBeforeAttack(isAttacker);
+    }
+    public Action<bool> SpecialSkillAfterAttack = new Action<bool>((isAttacker) => { });
+    public void ExecuteSpecialSkillAfterAttack(bool isAttacker)
+    {
+        SpecialSkillAfterAttack(isAttacker);
     }
     public void SetCanAttack(bool canAttack, bool ResetIsActiveDoubleAction)
     {
@@ -86,16 +101,4 @@ public class CardController : MonoBehaviour
             model.SetisActiveDoubleAction(true);
         }
     }
-    public void CheckAlive()
-    {
-        if (model.isAlive) {
-            view.ReShow(model);
-        }
-        else
-        {
-            Destroy(this.gameObject);
-            
-        }
-    }
-
 }

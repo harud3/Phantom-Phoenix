@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeroController : MonoBehaviour
+public class HeroController : Controller
 {
     HeroView view;
     public HeroModel model {  get; private set; }
@@ -54,3 +54,4 @@ public class HeroController : MonoBehaviour
         view.ReShow(model);
     }
 }
+public class Controller : MonoBehaviour { }
