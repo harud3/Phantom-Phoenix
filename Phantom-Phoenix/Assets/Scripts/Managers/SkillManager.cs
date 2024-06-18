@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
@@ -137,6 +136,26 @@ public class SkillManager : MonoBehaviour
     {
         return iPfID.Select(i => GetCardByIsPlayerAndFieldID(i.isPlayer, i.fieldID)).Where(i => i != null).ToList();
     }
+    /// <summary>
+    /// fieldIDは1～12 1～6がplayer 7～12がenemy
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    private CardController GetRandomCards(bool isPlayerField)
+    {
+        if (isPlayerField)
+        {
+            var x = playerFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).ToList();
+            if (!x.Any()) { return null; }
+            return x?[Random.Range(0, x.Count())];
+        }
+        else
+        {
+            var x = enemyFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).ToList();
+            if (!x.Any()) { return null; }
+            return x?[Random.Range(0, x.Count())];
+        }
+    }
     public bool CheckCanAttackUnit(CardController attacker, CardController target)
     {
         //ブロックや挑発がされているならをゴリ押し構文で判定する スマートな方法を思いつけなかった…
@@ -262,7 +281,7 @@ public class SkillManager : MonoBehaviour
         }
         return false;
     }
-    public void DealAnySkillByAttack(CardController attacker, CardController target)
+    public void ExecutePierce(CardController attacker, CardController target)
     {
 
         int targetFieldID = target.model.fieldID;
@@ -307,11 +326,34 @@ public class SkillManager : MonoBehaviour
             case 7: { break; }
             //Cerberus
             case 8: { break; }
+            //321
             case 9:
                 {
                     GameManager.instance.GiveCard(h.model.isPlayer, 2);
+                    GameManager.instance.GiveCard(!h.model.isPlayer, 2);
                     break;
                 }
+            //333
+            case 10:
+                {
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) => { if (isPlayerTurn == c.model.isPlayerCard) { c.Heal(1); } };
+                    break;
+                }
+            //323
+            case 11:
+                {
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) => { if (isPlayerTurn == c.model.isPlayerCard) { GetRandomCards(!c.model.isPlayerCard)?.Damage(2); } };
+                    break;
+                }
+            //FireLord
+            case 12:
+                {
+                    GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }).ForEach(i => i.Damage(2));
+                    c.SpecialSkillBeforeDie = () => { GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })
+                        .Where(i => i.model.fieldID != c.model.fieldID).ToList().ForEach(i => i.Damage(2)); };
+                    break;
+                }
+
         }
 
     }

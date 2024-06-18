@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
@@ -22,7 +21,7 @@ public class AttackedHero : MonoBehaviour, IDropHandler
 
             if (SkillManager.instance.CheckCanAttackHero(attacker, target)){
                 //UŒ‚‚·‚é‘¤–Úü‚Ìˆ—
-                GameManager.instance.AttackTohero(attacker, attacker.model.isPlayerCard);
+                GameManager.instance.AttackTohero(attacker);
             }
 
         }

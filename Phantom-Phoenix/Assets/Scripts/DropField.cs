@@ -24,21 +24,26 @@ public class DropField : MonoBehaviour, IDropHandler
         //手札のカードであり、
         //ドラッグ可能であり、
         //fieldに他のカードが置かれていない時　である
-        CardController cardController = eventData.pointerDrag.GetComponent<CardController>();
-        if (cardController == null　|| cardController.model.category == CardEntity.Category.spell 
-            || isPlayerField != cardController.model.isPlayerCard || cardController.model.isFieldCard)
+        CardController cc = eventData.pointerDrag.GetComponent<CardController>();
+        if (cc == null　|| cc.model.category == CardEntity.Category.spell 
+            || isPlayerField != cc.model.isPlayerCard || cc.model.isFieldCard)
         {
             return;
         }
 
-        if (cardController.movement.isDraggable && this.transform.childCount == 0)
+        if (cc.movement.isDraggable && this.transform.childCount == 0)
         {
             //カードをfieldに置く処理
-            cardController.movement.SetDefaultParent(this.transform);
+            cc.movement.SetDefaultParent(this.transform);
             //modelにfieldIDを設定し、fieldに置く時の処理を行う
-            cardController.MoveField(fieldID);
-            cardController.putOnField(isPlayerField);
+            cc.MoveField(fieldID);
+            cc.putOnField(isPlayerField);
+
             
+            if (GameDataManager.instance.isOnlineBattle)
+            {
+                GameManager.instance.SPC(cc);
+            }
         }
         
     }

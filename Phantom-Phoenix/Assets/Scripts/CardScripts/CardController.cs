@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
@@ -23,7 +22,7 @@ public class CardController : Controller
     public void Init(int CardID, bool isPlayer)
     {
         model = new CardModel(CardID, isPlayer);
-        view.Show(model);
+        view.SetCard(model);
         if(model.category == CardEntity.Category.spell)
         {
             SkillManager.instance.specialSkills(this);
@@ -109,11 +108,20 @@ public class CardController : Controller
     {
         model.SetIsFieldID(fieldID);
     }
+    public void Show(bool viewOpenSide)
+    {
+        view.Show(viewOpenSide);
+    }
     public void Damage(int dmg)
     {
         model.Damage(dmg);
         view.ReShow(model);
         CheckAlive();
+    }
+    public void Heal(int hl)
+    {
+        model.Heal(hl);
+        view.ReShow(model);
     }
     public void CheckAlive()
     {
@@ -123,8 +131,12 @@ public class CardController : Controller
         }
         else
         {
+            if (!ExecutedSSBD)
+            {
+                ExecuteSpecialSkillBeforeDie();
+                ExecutedSSBD = true;
+            }  
             Destroy(this.gameObject);
-
         }
     }
     public void Attack<T>(T enemy, bool isAttacker) where T : Controller
@@ -151,6 +163,17 @@ public class CardController : Controller
     public void ExecuteSpecialSkillAfterAttack(bool isAttacker)
     {
         SpecialSkillAfterAttack(isAttacker);
+    }
+    public Action<bool> SpecialSkillEndTurn = new Action<bool>((isPlayerTurn) => { });
+    public void ExecuteSpecialSkillEndTurn(bool isPlayerTurn)
+    {
+        SpecialSkillEndTurn(isPlayerTurn);
+    }
+    private bool ExecutedSSBD = false;
+    public Action SpecialSkillBeforeDie = new Action(() => { });
+    public void ExecuteSpecialSkillBeforeDie()
+    {
+        SpecialSkillBeforeDie();
     }
     public void SetCanAttack(bool canAttack, bool ResetIsActiveDoubleAction)
     {

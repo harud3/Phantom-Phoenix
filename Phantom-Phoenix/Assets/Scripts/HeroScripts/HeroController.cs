@@ -20,7 +20,7 @@ public class HeroController : Controller
     public void Init(int heroID)
     {
         model = new HeroModel(heroID, isPlayer);
-        view.Show(model);
+        view.SetHero(model);
     }
     /// <summary>
     /// å©ÇΩñ⁄ÇÃçƒï\é¶

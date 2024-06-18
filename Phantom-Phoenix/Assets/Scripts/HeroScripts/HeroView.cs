@@ -19,7 +19,7 @@ public class HeroView : MonoBehaviour
     /// 基本的にControllerを通して呼ぶことになる
     /// </summary>
     /// <param name="heroModel"></param>
-    public void Show(HeroModel heroModel)
+    public void SetHero(HeroModel heroModel)
     {
         iconImage.sprite = heroModel.icon;
         //ヒーローHP/MPの表示は、桁位置固定の二桁　よって、二桁目が0の時はImageを見えなくする　ex) HP9 → ×09, 〇 9

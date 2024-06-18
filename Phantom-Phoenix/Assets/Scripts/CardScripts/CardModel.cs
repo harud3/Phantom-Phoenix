@@ -12,6 +12,7 @@ public class CardModel
     public string name {  get; private set; }
     public int cost { get; private set; }
     public int atk { get; private set; }
+    public int maxHP { get; private set; }
     public int hp {  get; private set; }
     
     public CardEntity.Category category{ get; private set; }
@@ -38,7 +39,7 @@ public class CardModel
         name = cardEntity.name;
         cost = cardEntity.cost;
         atk = cardEntity.atk;
-        hp = cardEntity.hp;
+        maxHP = hp = cardEntity.hp;
         category = cardEntity.category;
         spellTarget = cardEntity.spellTarget;
         rarity = cardEntity.rarity;
@@ -65,6 +66,18 @@ public class CardModel
         {
             hp = 0;
             isAlive = false;
+        }
+    }
+    /// <summary>
+    /// ƒJ[ƒh‚ª‰ñ•œ‚ğó‚¯‚½‚Ìˆ—
+    /// </summary>
+    /// <param name="dmg"></param>
+    public void Heal(int hl)
+    {
+        hp += hl;
+        if (hp > maxHP)
+        {
+            hp = maxHP;
         }
     }
     /// <summary>

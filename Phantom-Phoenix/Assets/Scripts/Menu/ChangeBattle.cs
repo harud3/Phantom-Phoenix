@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class ChangeBattle : MonoBehaviour
 {
-    public void ChangeBattleScene()
+    public void ChangeVSAIScene()
     {
+        GameDataManager.instance.isOnlineBattle = false;
         SceneManager.LoadScene("BattleScene");
     }
 }

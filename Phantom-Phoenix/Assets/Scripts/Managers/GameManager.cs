@@ -7,13 +7,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Data;
-using UnityEditor.UIElements;
-using UnityEditor.Experimental.GraphView;
 using static UnityEngine.Rendering.DebugUI;
 using TMPro;
 using static UnityEngine.GraphicsBuffer;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager instance { get; private set; }
     private void Awake()
@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     #region 初期設定
     void Start()
     {
+        if (GameDataManager.instance.isOnlineBattle) { Debug.Log("これはAIではりあｍせん"); }
         StartGame();
     }
     void StartGame()
@@ -154,6 +155,15 @@ public class GameManager : MonoBehaviour
     #region　ターン制御
     public void ChangeTurn()
     {
+        if (isPlayerTurn) {
+            playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
+            enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
+        }
+        else {
+            enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
+            playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
+        }
+
         isPlayerTurn = !isPlayerTurn;
         if (isPlayerTurn)
         {
@@ -169,11 +179,20 @@ public class GameManager : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(CountDown());
-        if (isPlayerTurn) {
+        if (isPlayerTurn)
+        {
             PlayerTurn();
         }
-        else {
-            StartCoroutine(EnemyTurn());
+        else
+        {
+            if (!GameDataManager.instance.isOnlineBattle)
+            {
+                StartCoroutine(AIEnemyTurn());
+            }
+            else
+            {
+                EnemyTurn();
+            }
         }
     }
     #endregion
@@ -196,7 +215,15 @@ public class GameManager : MonoBehaviour
         SetCanAttackAllFieldUnit(playerFields, true, true);
         SetCanAttackAllFieldUnit(enemyFields, false, false);
     }
-    IEnumerator EnemyTurn()
+    void EnemyTurn()
+    {
+        turnButton.image.sprite = enemyTurnSprite;
+        Debug.Log("相手ターン");
+        enemyHeroController.ResetMP();
+        SetCanAttackAllFieldUnit(playerFields, false, false);
+        SetCanAttackAllFieldUnit(enemyFields, true, true);
+    }
+    IEnumerator AIEnemyTurn()
     {
         
         turnButton.image.sprite = enemyTurnSprite;
@@ -223,6 +250,7 @@ public class GameManager : MonoBehaviour
                         yield return new WaitForSeconds(0.25f);
                         canPutCard.MoveField(enemyField.GetComponent<DropField>().fieldID);
                         canPutCard.putOnField(false);
+                        canPutCard.Show(true);
                         yield return new WaitForSeconds(0.75f);
                         break;
                     }
@@ -247,7 +275,7 @@ public class GameManager : MonoBehaviour
                         StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerField));
                         yield return new WaitForSeconds(1f);
                         CardsBattle(canAttackFieldEnemyCard, pcc);
-                        SkillManager.instance.DealAnySkillByAttack(canAttackFieldEnemyCard, pcc);
+                        SkillManager.instance.ExecutePierce(canAttackFieldEnemyCard, pcc);
                         yield return null;
                         break;
                     }
@@ -265,7 +293,7 @@ public class GameManager : MonoBehaviour
 
                 StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerHeroController.transform));
                 yield return new WaitForSeconds(1f);
-                AttackTohero(canAttackFieldEnemyCard, false);
+                AttackTohero(canAttackFieldEnemyCard);
                 yield return null;
             }
         }
@@ -290,9 +318,9 @@ public class GameManager : MonoBehaviour
         attacker.CheckAlive();
         target.CheckAlive();
     }
-    public void AttackTohero(CardController attacker, bool isPlayerCard)
+    public void AttackTohero(CardController attacker)
     {
-        if (isPlayerCard) {
+        if (attacker.model.isPlayerCard) {
             attacker.Attack(enemyHeroController, true);
             //勝利判定も
             if (!enemyHeroController.model.isAlive) { 
@@ -340,4 +368,15 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MenuScene");
     }
     #endregion
+
+    public void SPC(CardController cc)
+    {
+        photonView.RPC(nameof(RSM), RpcTarget.All, cc.model.fieldID);
+    }
+    [PunRPC]
+    void RSM(int fieldID)
+    {
+        Debug.Log(fieldID);
+    }
+
 }

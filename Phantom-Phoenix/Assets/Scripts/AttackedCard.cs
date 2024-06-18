@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
@@ -20,7 +19,7 @@ public class AttackedCard : MonoBehaviour, IDropHandler
             {
                 //äJêÌÇÃãV
                 GameManager.instance.CardsBattle(attacker, target);
-                SkillManager.instance.DealAnySkillByAttack(attacker, target);
+                SkillManager.instance.ExecutePierce(attacker, target);
             }
 
             

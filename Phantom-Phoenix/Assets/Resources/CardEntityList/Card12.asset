@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
+  m_Name: Card12
+  m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: 630579ebf304e8443ba16e34ab09ca39, type: 3}
+  name: FireLord
+  cost: 3
+  atk: 1
+  hp: 2
+  category: 0
+  rarity: 2
+  skill1: 2
+  skill2: 0
+  skill3: 0
+  cardText: "\u3010\u53EC\u559A\u6642&\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306B\\n2\u30C0\u30E1\u30FC\u30B8"
+  spellTarget: 0

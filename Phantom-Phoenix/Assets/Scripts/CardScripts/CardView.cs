@@ -10,6 +10,8 @@ public class CardView : MonoBehaviour
 {
     [SerializeField] Image iconImage;
     [SerializeField] Image frameImage;
+    [SerializeField] Image backFrameImage;
+    [SerializeField] Image backCost;
     [SerializeField] TextMeshProUGUI costText;
     [SerializeField] Image backATK;
     [SerializeField] TextMeshProUGUI atkText;
@@ -22,10 +24,14 @@ public class CardView : MonoBehaviour
     /// 基本的にControllerを通して呼ぶことになる
     /// </summary>
     /// <param name="cardModel"></param>
-    public void Show(CardModel cardModel)
+    public void SetCard(CardModel cardModel)
     {
         iconImage.sprite = cardModel.icon;
         frameImage.sprite = Resources.Load<Sprite>($"Frames/{cardModel.category}{cardModel.rarity}");
+        if (!cardModel.isPlayerCard)
+        {
+            Show(false);
+        }
         if(cardModel.category == CardEntity.Category.spell)
         {
             backATK.gameObject.SetActive(false);
@@ -43,6 +49,14 @@ public class CardView : MonoBehaviour
     public void HideCost(bool isActive)
     {
         costText.transform.parent.gameObject.SetActive(isActive);
+    }
+    public void Show(bool viewOpenSide)
+    {
+        backFrameImage.gameObject.SetActive(!viewOpenSide);
+        frameImage.gameObject.SetActive(viewOpenSide);
+        backCost.gameObject.SetActive(viewOpenSide);
+        backATK.gameObject.SetActive(viewOpenSide);
+        backHP.gameObject.SetActive(viewOpenSide);
     }
     /// <summary>
     /// 基本的にControllerを通して呼ぶことになる
