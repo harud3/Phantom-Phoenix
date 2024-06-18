@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.Rendering.Universal;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class CardController : Controller
 {
@@ -21,6 +24,60 @@ public class CardController : Controller
     {
         model = new CardModel(CardID, isPlayer);
         view.Show(model);
+        if(model.category == CardEntity.Category.spell)
+        {
+            SkillManager.instance.specialSkills(this);
+        }
+    }
+    public Action<CardController> ccSpellContents = new Action<CardController>((target) => { });
+    public Action<HeroController> hcSpellContents = new Action<HeroController>((target) => { });
+    public Action SpellContents = new Action(() => { });
+    public void ExecuteSpellContents<T>(T target)where T : Controller
+    {
+        CardController tc = target as CardController;
+        HeroController th = target as HeroController;
+        void Execute(Action ac)
+        {
+            GameManager.instance.ReduceMP(model.cost, model.isPlayerCard);
+            ac();
+            Destroy(this.gameObject); 
+        }
+
+        switch (model.spellTarget)
+        {
+            case CardEntity.SpellTarget.none: 
+                return;
+            case CardEntity.SpellTarget.unit:
+            case CardEntity.SpellTarget.selectionArea:
+                if (tc != null) { Execute(() => ccSpellContents(tc)); }
+                return;
+            case CardEntity.SpellTarget.enemyUnit:
+            case CardEntity.SpellTarget.selectionEnemyArea:
+                if (tc != null && tc.model.isPlayerCard != model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
+                return;
+            case CardEntity.SpellTarget.playerUnit:
+            case CardEntity.SpellTarget.selectionPlayerArea:
+                if (tc != null && tc.model.isPlayerCard == model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
+                return;
+            case CardEntity.SpellTarget.hero:
+                if(th != null) { Execute(() => hcSpellContents(th)); }
+                return;
+            case CardEntity.SpellTarget.unitOrHero:
+                if (tc != null) { Execute(() => ccSpellContents(tc)); }
+                else if (th != null) { Execute(() => hcSpellContents(th)); }
+                return;
+            case CardEntity.SpellTarget.enemy:
+                if (tc != null && tc.model.isPlayerCard != model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
+                else if (th != null && th.model.isPlayer != model.isPlayerCard) { Execute(() => hcSpellContents(th)); }
+                return;
+            case CardEntity.SpellTarget.player:
+                if (tc != null && tc.model.isPlayerCard == model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
+                else if (th != null && th.model.isPlayer == model.isPlayerCard) { Execute(() => hcSpellContents(th)); }
+                return;
+            case CardEntity.SpellTarget.area:
+                Execute(() => SpellContents());
+                return;
+        }
     }
     public void putOnField(bool isPlayerField)
     {
@@ -75,6 +132,8 @@ public class CardController : Controller
         ExecuteSpecialSkillBeforeAttack(isAttacker);
         model.Attack(enemy);
         ExecuteSpecialSkillAfterAttack(isAttacker);
+        if (!model.isAlive) { return; }
+        //òAåÇópÇÃì¡éÍèàóù
         if (SkillManager.instance.isActiveDoubleAction(model))
         {
             SetCanAttack(true, false);

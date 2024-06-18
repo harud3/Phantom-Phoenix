@@ -11,7 +11,9 @@ public class CardView : MonoBehaviour
     [SerializeField] Image iconImage;
     [SerializeField] Image frameImage;
     [SerializeField] TextMeshProUGUI costText;
+    [SerializeField] Image backATK;
     [SerializeField] TextMeshProUGUI atkText;
+    [SerializeField] Image backHP;
     [SerializeField] TextMeshProUGUI hpText;
     [SerializeField] TextMeshProUGUI cardText;
     [SerializeField] GameObject selectablePanel;
@@ -23,7 +25,12 @@ public class CardView : MonoBehaviour
     public void Show(CardModel cardModel)
     {
         iconImage.sprite = cardModel.icon;
-        frameImage.sprite = Resources.Load<Sprite>($"Frames/{cardModel.categoryRarity}");
+        frameImage.sprite = Resources.Load<Sprite>($"Frames/{cardModel.category}{cardModel.rarity}");
+        if(cardModel.category == CardEntity.Category.spell)
+        {
+            backATK.gameObject.SetActive(false);
+            backHP.gameObject.SetActive(false);
+        }
         atkText.text = cardModel.atk.ToString();
         hpText.text = cardModel.hp.ToString();
         costText.text = cardModel.cost.ToString();

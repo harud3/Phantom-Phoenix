@@ -17,8 +17,10 @@ MonoBehaviour:
   cost: 2
   atk: 4
   hp: 1
-  categoryRarity: 2
+  category: 0
+  rarity: 2
   skill1: 1
   skill2: 0
   skill3: 0
   cardText: "\u5373\u6483"
+  spellTarget: 0

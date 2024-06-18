@@ -29,6 +29,9 @@ public class HeroModel
         hp = heroEntity.hp;
         atk = 0;
         mp =  maxMP = 0;
+#if UNITY_EDITOR
+        maxMP = 9;
+#endif
         icon = heroEntity.icon;
         this.isPlayer = isPlayer;
         isAlive = true;

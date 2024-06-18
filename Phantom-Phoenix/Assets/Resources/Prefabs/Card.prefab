@@ -165,6 +165,7 @@ GameObject:
   - component: {fileID: 3922260373383917843}
   - component: {fileID: -3867321993498982119}
   - component: {fileID: 3611251797230058613}
+  - component: {fileID: 7440891501404676887}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -233,7 +234,9 @@ MonoBehaviour:
   iconImage: {fileID: 6809076558420923766}
   frameImage: {fileID: 3194769564570123980}
   costText: {fileID: 9005062849205849030}
+  backATK: {fileID: 1202177780393916950}
   atkText: {fileID: 3209119379820024908}
+  backHP: {fileID: 4746704382920921764}
   hpText: {fileID: 582673717202071759}
   cardText: {fileID: 1918496475515222403}
   selectablePanel: {fileID: 58156062978928197}
@@ -272,6 +275,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9857d0f6419bc4642aabc0cbd642df34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7440891501404676887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854901134093147063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbcd8e17d7ccbf640aba33bc9ec7971d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2869302295383925630

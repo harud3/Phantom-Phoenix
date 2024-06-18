@@ -19,7 +19,7 @@ public class SkillManager : MonoBehaviour
     #region カード性能
     public bool isFast(CardModel model)
     {
-        if (model.skill1 == CardEntity.skill.fast || model.skill2 == CardEntity.skill.fast || model.skill3 == CardEntity.skill.fast)
+        if (model.skill1 == CardEntity.Skill.fast || model.skill2 == CardEntity.Skill.fast || model.skill3 == CardEntity.Skill.fast)
         {
             return true;
         }
@@ -27,7 +27,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool isTaunt(CardModel model, bool isPlayerField)
     {
-        if (model.skill1 == CardEntity.skill.taunt || model.skill2 == CardEntity.skill.taunt || model.skill3 == CardEntity.skill.taunt)
+        if (model.skill1 == CardEntity.Skill.taunt || model.skill2 == CardEntity.Skill.taunt || model.skill3 == CardEntity.Skill.taunt)
         {
             if (!isPlayerField && (model.fieldID == 7 || model.fieldID == 8 || model.fieldID == 9)
                 || (isPlayerField && (model.fieldID == 1 || model.fieldID == 2 || model.fieldID == 3))
@@ -40,7 +40,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool isSnipe(CardModel model)
     {
-        if (model.skill1 == CardEntity.skill.snipe || model.skill2 == CardEntity.skill.snipe || model.skill3 == CardEntity.skill.snipe)
+        if (model.skill1 == CardEntity.Skill.snipe || model.skill2 == CardEntity.Skill.snipe || model.skill3 == CardEntity.Skill.snipe)
         {
             return true;
         }
@@ -48,7 +48,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool isPierce(CardModel model)
     {
-        if (model.skill1 == CardEntity.skill.pierce || model.skill2 == CardEntity.skill.pierce || model.skill3 == CardEntity.skill.pierce)
+        if (model.skill1 == CardEntity.Skill.pierce || model.skill2 == CardEntity.Skill.pierce || model.skill3 == CardEntity.Skill.pierce)
         {
             return true;
         }
@@ -64,7 +64,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool isDoubleAction(CardModel model)
     {
-        if (model.skill1 == CardEntity.skill.doubleAction || model.skill2 == CardEntity.skill.doubleAction || model.skill3 == CardEntity.skill.doubleAction)
+        if (model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction)
         {
             return true;
         }
@@ -73,27 +73,69 @@ public class SkillManager : MonoBehaviour
     #endregion
     #region 盤面取得
     /// <summary>
-    /// FieldIDは1～12 1～6がplayer 7～12がenemy
+    /// fieldIDは1～12 1～6がplayer 7～12がenemy
     /// </summary>
-    /// <param name="FieldID"></param>
+    /// <param name="fieldID"></param>
     /// <returns></returns>
-    private CardController GetCardbyFieldID(int FieldID)
+    private CardController GetCardByFieldID(int fieldID)
     {
-        if (1 <= FieldID && FieldID <= 6)
+        if (1 <= fieldID && fieldID <= 6)
         {
-            if (playerFields[FieldID - 1].childCount != 0)
+            if (playerFields[fieldID - 1].childCount != 0)
             {
-                return playerFields[FieldID - 1].GetComponentInChildren<CardController>(); ;
+                return playerFields[fieldID - 1].GetComponentInChildren<CardController>(); ;
             }
         }
-        else if (FieldID <= 12)
+        else if (fieldID <= 12)
         {
-            if (enemyFields[FieldID - 7].childCount != 0)
+            if (enemyFields[fieldID - 7].childCount != 0)
             {
-                return enemyFields[FieldID - 7].GetComponentInChildren<CardController>(); ;
+                return enemyFields[fieldID - 7].GetComponentInChildren<CardController>(); ;
             }
         }
         return null;
+    }
+    /// <summary>
+    /// fieldIDは1～12 1～6がplayer 7～12がenemy
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    private List<CardController> GetCardsByFieldID(int[] fieldID)
+    {
+        return fieldID.Select(i => GetCardByFieldID(i)).Where(i => i != null).ToList();
+    }
+    /// <summary>
+    /// fieldIDは1～6を指定する　isPlayerがtrueなら味方カードを　falseなら敵カードを返す つまり、この関数の引数fieldID1～6は、fieldID7～12の性質を併せ持つ
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    private CardController GetCardByIsPlayerAndFieldID(bool isPlayer,int fieldID)
+    {
+        if (isPlayer && 1 <= fieldID && fieldID <= 6)
+        {
+            if (playerFields[fieldID - 1].childCount != 0)
+            {
+                return playerFields[fieldID - 1].GetComponentInChildren<CardController>(); ;
+            }
+        }
+        else if (!isPlayer && 1 <= fieldID && fieldID <= 6)
+        {
+            if (enemyFields[fieldID - 1].childCount != 0)
+            {
+                return enemyFields[fieldID - 1].GetComponentInChildren<CardController>(); ;
+            }
+        }
+        return null;
+    }
+    /// <summary>
+    /// fieldIDは1～6を指定する　isPlayerがtrueなら味方カードを　falseなら敵カードを返す つまり、この関数の引数fieldID1～6は、fieldID7～12の性質を併せ持つ
+    /// </summary>
+    /// <param name="iPfID"></param>
+    /// <returns></returns>
+    private List<CardController> GetCardsByIsPlayerAndFieldID((bool isPlayer, int fieldID)[] iPfID)
+    {
+        return iPfID.Select(i => GetCardByIsPlayerAndFieldID(i.isPlayer, i.fieldID)).Where(i => i != null).ToList();
     }
     public bool CheckCanAttackUnit(CardController attacker, CardController target)
     {
@@ -184,17 +226,17 @@ public class SkillManager : MonoBehaviour
         {
             //ブロック
             //cardがnull以外なら、すぐ前にユニットがいるためブロックが成立している
-            if ((thisFieldID == 4 && GetCardbyFieldID(1) != null)
-                || (thisFieldID == 5 && GetCardbyFieldID(2) != null)
-                || (thisFieldID == 6 && GetCardbyFieldID(3) != null)
+            if ((thisFieldID == 4 && GetCardByFieldID(1) != null)
+                || (thisFieldID == 5 && GetCardByFieldID(2) != null)
+                || (thisFieldID == 6 && GetCardByFieldID(3) != null)
                 ) { return true; }
         }
         else
         {
             //ブロック
-            if ((thisFieldID == 10 && GetCardbyFieldID(7) != null)
-                || (thisFieldID == 11 && GetCardbyFieldID(8) != null)
-                || (thisFieldID == 12 && GetCardbyFieldID(9) != null)
+            if ((thisFieldID == 10 && GetCardByFieldID(7) != null)
+                || (thisFieldID == 11 && GetCardByFieldID(8) != null)
+                || (thisFieldID == 12 && GetCardByFieldID(9) != null)
                 ) { return true; }
         }
 
@@ -203,17 +245,17 @@ public class SkillManager : MonoBehaviour
     public bool isWall(bool isPlayerField)
     {
         if (isPlayerField
-            && (GetCardbyFieldID(1) != null || GetCardbyFieldID(4) != null)
-            && (GetCardbyFieldID(2) != null || GetCardbyFieldID(5) != null)
-            && (GetCardbyFieldID(3) != null || GetCardbyFieldID(6) != null)
+            && (GetCardByFieldID(1) != null || GetCardByFieldID(4) != null)
+            && (GetCardByFieldID(2) != null || GetCardByFieldID(5) != null)
+            && (GetCardByFieldID(3) != null || GetCardByFieldID(6) != null)
             )
         {
             return true;
         }
         else if (!isPlayerField
-            && (GetCardbyFieldID(7) != null || GetCardbyFieldID(10) != null)
-            && (GetCardbyFieldID(8) != null || GetCardbyFieldID(11) != null)
-            && (GetCardbyFieldID(9) != null || GetCardbyFieldID(12) != null)
+            && (GetCardByFieldID(7) != null || GetCardByFieldID(10) != null)
+            && (GetCardByFieldID(8) != null || GetCardByFieldID(11) != null)
+            && (GetCardByFieldID(9) != null || GetCardByFieldID(12) != null)
             )
         {
             return true;
@@ -229,36 +271,48 @@ public class SkillManager : MonoBehaviour
                 (1 <= targetFieldID &&  targetFieldID <= 3) 
                 || (7 <= targetFieldID && targetFieldID <= 9 ) 
             )
-            ) { GetCardbyFieldID(target.model.fieldID + 3)?.Damage(attacker.model.atk); }
+            ) { GetCardByFieldID(target.model.fieldID + 3)?.Damage(attacker.model.atk); }
     }
     #endregion
-    public void specialSkills(CardController cc)
+    public void specialSkills(CardController c)
     {
-        HeroController hero = cc.model.isPlayerCard ? playerHeroController : enemyHeroController;
-        switch (cc.model.cardID)
+        HeroController h = c.model.isPlayerCard ? playerHeroController : enemyHeroController;
+        switch (c.model.cardID)
         {
-            case 1:
-                {
-                    break;
-                }
-            case 2:
-                {
-                    break;
-                }
-            case 3:
-                {
-                    break;
-                }
-            case 4:
-                {
-                    //cc.SpecialSkillAfterAttack = (isAttacker) => { if (isAttacker) { hero.ChangeMaxMP(-1); } };
-                    break;
-                }
+            ///fire
+            //case 10:
+            //    {
+            //        c.hcSpellContents = (HeroController hc) => { hc.Damage(3); };
+            //        c.ccSpellContents = (CardController cc) => { cc.Damage(3); };
+            //        break;
+            //    }
+
+            //122
+            case 1: { break; }
+            //103
+            case 2: { break; }
+            //121
+            case 3: { break; }
+            //Dwarf
+            case 4: { break; }
+            //Behemoth
             case 5:
                 {
-                    hero.ChangeMaxMP(-1);
+                    h.ChangeMaxMP(-1);
+                    break;
+                }
+            //223
+            case 6: { break; }
+            //232
+            case 7: { break; }
+            //Cerberus
+            case 8: { break; }
+            case 9:
+                {
+                    GameManager.instance.GiveCard(h.model.isPlayer, 2);
                     break;
                 }
         }
+
     }
 }

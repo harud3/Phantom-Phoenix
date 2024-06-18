@@ -15,6 +15,12 @@ public class DeckModel
     {
         useHeroID = deckEntity.useHeroID;
         deck = deckEntity.deck.OrderBy(i => Guid.NewGuid()).ToList();
+#if UNITY_EDITOR
+        deck = deckEntity.deck.ToList();
+#endif
+        string str = "";
+        deck.ForEach(i => str += $"{i.ToString()},");
+        Debug.Log(str);
         return this;
     }
 }

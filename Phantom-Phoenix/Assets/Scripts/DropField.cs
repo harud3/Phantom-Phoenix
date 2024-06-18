@@ -19,12 +19,14 @@ public class DropField : MonoBehaviour, IDropHandler
 
         //fieldに置ける条件は、
         //cardConrollerがあり、
+        //unitで、
         //playerのもの同士かenemyのもの同士であり、
         //手札のカードであり、
         //ドラッグ可能であり、
         //fieldに他のカードが置かれていない時　である
         CardController cardController = eventData.pointerDrag.GetComponent<CardController>();
-        if (cardController == null　|| isPlayerField != cardController.model.isPlayerCard || cardController.model.isFieldCard)
+        if (cardController == null　|| cardController.model.category == CardEntity.Category.spell 
+            || isPlayerField != cardController.model.isPlayerCard || cardController.model.isFieldCard)
         {
             return;
         }

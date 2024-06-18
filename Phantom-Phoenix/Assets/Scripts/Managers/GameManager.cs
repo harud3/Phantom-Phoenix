@@ -99,12 +99,35 @@ public class GameManager : MonoBehaviour
     #endregion
     #region カード生成
     /// <summary>
+    /// 外部からの呼び出し用
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <param name="drawCount"></param>
+    public void GiveCard(bool isPlayer, int drawCount)
+    {
+        if (isPlayer)
+        {
+            for (int i = 0; i < drawCount; i++)
+            {
+                GiveCardToHand(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer);
+            }
+        }
+
+        else
+        {
+            for (int i = 0; i < drawCount; i++)
+            {
+                GiveCardToHand(enemyDeck.deck, enemyHandTransform, enemyHeroController.model.isPlayer);
+            }
+        }
+    }
+    /// <summary>
     /// デッキから手札にカードを配る
     /// </summary>
     /// <param name="deck"></param>
     /// <param name="hand"></param>
     /// <param name="isPlayer"></param>
-    void GiveCardToHand(List<int> deck,Transform hand, bool isPlayer)
+    private void GiveCardToHand(List<int> deck,Transform hand, bool isPlayer)
     {
         if (deck.Count == 0) //TODO:デッキがないなら戻る　ドローごとに1ダメージ→2ダメージ→3ダメージ...にする
         {
@@ -217,20 +240,25 @@ public class GameManager : MonoBehaviour
             {
                 if (playerField.childCount != 0)
                 {
-                    if( playerField.GetComponentInChildren<CardController>() is var pcc && pcc.model.isAlive)
+                    if (playerField.GetComponentInChildren<CardController>() is var pcc && pcc.model.isAlive)
                     {
-                        if(!SkillManager.instance.CheckCanAttackUnit(canAttackFieldEnemyCard, pcc)) { continue; }
+                        if (!SkillManager.instance.CheckCanAttackUnit(canAttackFieldEnemyCard, pcc)) { continue; }
 
                         StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerField));
                         yield return new WaitForSeconds(1f);
-                        CardsBattle(canAttackFieldEnemyCard,pcc);
+                        CardsBattle(canAttackFieldEnemyCard, pcc);
                         SkillManager.instance.DealAnySkillByAttack(canAttackFieldEnemyCard, pcc);
                         yield return null;
                         break;
                     }
-                    
+
                 }
             }
+        }
+        canAttackFieldEnemyCards
+            = enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.canAttack);
+        foreach (var canAttackFieldEnemyCard in canAttackFieldEnemyCards)
+        { 
             if (canAttackFieldEnemyCard.model.canAttack && playerHeroController.model.isAlive)
             {
                 if (!SkillManager.instance.CheckCanAttackHero(canAttackFieldEnemyCard ,playerHeroController)) { continue; }
