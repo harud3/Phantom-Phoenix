@@ -70,8 +70,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
             SendSetIsPlayerTurn(isPlayerTurn);
+
+            int seed = int.Parse(DateTime.Now.ToString("ddHHmmss"));
+            UnityEngine.Random.InitState(seed);
+            SendSetSeed(seed);
         }
         SendSetEnemyDeck(playerDeck);
+    }
+    public void SendSetSeed(int seed)
+    {
+        photonView.RPC(nameof(PSetSeed), RpcTarget.Others, seed);
+    }
+    [PunRPC]
+    void PSetSeed(int seed)
+    {
+        UnityEngine.Random.InitState(seed);
     }
     public void SendSetIsPlayerTurn(bool isPlayerTurn)
     {

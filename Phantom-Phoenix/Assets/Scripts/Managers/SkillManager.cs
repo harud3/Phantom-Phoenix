@@ -143,6 +143,7 @@ public class SkillManager : MonoBehaviour
     /// <returns></returns>
     private CardController GetRandomCards(bool isPlayerField)
     {
+
         if (isPlayerField)
         {
             var x = playerFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).ToList();

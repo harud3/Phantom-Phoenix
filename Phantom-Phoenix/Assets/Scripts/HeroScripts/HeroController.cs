@@ -48,7 +48,7 @@ public class HeroController : Controller
     public void ResetMP()
     {
         model.ResetMP();
-        ReShowHP();
+        view.ReShowMP(model);
     }
     public void ReduceMP(int reduce)
     {

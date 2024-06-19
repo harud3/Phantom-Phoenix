@@ -97,7 +97,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 121}
   m_MaxSize: {x: 4000, y: 4021}
   vertical: 0
-  controlID: 1110
+  controlID: 14
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 170
+  controlID: 137
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -144,8 +144,8 @@ MonoBehaviour:
     y: 0
     width: 454
     height: 987
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -253,7 +253,7 @@ MonoBehaviour:
     height: 30
   m_MinSize: {x: 0, y: 0}
   m_MaxSize: {x: 0, y: 0}
-  m_LastLoadedLayoutName: PhotonCheck
+  m_LastLoadedLayoutName: 
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 171
+  controlID: 74
   draggingID: 0
 --- !u!114 &13
 MonoBehaviour:
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 172
+  controlID: 65
   draggingID: 0
 --- !u!114 &14
 MonoBehaviour:
@@ -498,7 +498,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/HeroScripts
+    - Assets/Scripts/Managers
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -506,16 +506,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/HeroScripts
+  - Assets/Scripts/Managers
   m_LastFoldersGridSize: -1
   m_LastProjectPath: "C:\\Unity\u6210\u679C\u7269\\Phantom-Phoenix\\Phantom-Phoenix"
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 325}
-    m_SelectedIDs: cc6e0000
-    m_LastClickedID: 28364
-    m_ExpandedIDs: 00000000a66c0000a86c0000aa6c0000ac6c0000ae6c0000b06c0000b26c0000b46c0000b66c0000b06e000000ca9a3bffffff7f
+    m_SelectedIDs: bc6e0000
+    m_LastClickedID: 28348
+    m_ExpandedIDs: 000000009a6c00009c6c00009e6c0000a06c0000a26c0000a46c0000a66c0000a86c0000aa6c000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -543,7 +543,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000a66c0000a86c0000aa6c0000ac6c0000ae6c0000b06c0000b26c0000b46c0000b66c0000
+    m_ExpandedIDs: 000000009a6c00009c6c00009e6c0000a06c0000a26c0000a46c0000a66c0000a86c0000aa6c0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -687,7 +687,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: b0a3fbff5eabfbff12acfbff4aaffbff4eb0fbff70b0fbff9ac3fbff9cc3fbff72d1fbff76d1fbff52d4fbff4c7dfcff047efcff3881fcff3882fcff5482fcff92a9fcff4aaafcff86adfcff8eaefcffb2aefcff023cfdff7ec2fdff36c3fdff6ac6fdff6ac7fdff86c7fdffdcdffdff90e0fdffc4e3fdffc4e4fdffe0e4fdffde1ffeffae29feff662afeffa22dfeffaa2efeffce2efeff1640feffde49feff924afeffe44dfeff024ffeff3c4ffeffe45afeffe06cfefff876feff3c88feffcc93feff8894feffda97fefff898feff3499fefffeb2feff94c2feff4ac3feff7ec6feff7ec7feff9ac7feff2c41ffffe241ffff1a45ffff1e46ffff3e46ffff2e53ffffe05bffff58daffffb2eaffff6aebffffa6eeffffaeefffffd2efffff28fbfffff4ffffffbc850000f286000002d1000022d100002cd10000c0e70000d6e70000f2e800004aea00008aeb000094eb0000e8fc00007c260100
+      m_ExpandedIDs: d0edffff88eeffffbcf1ffffbcf2ffffd8f2ffff28fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
