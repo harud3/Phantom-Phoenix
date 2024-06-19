@@ -193,7 +193,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました");  return; }
         //CardController card = Instantiate(cardPrefab, hand, false);
         var x = PhotonNetwork.Instantiate("Card", new Vector3(0, 0, 0), Quaternion.identity);
-        x.transform.parent = hand;
+        x.transform.SetParent(hand);
         CardController card = x.GetComponent<CardController>();
         
         card.Init(cardID, isPlayer);
@@ -287,8 +287,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartCoroutine(cc.movement.MoveToField(enemyFields[fieldID - 1]));
         yield return new WaitForSeconds(0.25f);
         cc.MoveField(fieldID + 6); //PlayerFieldとして入力されてきている　よって、+6してやればEnemyFieldになる
-        cc.putOnField(false);
         cc.Show(true);
+        cc.putOnField(false);
         yield return new WaitForSeconds(0.75f);
     }
     IEnumerator AIEnemyTurn()
@@ -455,6 +455,21 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     #endregion
     #region resultとメニューへの遷移
+    public void Concede(bool isPlayerConcede)
+    {
+        if (isPlayerConcede) { playerHeroController.model.isConcede(); }
+        else { enemyHeroController.model.isConcede(); }
+        ViewResultPanel();
+    }
+    public void SendConcede()
+    {
+        photonView.RPC(nameof(PSendConcede), RpcTarget.Others);
+    }
+    [PunRPC]
+    public void PSendConcede()
+    {
+        Concede(false); //相手がコンシした時に呼ばれるのでfalse固定
+    }
     private void ViewResultPanel()
     {
         resultPanel.SetActive(true);
@@ -466,7 +481,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     private void ChangeMenuScene()
     {
+        if (PhotonNetwork.IsConnected) { PhotonNetwork.LeaveRoom(); PhotonNetwork.Disconnect(); }
         SceneManager.LoadScene("MenuScene");
+    }
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (PhotonNetwork.IsConnected) { PhotonNetwork.LeaveRoom(); PhotonNetwork.Disconnect(); }
     }
     #endregion
 }

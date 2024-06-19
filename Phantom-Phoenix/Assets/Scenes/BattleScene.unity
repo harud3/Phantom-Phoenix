@@ -876,7 +876,7 @@ GameObject:
   - component: {fileID: 305668704}
   - component: {fileID: 305668707}
   m_Layer: 5
-  m_Name: TurnButton
+  m_Name: ButtonTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1173,8 +1173,8 @@ RectTransform:
   - {fileID: 1371586486}
   - {fileID: 1489626060}
   - {fileID: 305668703}
-  - {fileID: 866599087}
   - {fileID: 1137974617}
+  - {fileID: 866599087}
   - {fileID: 852394397}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.056}
@@ -1385,10 +1385,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: to TITLE
+  m_text: "\u3042\u304D\u3089\u3081\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f0b1832830c78524481dabf7daa9b4ab, type: 2}
+  m_sharedMaterial: {fileID: 3557035888967455334, guid: f0b1832830c78524481dabf7daa9b4ab,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2290,7 +2291,7 @@ GameObject:
   - component: {fileID: 852394399}
   - component: {fileID: 852394398}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ButtonConcede
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2313,8 +2314,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -813, y: 461}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: -343, y: 462}
+  m_SizeDelta: {x: 160, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &852394398
 MonoBehaviour:
@@ -2328,6 +2329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13347cd54aee5984393720211c5b3a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  button: {fileID: 852394399}
 --- !u!114 &852394399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6051,7 +6053,7 @@ MonoBehaviour:
   playerTurnSprite: {fileID: 21300000, guid: f33fb07f71c9cde4f9b266e5507fc02c, type: 3}
   enemyTurnSprite: {fileID: 21300000, guid: dfda8870bd4efba45b4c29399b410a31, type: 3}
   timeCountText: {fileID: 1137974619}
-  timeLimit: 30
+  timeLimit: 99
   resultPanel: {fileID: 866599086}
   resultImage: {fileID: 914853796}
 --- !u!4 &2118492113

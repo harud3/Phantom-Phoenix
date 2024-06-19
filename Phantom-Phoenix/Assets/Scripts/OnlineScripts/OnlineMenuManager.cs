@@ -27,6 +27,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default); //TODO:人数直す
         GameDataManager.instance.isMaster = true;
+        SceneManager.LoadScene("OnlineScene");
     }
 
     //部屋が2人ならシーンを変える

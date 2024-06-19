@@ -50,6 +50,10 @@ public class HeroModel
             isAlive = false;
         }
     }
+    public void isConcede()
+    {
+        isAlive = false;
+    }
     /// <summary>
     /// ターン開始時のMPリセット view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない
     /// </summary>

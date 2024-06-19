@@ -11,7 +11,7 @@ using Photon.Pun;
 public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
-    public Transform recordDefaultParent { get; private set; } //手札から移動→他の位置に動かせず→手札に戻った時に順番が入れ替わらないようにするため、移動前の親を記録
+    public Transform recordDefaultParent { get; private set; } //手札から移動→他の位置に動かさなかった時→手札に戻った時に順番が入れ替わらないようにするため、移動前の親を記録
 
     [NonSerialized]
     public bool isDraggable; //動かせるかどうか
@@ -24,13 +24,13 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!GameManager.instance.isPlayerTurn) { return; } //TODO
+        if (!GameManager.instance.isPlayerTurn) { isDraggable = false;  return; } //TODO
         siblingIndex = transform.GetSiblingIndex();
 
         //手札のカードかつheroのMP > カードのコストなら動かせる
         //fieldのカードで攻撃可能なら動かせる
         CardController cardController = GetComponent<CardController>();
-        if (!cardController.model.isPlayerCard) { return; } //TODO
+        if (!cardController.model.isPlayerCard) { isDraggable = false;  return; }
         if(!cardController.model.isFieldCard && cardController.model.cost <= GameManager.instance.GetHeroMP(cardController.model.isPlayerCard))
         {
             isDraggable = true;
