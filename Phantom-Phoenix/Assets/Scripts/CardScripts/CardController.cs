@@ -112,18 +112,22 @@ public class CardController : Controller
     {
         view.Show(viewOpenSide);
     }
+    public void DamageFromAttack(int dmg) {
+        model.Damage(dmg);
+        view.ReShow(model);
+    }
     public void Damage(int dmg)
     {
         model.Damage(dmg);
         view.ReShow(model);
-        CheckAlive();
+        StartCoroutine(CheckAlive());
     }
     public void Heal(int hl)
     {
         model.Heal(hl);
         view.ReShow(model);
     }
-    public void CheckAlive()
+    public IEnumerator CheckAlive()
     {
         if (model.isAlive)
         {
@@ -131,11 +135,12 @@ public class CardController : Controller
         }
         else
         {
+            yield return null;
             if (!ExecutedSSBD)
             {
                 ExecuteSpecialSkillBeforeDie();
                 ExecutedSSBD = true;
-            }  
+            }
             Destroy(this.gameObject);
         }
     }

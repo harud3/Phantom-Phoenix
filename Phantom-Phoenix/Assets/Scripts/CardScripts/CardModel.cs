@@ -87,7 +87,7 @@ public class CardModel
     {
         if (card is CardController cc)
         {
-            cc.Damage(atk);
+            cc.DamageFromAttack(atk);
         }
         else if (card is HeroController hc)
         {

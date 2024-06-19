@@ -6,8 +6,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
 using static UnityEngine.GraphicsBuffer;
+using Photon.Pun;
 
-public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
     public Transform recordDefaultParent { get; private set; } //手札から移動→他の位置に動かせず→手札に戻った時に順番が入れ替わらないようにするため、移動前の親を記録
@@ -75,7 +76,6 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
     public IEnumerator MoveToField(Transform field)
     {
         if(defaultParent is null) { defaultParent = transform.parent; } //EnemyAIが先攻だった時のnullエラー対策
-        Debug.Log($"{defaultParent.name}に移動");
         transform.SetParent(defaultParent.parent);
         transform.DOMove(field.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
@@ -102,8 +102,18 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
     /// DropPlace.csからのdefaultParent変更用
     /// </summary>
     /// <param name="dropPlace"></param>
-    public void SetDefaultParent(Transform dropPlace)
+    public void SetDefaultParent(Transform dropPlace, int fieldID)
     {
         defaultParent = dropPlace;
+        SendMoveField(fieldID);
+    }
+    public void SendMoveField(int fieldID)
+    {
+        photonView.RPC(nameof(MoveField), RpcTarget.Others, fieldID, siblingIndex);
+    }
+    [PunRPC]
+    void MoveField(int fieldID, int handIndex)
+    {
+        StartCoroutine(GameManager.instance.MoveToField(handIndex, fieldID));
     }
 }

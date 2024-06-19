@@ -28,10 +28,7 @@ public class HeroModel
         name = heroEntity.name;
         hp = heroEntity.hp;
         atk = 0;
-        mp =  maxMP = 0;
-#if UNITY_EDITOR
-        maxMP = 9;
-#endif
+        mp =  maxMP = 2; //TODO:íºÇ∑Å@0énÇ‹ÇË
         icon = heroEntity.icon;
         this.isPlayer = isPlayer;
         isAlive = true;

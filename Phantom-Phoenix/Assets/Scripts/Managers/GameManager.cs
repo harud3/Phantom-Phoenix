@@ -44,23 +44,52 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Image resultImage;
 
-    DeckModel playerDeck;
-    DeckModel enemyDeck;
+    DeckModel playerDeck = null;
+    DeckModel enemyDeck = null;
     #region 初期設定
     void Start()
     {
-        if (GameDataManager.instance.isOnlineBattle) { Debug.Log("これはAIではりあｍせん"); }
         StartGame();
+    }
+    bool isWaitBegin = true;
+    private void Update()
+    {
+        if (isWaitBegin && enemyDeck != null)
+        {
+            isWaitBegin = false;
+            SetTime();
+            SettingInitHero();
+            SettingInitHand();
+            TurnCalc();
+        }
     }
     void StartGame()
     {
         playerDeck = new DeckModel().Init(Resources.Load<DeckEntity>($"DeckEntityList/player"));
-        enemyDeck = new DeckModel().Init(Resources.Load<DeckEntity>($"DeckEntityList/enemy"));
-        SetTime();
-        SettingInitHero();
-        SettingInitHand();
-        isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
-        TurnCalc();
+        if (GameDataManager.instance.isMaster)
+        {
+            isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
+            SendSetIsPlayerTurn(isPlayerTurn);
+        }
+        SendSetEnemyDeck(playerDeck);
+    }
+    public void SendSetIsPlayerTurn(bool isPlayerTurn)
+    {
+        photonView.RPC(nameof(PSetIsPlayerTurn), RpcTarget.Others, isPlayerTurn);
+    }
+    [PunRPC]
+    void PSetIsPlayerTurn(bool isPlayerTurn)
+    {
+        this.isPlayerTurn = !isPlayerTurn;
+    }
+    public void SendSetEnemyDeck(DeckModel playerDeck)
+    {
+        photonView.RPC(nameof(PSetEnemyDeck), RpcTarget.Others, playerDeck.useHeroID, playerDeck.deck.ToArray());
+    }
+    [PunRPC]
+    void PSetEnemyDeck(int useheroID, int[] deckIDs)
+    {
+        enemyDeck = new DeckModel().Init(useheroID, deckIDs);
     }
     //ヒーローの設定
     void SettingInitHero()
@@ -95,6 +124,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             timeCount--;
             SetTime();
         }
+        SendChangeTurn();
         ChangeTurn();
     }
     #endregion
@@ -136,6 +166,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         int cardID = deck[0];
         deck.RemoveAt(0);
+        if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); } else { enemyHeroController.ReShowStackCards(deck.Count()); }
         CreateCard(cardID, hand, isPlayer);
     }
     /// <summary>
@@ -147,12 +178,25 @@ public class GameManager : MonoBehaviourPunCallbacks
     void CreateCard(int cardID, Transform hand, bool isPlayer)
     {
         if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました");  return; }
-        CardController card = Instantiate(cardPrefab, hand, false);
+        //CardController card = Instantiate(cardPrefab, hand, false);
+        var x = PhotonNetwork.Instantiate("Card", new Vector3(0, 0, 0), Quaternion.identity);
+        x.transform.parent = hand;
+        CardController card = x.GetComponent<CardController>();
+        
         card.Init(cardID, isPlayer);
     }
     #endregion
 
     #region　ターン制御
+    public void SendChangeTurn()
+    {
+        photonView.RPC(nameof(PChangeTurn), RpcTarget.Others);
+    }
+    [PunRPC]
+    public void PChangeTurn()
+    {
+        ChangeTurn();
+    }
     public void ChangeTurn()
     {
         if (isPlayerTurn) {
@@ -165,6 +209,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         isPlayerTurn = !isPlayerTurn;
+        
         if (isPlayerTurn)
         {
             GiveCardToHand(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer);
@@ -222,6 +267,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         enemyHeroController.ResetMP();
         SetCanAttackAllFieldUnit(playerFields, false, false);
         SetCanAttackAllFieldUnit(enemyFields, true, true);
+    }
+    public IEnumerator MoveToField(int handIndex, int fieldID)
+    {
+        var cc = enemyHandTransform.GetChild(handIndex).GetComponent<CardController>();
+        StartCoroutine(cc.movement.MoveToField(enemyFields[fieldID - 1]));
+        yield return new WaitForSeconds(0.25f);
+        cc.MoveField(fieldID + 6); //PlayerFieldとして入力されてきている　よって、+6してやればEnemyFieldになる
+        cc.putOnField(false);
+        cc.Show(true);
+        yield return new WaitForSeconds(0.75f);
     }
     IEnumerator AIEnemyTurn()
     {
@@ -308,6 +363,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
 
         Debug.Log($"{(isPlayerTurn? "味方ターン" :"相手ターン")} {attacker.model.name}から{target.model.name}に攻撃");
+        SendCardBattle(attacker.model.fieldID, target.model.fieldID);
         
         attacker.Attack(target,true);
         target.Attack(attacker, false);
@@ -315,8 +371,31 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log($"{target.model.name}に{attacker.model.atk}ダメージ {target.model.name}の残りHP{target.model.hp}");
         Debug.Log($"{attacker.model.name}に{target.model.atk}ダメージ {attacker.model.name}の残りHP{attacker.model.hp}");
 
-        attacker.CheckAlive();
-        target.CheckAlive();
+        StartCoroutine(attacker.CheckAlive());
+        StartCoroutine(target.CheckAlive());
+    }
+    public void SendCardBattle(int attackerFieldID, int targetFieldID)
+    {
+        photonView.RPC(nameof(PCardsBattle), RpcTarget.Others, attackerFieldID, targetFieldID);
+    }
+    [PunRPC]
+    public void PCardsBattle(int attackerFieldID, int targetFieldID)
+    {
+        CardsBattle(
+            enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>(),
+            playerFields[ChangeWorldFieldIDToLocalFieldID(targetFieldID) - 1].GetChild(0).GetComponent<CardController>()
+            );
+    }
+    /// <summary>
+    /// ワールドなfieldIDであるfieldID1～12を、ローカルなfieldIDであるfieldID1～6に変換する
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    private int ChangeWorldFieldIDToLocalFieldID(int fieldID)
+    {
+        if (1 <= fieldID && fieldID <= 6){ return fieldID; }
+        else if (fieldID <= 12){ return fieldID - 6; }
+        return 0;//来ないとは思う
     }
     public void AttackTohero(CardController attacker)
     {
@@ -334,6 +413,15 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Invoke("ViewResultPanel", 1f);
             }
         }
+    }
+    public void SendAttackToHero(int attackerFieldID)
+    {
+        photonView.RPC(nameof(PAttackToHero), RpcTarget.Others, attackerFieldID);
+    }
+    [PunRPC]
+    public void PAttackToHero(int attackerFieldID)
+    {
+        AttackTohero(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>());
     }
     #endregion
     #region MP操作
@@ -368,15 +456,4 @@ public class GameManager : MonoBehaviourPunCallbacks
         SceneManager.LoadScene("MenuScene");
     }
     #endregion
-
-    public void SPC(CardController cc)
-    {
-        photonView.RPC(nameof(RSM), RpcTarget.All, cc.model.fieldID);
-    }
-    [PunRPC]
-    void RSM(int fieldID)
-    {
-        Debug.Log(fieldID);
-    }
-
 }

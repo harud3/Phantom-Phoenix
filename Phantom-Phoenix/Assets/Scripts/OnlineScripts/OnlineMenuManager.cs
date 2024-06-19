@@ -17,6 +17,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinRandomRoom();
+        GameDataManager.instance.isMaster = false;
     }
     public override void OnJoinedRoom()
     {
@@ -25,6 +26,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default); //TODO:人数直す
+        GameDataManager.instance.isMaster = true;
     }
 
     //部屋が2人ならシーンを変える

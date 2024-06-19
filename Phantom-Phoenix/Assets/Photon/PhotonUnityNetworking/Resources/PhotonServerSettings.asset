@@ -40,6 +40,17 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - RSM
+  - SetEnemyDeck
+  - SetIsPlayerTurn
+  - MoveField
+  - SendChangeTurn
+  - pSendChangeTurn
+  - AttackTohero
+  - PChangeTurn
+  - PSetEnemyDeck
+  - PSetIsPlayerTurn
+  - PCardsBattle
+  - PAttackToHero
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

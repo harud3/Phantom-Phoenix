@@ -25,9 +25,16 @@ public class HeroController : Controller
     /// <summary>
     /// 見た目の再表示
     /// </summary>
-    private void ReShow()
+    private void ReShowHP()
     {
-        view.ReShow(model);
+        view.ReShowHP(model);
+    }
+    /// <summary>
+    /// デッキ数の再表示
+    /// </summary>
+    public void ReShowStackCards(int deckNum)
+    {
+        view.ReShowStackCards(deckNum);
     }
     /// <summary>
     /// ダメージを受ける
@@ -36,22 +43,22 @@ public class HeroController : Controller
     public void Damage(int atk)
     {
         model.Damage(atk);
-        ReShow();
+        ReShowHP();
     }
     public void ResetMP()
     {
         model.ResetMP();
-        ReShow();
+        ReShowHP();
     }
     public void ReduceMP(int reduce)
     {
         model.ReduceMP(reduce);
-        view.ReShow(model);
+        view.ReShowMP(model);
     }
     public void ChangeMaxMP(int up)
     {
         model.ChangeMaxMP(up);
-        view.ReShow(model);
+        view.ReShowMP(model);
     }
 }
 public class Controller : MonoBehaviour { }

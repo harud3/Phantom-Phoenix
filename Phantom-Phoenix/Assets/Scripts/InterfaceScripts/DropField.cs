@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Photon.Pun;
+using Photon.Realtime;
 
 /// <summary>
 /// カードをfieldにドロップした時の処理
 /// </summary>
-public class DropField : MonoBehaviour, IDropHandler
+public class DropField : MonoBehaviourPunCallbacks, IDropHandler
 {
     [SerializeField]
     private bool isPlayerField; //playerかenemyか　事前にインスペクター上で設定
@@ -34,16 +36,10 @@ public class DropField : MonoBehaviour, IDropHandler
         if (cc.movement.isDraggable && this.transform.childCount == 0)
         {
             //カードをfieldに置く処理
-            cc.movement.SetDefaultParent(this.transform);
+            cc.movement.SetDefaultParent(this.transform, fieldID);
             //modelにfieldIDを設定し、fieldに置く時の処理を行う
             cc.MoveField(fieldID);
             cc.putOnField(isPlayerField);
-
-            
-            if (GameDataManager.instance.isOnlineBattle)
-            {
-                GameManager.instance.SPC(cc);
-            }
         }
         
     }

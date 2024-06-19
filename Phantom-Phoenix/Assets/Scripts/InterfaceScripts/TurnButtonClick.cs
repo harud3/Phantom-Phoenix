@@ -16,7 +16,9 @@ public class TurnButtonClick : MonoBehaviour
         button.onClick.AddListener(() => {
             if (GameManager.instance.isPlayerTurn)
             {
+                GameManager.instance.SendChangeTurn();
                 GameManager.instance.ChangeTurn();
+                
             }
         });
     }
