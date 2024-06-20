@@ -11,16 +11,26 @@ public class DeckModel
 
     [NonSerialized]
     public List<int> deck;
-    public DeckModel Init(DeckEntity deckEntity)
+    public DeckModel Init()
     {
-        useHeroID = deckEntity.useHeroID;
-        deck = deckEntity.deck.OrderBy(i => Guid.NewGuid()).ToList();
+        if (PlayerPrefs.HasKey("PlayerDeckData"))
+        {
+            string json = PlayerPrefs.GetString("PlayerDeckData");
+            DeckData data = JsonUtility.FromJson<DeckData>(json);
+
+            useHeroID = data.useHeroID;
+            deck = data.deck.OrderBy(i => Guid.NewGuid()).ToList();
 #if UNITY_EDITOR
-        deck = deckEntity.deck.ToList();
-        string str = "";
-        deck.ForEach(i => str += $"{i.ToString()},");
-        Debug.Log(str);
+            deck = data.deck.ToList();
+            string str = "";
+            deck.ForEach(i => str += $"{i.ToString()},");
+            Debug.Log(str);
 #endif
+        }
+        else
+        {
+            Debug.Log("PlayerDeckDataÇ™ë∂ç›ÇµÇ‹ÇπÇÒ");
+        }
 
         return this;
     }

@@ -343,7 +343,7 @@ public class SkillManager : MonoBehaviour
             //323
             case 11:
                 {
-                    c.SpecialSkillEndTurn = (bool isPlayerTurn) => { if (isPlayerTurn == c.model.isPlayerCard) { GetRandomCards(!c.model.isPlayerCard)?.Damage(2); } };
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) => { if (isPlayerTurn == c.model.isPlayerCard) { GetRandomCards(!c.model.isPlayerCard)?.Damage(1); } };
                     break;
                 }
             //FireLord

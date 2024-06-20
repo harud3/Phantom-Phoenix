@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     void StartGame()
     {
-        playerDeck = new DeckModel().Init(Resources.Load<DeckEntity>($"DeckEntityList/player"));
+        playerDeck = new DeckModel().Init();
         if (GameDataManager.instance.isMaster)
         {
             isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;

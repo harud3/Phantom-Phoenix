@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OnlineScene.unity
     guid: 6249438f449487d498de16d85aa1b544
+  - enabled: 1
+    path: Assets/Scenes/DeckScene.unity
+    guid: 242535c786d1a844f9c37f23c8809f7d
   m_configObjects: {}

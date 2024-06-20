@@ -9,6 +9,11 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
     bool isMatching = false;
     public void OnMatchingButton()
     {
+        if (!PlayerPrefs.HasKey("PlayerDeckData"))
+        {
+            Debug.Log("PlayerDeckDataが存在しません");
+            return;
+        }
         GameDataManager.instance.isOnlineBattle = true;
         //PhotonServerSettingsの設定内容を使ってマスタサーバへ接続
         PhotonNetwork.ConnectUsingSettings();

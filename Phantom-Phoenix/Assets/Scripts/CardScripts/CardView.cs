@@ -48,7 +48,6 @@ public class CardView : MonoBehaviour
     /// <param name="cardModel"></param>
     public void HideCost(bool isActive)
     {
-        Debug.Log($"‚Ç‚¤‚µ‚Ä{isActive}");
         backCost.gameObject.SetActive(isActive);
     }
     public void Show(bool viewOpenSide)

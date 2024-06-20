@@ -19,7 +19,7 @@ public class CardController : Controller
         movement = GetComponent<CardMovement>();
     }
 
-    public void Init(int CardID, bool isPlayer)
+    public void Init(int CardID, bool isPlayer = true)
     {
         model = new CardModel(CardID, isPlayer);
         view.SetCard(model);
