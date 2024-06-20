@@ -12,7 +12,6 @@ using TMPro;
 using static UnityEngine.GraphicsBuffer;
 using Photon.Pun;
 using Photon.Realtime;
-
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager instance { get; private set; }
@@ -392,8 +391,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         photonView.RPC(nameof(PCardsBattle), RpcTarget.Others, attackerFieldID, targetFieldID);
     }
     [PunRPC]
-    public void PCardsBattle(int attackerFieldID, int targetFieldID)
+    IEnumerator PCardsBattle(int attackerFieldID, int targetFieldID)
     {
+
+        StartCoroutine(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>().movement.MoveToTarget(playerFields[ChangeWorldFieldIDToLocalFieldID(targetFieldID) - 1]));
+        yield return new WaitForSeconds(1f);
         CardsBattle(
             enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>(),
             playerFields[ChangeWorldFieldIDToLocalFieldID(targetFieldID) - 1].GetChild(0).GetComponent<CardController>()
@@ -432,8 +434,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         photonView.RPC(nameof(PAttackToHero), RpcTarget.Others, attackerFieldID);
     }
     [PunRPC]
-    public void PAttackToHero(int attackerFieldID)
+    IEnumerator PAttackToHero(int attackerFieldID)
     {
+        StartCoroutine(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>().movement.MoveToTarget(playerHeroController.transform));
+        yield return new WaitForSeconds(1f);
         AttackTohero(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>());
     }
     #endregion
@@ -486,7 +490,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if (PhotonNetwork.IsConnected) { PhotonNetwork.LeaveRoom(); PhotonNetwork.Disconnect(); }
+
+        if (PhotonNetwork.IsConnected)
+        {
+            Concede(false);
+            PhotonNetwork.LeaveRoom(); PhotonNetwork.Disconnect();
+        }
     }
     #endregion
 }

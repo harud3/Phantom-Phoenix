@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class ToTITLE : MonoBehaviour
+public class ToMenuScene : MonoBehaviour
 {
     [SerializeField]
     Button button;
