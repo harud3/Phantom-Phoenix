@@ -20,7 +20,10 @@ public class AttackedHero : MonoBehaviour, IDropHandler
         {
 
             if (SkillManager.instance.CheckCanAttackHero(attacker, target)){
-                GameManager.instance.SendAttackToHero(attacker.model.fieldID);
+                if (GameDataManager.instance.isOnlineBattle)
+                {
+                    GameManager.instance.SendAttackToHero(attacker.model.fieldID);
+                }
                 //UŒ‚‚·‚é‘¤–Úü‚Ìˆ—
                 GameManager.instance.AttackTohero(attacker);
             }

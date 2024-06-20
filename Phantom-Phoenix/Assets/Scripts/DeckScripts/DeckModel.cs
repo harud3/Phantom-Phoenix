@@ -20,12 +20,6 @@ public class DeckModel
 
             useHeroID = data.useHeroID;
             deck = data.deck.OrderBy(i => Guid.NewGuid()).ToList();
-#if UNITY_EDITOR
-            deck = data.deck.ToList();
-            string str = "";
-            deck.ForEach(i => str += $"{i.ToString()},");
-            Debug.Log(str);
-#endif
         }
         else
         {

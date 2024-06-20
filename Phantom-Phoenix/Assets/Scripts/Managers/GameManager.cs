@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     bool isWaitBegin = true;
     private void Update()
     {
-        if (isWaitBegin && enemyDeck != null)
+        if (GameDataManager.instance.isOnlineBattle && isWaitBegin && enemyDeck != null)
         {
             isWaitBegin = false;
             SetTime();
@@ -65,16 +65,28 @@ public class GameManager : MonoBehaviourPunCallbacks
     void StartGame()
     {
         playerDeck = new DeckModel().Init();
-        if (GameDataManager.instance.isMaster)
+        if (GameDataManager.instance.isOnlineBattle)
         {
-            isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
-            SendSetIsPlayerTurn(isPlayerTurn);
+            if (GameDataManager.instance.isMaster)
+            {
+                isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
+                SendSetIsPlayerTurn(isPlayerTurn);
 
-            int seed = int.Parse(DateTime.Now.ToString("ddHHmmss"));
-            UnityEngine.Random.InitState(seed);
-            SendSetSeed(seed);
+                int seed = int.Parse(DateTime.Now.ToString("ddHHmmss"));
+                UnityEngine.Random.InitState(seed);
+                SendSetSeed(seed);
+            }
+            SendSetEnemyDeck(playerDeck);
         }
-        SendSetEnemyDeck(playerDeck);
+        else
+        {
+            enemyDeck = new DeckModel().Init();
+            isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
+            SetTime();
+            SettingInitHero();
+            SettingInitHand();
+            TurnCalc();
+        }
     }
     public void SendSetSeed(int seed)
     {
@@ -136,7 +148,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             timeCount--;
             SetTime();
         }
-        SendChangeTurn();
+        if (GameDataManager.instance.isOnlineBattle)
+        {
+            SendChangeTurn();
+        }
         ChangeTurn();
     }
     #endregion
@@ -178,7 +193,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         int cardID = deck[0];
         deck.RemoveAt(0);
-        if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); } else { enemyHeroController.ReShowStackCards(deck.Count()); }
+        if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); } 
+        else { enemyHeroController.ReShowStackCards(deck.Count()); }
         CreateCard(cardID, hand, isPlayer);
     }
     /// <summary>
@@ -191,11 +207,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました");  return; }
         //CardController card = Instantiate(cardPrefab, hand, false);
-        var x = PhotonNetwork.Instantiate("Card", new Vector3(0, 0, 0), Quaternion.identity);
-        x.transform.SetParent(hand);
-        CardController card = x.GetComponent<CardController>();
+        if (GameDataManager.instance.isOnlineBattle)
+        {
+            GameObject x = PhotonNetwork.Instantiate("Card", new Vector3(0, 0, 0), Quaternion.identity);
+            x.transform.SetParent(hand);
+            CardController card = x.GetComponent<CardController>();
+            card.Init(cardID, isPlayer);
+        }
+        else
+        {
+            Instantiate(cardPrefab, hand).GetComponent<CardController>().Init(cardID, isPlayer);
+        }
         
-        card.Init(cardID, isPlayer);
     }
     #endregion
 
@@ -340,7 +363,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                         if (!SkillManager.instance.CheckCanAttackUnit(canAttackFieldEnemyCard, pcc)) { continue; }
 
                         StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerField));
-                        yield return new WaitForSeconds(1f);
+                        yield return new WaitForSeconds(1.01f);
                         CardsBattle(canAttackFieldEnemyCard, pcc);
                         SkillManager.instance.ExecutePierce(canAttackFieldEnemyCard, pcc);
                         yield return null;
@@ -375,7 +398,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
 
         Debug.Log($"{(isPlayerTurn? "味方ターン" :"相手ターン")} {attacker.model.name}から{target.model.name}に攻撃");
-        SendCardBattle(attacker.model.fieldID, target.model.fieldID);
         
         attacker.Attack(target,true);
         target.Attack(attacker, false);

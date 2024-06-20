@@ -64,8 +64,14 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     {
         if (!isDraggable) { return; }
         //親を変更 DropPlace.csからdefaultParentが変更されている場合、移動前とは別の親となる　手札→field
-        transform.SetParent(defaultParent, false);
-        if (recordDefaultParent == defaultParent) { transform.SetSiblingIndex(siblingIndex); }
+        
+        if (recordDefaultParent == defaultParent) { 
+            StartCoroutine(MoveToField(defaultParent));
+        }
+        else
+        {
+            transform.SetParent(defaultParent, false);
+        }
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
     /// <summary>
@@ -97,7 +103,14 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         yield return new WaitForSeconds(0.25f);
         transform.SetParent(defaultParent);
     }
-    
+    public IEnumerator MoveToThisField(Transform target)
+    {
+        transform.DOMove(target.position, 0.25f);
+        yield return new WaitForSeconds(0.25f);
+        transform.SetParent(defaultParent, false);
+        transform.SetSiblingIndex(siblingIndex);
+    }
+
     /// <summary>
     /// DropPlace.csからのdefaultParent変更用
     /// </summary>
@@ -105,7 +118,10 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     public void SetDefaultParent(Transform dropPlace, int fieldID)
     {
         defaultParent = dropPlace;
-        SendMoveField(fieldID);
+        if (GameDataManager.instance.isOnlineBattle)
+        {
+            SendMoveField(fieldID);
+        }
     }
     public void SendMoveField(int fieldID)
     {

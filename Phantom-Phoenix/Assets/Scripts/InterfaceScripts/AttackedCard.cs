@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
@@ -17,12 +18,22 @@ public class AttackedCard : MonoBehaviour, IDropHandler
         {
             if (SkillManager.instance.CheckCanAttackUnit(attacker, target))
             {
-                //ŠJí‚Ì‹V
-                GameManager.instance.CardsBattle(attacker, target);
-                SkillManager.instance.ExecutePierce(attacker, target);
+                if (GameDataManager.instance.isOnlineBattle)
+                {
+                    GameManager.instance.SendCardBattle(attacker.model.fieldID, target.model.fieldID);
+                }
+                StartCoroutine(ExecuteCardsBattle(attacker, target));
+                
             }
 
             
         }
+    }
+    IEnumerator  ExecuteCardsBattle(CardController attacker, CardController target)
+    {
+        yield return new WaitForSeconds(0.25f);
+        //ŠJí‚Ì‹V
+        GameManager.instance.CardsBattle(attacker, target);
+        SkillManager.instance.ExecutePierce(attacker, target);
     }
 }

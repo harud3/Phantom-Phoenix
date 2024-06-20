@@ -16,7 +16,10 @@ public class TurnButtonClick : MonoBehaviour
         button.onClick.AddListener(() => {
             if (GameManager.instance.isPlayerTurn)
             {
-                GameManager.instance.SendChangeTurn();
+                if (GameDataManager.instance.isOnlineBattle)
+                {
+                    GameManager.instance.SendChangeTurn();
+                }
                 GameManager.instance.ChangeTurn();
                 
             }

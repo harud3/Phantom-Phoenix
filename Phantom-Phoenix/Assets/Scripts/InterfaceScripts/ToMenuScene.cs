@@ -14,7 +14,10 @@ public class ToMenuScene : MonoBehaviour
     {
         button.onClick.AddListener(() =>
         {
-            GameManager.instance.SendConcede();
+            if (GameDataManager.instance.isOnlineBattle)
+            {
+                GameManager.instance.SendConcede();
+            }
             GameManager.instance.Concede(true);
         });
     }
