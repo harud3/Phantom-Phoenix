@@ -78,13 +78,13 @@ public class CardController : Controller
                 return;
         }
     }
-    public void putOnField(bool isPlayerField)
+    public void putOnField(bool isPlayerField, CardController[] targets = null)
     {
         GameManager.instance.ReduceMP(model.cost, model.isPlayerCard);
         model.SetIsFieldCard(true);
         view.HideCost(false);
 
-        SkillManager.instance.specialSkills(this);
+        SkillManager.instance.specialSkills(this, targets);
 
         if (SkillManager.instance.isFast(model))
         {

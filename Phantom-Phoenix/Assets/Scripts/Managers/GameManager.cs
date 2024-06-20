@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region ‰Šúİ’è
     void Start()
     {
-        StartGame();
+       StartGame();
     }
     bool isWaitBegin = true;
     private void Update()
@@ -303,14 +303,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         SetCanAttackAllFieldUnit(playerFields, false, false);
         SetCanAttackAllFieldUnit(enemyFields, true, true);
     }
-    public IEnumerator MoveToField(int handIndex, int fieldID)
+    public IEnumerator MoveToField(int handIndex, int fieldID, int[] targets = null)
     {
         var cc = enemyHandTransform.GetChild(handIndex).GetComponent<CardController>();
         StartCoroutine(cc.movement.MoveToField(enemyFields[fieldID - 1]));
         yield return new WaitForSeconds(0.25f);
         cc.MoveField(fieldID + 6); //PlayerField‚Æ‚µ‚Ä“ü—Í‚³‚ê‚Ä‚«‚Ä‚¢‚é@‚æ‚Á‚ÄA+6‚µ‚Ä‚â‚ê‚ÎEnemyField‚É‚È‚é
         cc.Show(true);
-        cc.putOnField(false);
+        cc.putOnField(false, targets == null ? null : SkillManager.instance.GetCardsByFieldID(targets).ToArray());
         yield return new WaitForSeconds(0.75f);
     }
     IEnumerator AIEnemyTurn()

@@ -24,9 +24,13 @@ public class DeckSceneDropDeck : MonoBehaviour, IDropHandler
             var cardID = cc.model.cardID;
             int maxCount = rarity == CardEntity.Rarity.SSR ? 1 : 3 ;
             var cardcount = 1;
+#if UNITY_EDITOR
+            maxCount = 30;
+#endif
             foreach (Transform t in this.transform)
             {
                 if (t.gameObject.GetComponent<DeckSceneCardController>().model.cardID == cardID) { cardcount++; }
+
                 if (cardcount > maxCount)
                 {
                     StopAllCoroutines();

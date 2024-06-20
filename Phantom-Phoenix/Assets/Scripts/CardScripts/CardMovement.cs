@@ -30,7 +30,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         //手札のカードかつheroのMP > カードのコストなら動かせる
         //fieldのカードで攻撃可能なら動かせる
         CardController cardController = GetComponent<CardController>();
-        if (!cardController.model.isPlayerCard) { isDraggable = false;  return; }
+        if (!cardController.model.isPlayerCard) { Debug.Log("koko"); isDraggable = false;  return; }
         if(!cardController.model.isFieldCard && cardController.model.cost <= GameManager.instance.GetHeroMP(cardController.model.isPlayerCard))
         {
             isDraggable = true;
@@ -87,6 +87,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         yield return new WaitForSeconds(0.25f);
         defaultParent = field;
         transform.SetParent(defaultParent);
+        transform.SetSiblingIndex(siblingIndex);
     }
     /// <summary>
     /// enemyAi関係の処理
@@ -115,21 +116,21 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     /// DropPlace.csからのdefaultParent変更用
     /// </summary>
     /// <param name="dropPlace"></param>
-    public void SetDefaultParent(Transform dropPlace, int fieldID)
+    public void SetDefaultParent(Transform dropPlace, int fieldID, int[] targets = null)
     {
         defaultParent = dropPlace;
         if (GameDataManager.instance.isOnlineBattle)
         {
-            SendMoveField(fieldID);
+            SendMoveField(fieldID, targets);
         }
     }
-    public void SendMoveField(int fieldID)
+    public void SendMoveField(int fieldID, int[] targets = null)
     {
-        photonView.RPC(nameof(MoveField), RpcTarget.Others, fieldID, siblingIndex);
+        photonView.RPC(nameof(MoveField), RpcTarget.Others, fieldID, siblingIndex, targets);
     }
     [PunRPC]
-    void MoveField(int fieldID, int handIndex)
+    void MoveField(int fieldID, int handIndex, int[] targets = null)
     {
-        StartCoroutine(GameManager.instance.MoveToField(handIndex, fieldID));
+        StartCoroutine(GameManager.instance.MoveToField(handIndex, fieldID, targets));
     }
 }

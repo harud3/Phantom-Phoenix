@@ -29,6 +29,7 @@ public class CardModel
     public bool canAttack {  get; private set; }
     public bool isTaunt { get; private set; }
     public bool isActiveDoubleAction {  get; private set; }
+    public bool HasSelectSpeciallSkill { get; private set; }
 
     public CardModel(int cardID, bool isPlayer)
     {
@@ -54,6 +55,14 @@ public class CardModel
         canAttack = false;
         isTaunt = false;
         isActiveDoubleAction = true;
+        if (spellTarget == CardEntity.SpellTarget.enemyUnit)
+        {
+            HasSelectSpeciallSkill = true;
+        }
+        else
+        {
+            HasSelectSpeciallSkill = false;
+        }
     }
     /// <summary>
     /// カードがダメージを受けた時の処理

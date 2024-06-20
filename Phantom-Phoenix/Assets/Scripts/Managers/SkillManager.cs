@@ -99,7 +99,7 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     /// <param name="fieldID"></param>
     /// <returns></returns>
-    private List<CardController> GetCardsByFieldID(int[] fieldID)
+    public List<CardController> GetCardsByFieldID(int[] fieldID)
     {
         return fieldID.Select(i => GetCardByFieldID(i)).Where(i => i != null).ToList();
     }
@@ -294,7 +294,7 @@ public class SkillManager : MonoBehaviour
             ) { GetCardByFieldID(target.model.fieldID + 3)?.Damage(attacker.model.atk); }
     }
     #endregion
-    public void specialSkills(CardController c)
+    public void specialSkills(CardController c, CardController[] targets = null)
     {
         HeroController h = c.model.isPlayerCard ? playerHeroController : enemyHeroController;
         switch (c.model.cardID)
@@ -352,6 +352,15 @@ public class SkillManager : MonoBehaviour
                     GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }).Where(i => i.model.fieldID != c.model.fieldID).ToList().ForEach(i => i.Damage(2));
                     c.SpecialSkillBeforeDie = () => { GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })
                         .Where(i => i.model.fieldID != c.model.fieldID).ToList().ForEach(i => i.Damage(2)); };
+                    break;
+                }
+            case 13: { break; }
+            case 14:
+                {
+                    if (targets != null)
+                    {
+                        targets.First().Damage(2);
+                    }
                     break;
                 }
 
