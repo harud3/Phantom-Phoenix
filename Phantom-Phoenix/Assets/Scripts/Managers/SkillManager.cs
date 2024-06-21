@@ -388,6 +388,15 @@ public class SkillManager : MonoBehaviour
             case 13: { break; }
             case 14:
                 {
+                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard)
+                    {
+                        var x = GetRandomCards(!c.model.isPlayerCard);
+                        if (x != null)
+                        {
+                            AudioManager.instance.SoundCardFire();
+                            x.Damage(2);
+                        }
+                    }
                     if (targets != null)
                     {
                         AudioManager.instance.SoundCardFire();

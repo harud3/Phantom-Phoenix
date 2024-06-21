@@ -32,7 +32,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default); //TODO:êlêîíºÇ∑
         GameDataManager.instance.isMaster = true;
-        Invoke("ChangeOnlineScene", 0.5f);
+        SceneManager.LoadScene("OnlineScene");
         AudioManager.instance.SoundButtonClick();
     }
 
@@ -42,16 +42,8 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
         if(!isMatching && inRoom && PhotonNetwork.CurrentRoom.MaxPlayers == PhotonNetwork.CurrentRoom.PlayerCount)
         {
             isMatching = true;
-            Invoke("ChangeBattleScene", 0.5f);
+            SceneManager.LoadScene("BattleScene");
             AudioManager.instance.SoundButtonClick();
         }
-    }
-    private void ChangeBattleScene()
-    {
-        SceneManager.LoadScene("BattleScene");
-    }
-    private void ChangeOnlineScene()
-    {
-        SceneManager.LoadScene("OnlineScene");
     }
 }

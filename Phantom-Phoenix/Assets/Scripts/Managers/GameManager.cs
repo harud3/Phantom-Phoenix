@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region ‰ŠúÝ’è
     void Start()
     {
-       StartGame();
+        StartGame();
     }
     bool isWaitBegin = true;
     private void Update()
@@ -248,12 +248,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             foreach (var i in playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
             {
                 i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
             }
             foreach (var i in enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
             {
                 i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
             }
         }
         else
@@ -262,12 +262,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             foreach (var i in enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
             {
                 i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
             }
             foreach (var i in playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
             {
                 i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
             }   
         }
 
@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (!isFirst)
         {
             isPlayerTurn = !isPlayerTurn;
-            yield return new WaitForSeconds(unitCount * 0.2f);
+            yield return new WaitForSeconds(unitCount * 0.05f);
         }
 
         
