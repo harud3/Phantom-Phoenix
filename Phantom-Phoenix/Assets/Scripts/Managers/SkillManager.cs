@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
@@ -318,6 +319,7 @@ public class SkillManager : MonoBehaviour
             //Behemoth
             case 5:
                 {
+                    AudioManager.instance.SoundCardDeBuff();
                     h.ChangeMaxMP(-1);
                     break;
                 }
@@ -337,21 +339,50 @@ public class SkillManager : MonoBehaviour
             //333
             case 10:
                 {
-                    c.SpecialSkillEndTurn = (bool isPlayerTurn) => { if (isPlayerTurn == c.model.isPlayerCard) { c.Heal(1); } };
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
+                    {
+                        if (isPlayerTurn == c.model.isPlayerCard)
+                        {
+                            AudioManager.instance.SoundCardHeal();
+                            c.Heal(1);
+                        }
+                    };
                     break;
                 }
             //323
             case 11:
                 {
-                    c.SpecialSkillEndTurn = (bool isPlayerTurn) => { if (isPlayerTurn == c.model.isPlayerCard) { GetRandomCards(!c.model.isPlayerCard)?.Damage(1); } };
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
+                    {
+                        if (isPlayerTurn == c.model.isPlayerCard)
+                        {
+                            var x = GetRandomCards(!c.model.isPlayerCard);
+                            if (x != null)
+                            {
+                                AudioManager.instance.SoundCardFire();
+                                x.Damage(1);
+                            }
+                        }
+                    };
                     break;
                 }
             //FireLord
             case 12:
                 {
-                    GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }).Where(i => i.model.fieldID != c.model.fieldID).ToList().ForEach(i => i.Damage(2));
-                    c.SpecialSkillBeforeDie = () => { GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })
-                        .Where(i => i.model.fieldID != c.model.fieldID).ToList().ForEach(i => i.Damage(2)); };
+                    var x = GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }).Where(i => i.model.fieldID != c.model.fieldID).ToList();
+                    if (x.Count != 0) {
+                        AudioManager.instance.SoundCardFire();
+                        x.ForEach(i => i.Damage(2));
+                    }
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        var x = GetCardsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }).Where(i => i.model.fieldID != c.model.fieldID).ToList();
+                        if (x.Count != 0)
+                        {
+                            AudioManager.instance.SoundCardFire();
+                            x.ForEach(i => i.Damage(2));
+                        }
+                    };
                     break;
                 }
             case 13: { break; }
@@ -359,6 +390,7 @@ public class SkillManager : MonoBehaviour
                 {
                     if (targets != null)
                     {
+                        AudioManager.instance.SoundCardFire();
                         targets.First().Damage(2);
                     }
                     break;

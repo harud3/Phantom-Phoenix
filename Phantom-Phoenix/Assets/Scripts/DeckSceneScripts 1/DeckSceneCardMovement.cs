@@ -23,7 +23,7 @@ public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHand
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-
+        AudioManager.instance.SoundCardMove();
         //e‚ğ‹L˜^
         recordDefaultParent = defaultParent = transform.parent;
 

@@ -10,7 +10,6 @@ using Photon.Pun;
 
 public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-    public AudioClip audioClip;
     public Transform defaultParent {  get; private set; } //オブジェクトの親
     public Transform recordDefaultParent { get; private set; } //手札から移動→他の位置に動かさなかった時→手札に戻った時に順番が入れ替わらないようにするため、移動前の親を記録
 
@@ -22,10 +21,6 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     {
         //nullケア
         recordDefaultParent =  defaultParent = transform.parent;
-    }
-    public void PlayCardSound()
-    {
-        this.GetComponent<AudioSource>().PlayOneShot(audioClip);
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -105,6 +100,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         transform.SetParent(defaultParent.parent);
         transform.DOMove(target.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
+        AudioManager.instance.SoundCardAttack();
         transform.DOMove(currentPosition, 0.25f);
         yield return new WaitForSeconds(0.25f);
         transform.SetParent(defaultParent);

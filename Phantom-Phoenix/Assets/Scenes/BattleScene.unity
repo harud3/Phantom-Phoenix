@@ -2104,7 +2104,7 @@ GameObject:
   - component: {fileID: 718946682}
   - component: {fileID: 718946681}
   m_Layer: 0
-  m_Name: SoundManager
+  m_Name: BGMManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2122,7 +2122,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: dba5ff1b2142bbb4082373ddd23afa95, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -6262,6 +6262,7 @@ MonoBehaviour:
   timeLimit: 99
   resultPanel: {fileID: 866599086}
   resultImage: {fileID: 914853796}
+  audioSourceBGM: {fileID: 718946681}
 --- !u!4 &2118492113
 Transform:
   m_ObjectHideFlags: 0

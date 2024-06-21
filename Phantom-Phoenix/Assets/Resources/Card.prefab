@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 3611251797230058613}
   - component: {fileID: 7440891501404676887}
   - component: {fileID: 4485889416366482851}
-  - component: {fileID: 4541226815165606480}
+  - component: {fileID: -139984862741837438}
   m_Layer: 5
   m_Name: Card
   m_TagString: Card
@@ -258,7 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa382dd5c192aad47bedc5a72cd9791a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: 002c71ff7ade10b409c415629a809c92, type: 3}
 --- !u!225 &-3867321993498982119
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -325,7 +324,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!82 &4541226815165606480
+--- !u!82 &-139984862741837438
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

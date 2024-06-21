@@ -8,18 +8,16 @@ public class ChangeScene : MonoBehaviour
 {
     [SerializeField]
     Button buttonVSAI, buttonDeck;
-    [SerializeField]
-    AudioClip audioClip;
     public void Awake()
     {
         buttonVSAI.onClick.AddListener(() => {
             GameDataManager.instance.isOnlineBattle = false;
             Invoke("ChangeBattleScene", 0.5f);
-            buttonVSAI.GetComponent<AudioSource>().PlayOneShot(audioClip);
+            AudioManager.instance.SoundButtonClick();
         });
         buttonDeck.onClick.AddListener(() => {
             Invoke("ChangeDeckScene", 0.5f);
-            buttonVSAI.GetComponent<AudioSource>().PlayOneShot(audioClip);
+            AudioManager.instance.SoundButtonClick();
         });
     }
     private void ChangeBattleScene()

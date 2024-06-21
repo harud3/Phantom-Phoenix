@@ -24,6 +24,7 @@ public class AttackedHero : MonoBehaviour, IDropHandler
                 {
                     GameManager.instance.SendAttackToHero(attacker.model.fieldID);
                 }
+                AudioManager.instance.SoundCardAttack();
                 //UŒ‚‚·‚é‘¤–Úü‚Ìˆ—
                 GameManager.instance.AttackTohero(attacker);
             }

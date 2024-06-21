@@ -7,8 +7,6 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
 {
     bool inRoom;
     bool isMatching = false;
-    [SerializeField]
-    AudioClip audioClip;
     public void OnMatchingButton()
     {
         if (!PlayerPrefs.HasKey("PlayerDeckData"))
@@ -35,7 +33,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default); //TODO:人数直す
         GameDataManager.instance.isMaster = true;
         Invoke("ChangeOnlineScene", 0.5f);
-        this.GetComponent<AudioSource>().PlayOneShot(audioClip);
+        AudioManager.instance.SoundButtonClick();
     }
 
     //部屋が2人ならシーンを変える
@@ -45,7 +43,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
         {
             isMatching = true;
             Invoke("ChangeBattleScene", 0.5f);
-            this.GetComponent<AudioSource>().PlayOneShot(audioClip);
+            AudioManager.instance.SoundButtonClick();
         }
     }
     private void ChangeBattleScene()

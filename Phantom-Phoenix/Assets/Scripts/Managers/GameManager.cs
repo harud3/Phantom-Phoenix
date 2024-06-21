@@ -236,23 +236,46 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             yield return new WaitForSeconds(1.6f);
         }
+        else
+        {
+            AudioManager.instance.SoundButtonClick2();
+        }
 
+        int unitCount = 0;
         if (isPlayerTurn)
         {
-            playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
-            enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
+            unitCount =  playerFields.Concat(enemyFields).Count(i => i.childCount != 0);
+            foreach (var i in playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
+            {
+                i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
+                yield return new WaitForSeconds(0.2f);
+            }
+            foreach (var i in enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
+            {
+                i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
+                yield return new WaitForSeconds(0.2f);
+            }
         }
         else
         {
-            enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
-            playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
+            unitCount = playerFields.Concat(enemyFields).Count(i => i.childCount != 0);
+            foreach (var i in enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
+            {
+                i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
+                yield return new WaitForSeconds(0.2f);
+            }
+            foreach (var i in playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList())
+            {
+                i.ExecuteSpecialSkillEndTurn(isPlayerTurn);
+                yield return new WaitForSeconds(0.2f);
+            }   
         }
 
         ButtonTurnGuard.gameObject.SetActive(true);
         if (!isFirst)
         {
             isPlayerTurn = !isPlayerTurn;
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(unitCount * 0.2f);
         }
 
         
@@ -382,7 +405,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                         if (!SkillManager.instance.CheckCanAttackUnit(canAttackFieldEnemyCard, pcc)) { continue; }
 
                         StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerField));
-                        yield return new WaitForSeconds(1.01f);
+                        yield return new WaitForSeconds(1f);
                         CardsBattle(canAttackFieldEnemyCard, pcc);
                         SkillManager.instance.ExecutePierce(canAttackFieldEnemyCard, pcc);
                         yield return null;
@@ -407,6 +430,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
         
+        yield return new WaitForSeconds(0.5f);
         StartCoroutine(ChangeTurn());
     }
     #endregion
@@ -513,16 +537,31 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         Concede(false); //‘ŠŽè‚ªƒRƒ“ƒV‚µ‚½Žž‚ÉŒÄ‚Î‚ê‚é‚Ì‚ÅfalseŒÅ’è
     }
+    [SerializeField]
+    private AudioSource audioSourceBGM;
     private void ViewResultPanel()
     {
         if (resultPanel.activeSelf)
         {
             return;
         }
+       audioSourceBGM.Stop();
         resultPanel.SetActive(true);
-        if (playerHeroController.model.isAlive && !enemyHeroController.model.isAlive) { resultImage.sprite = Resources.Load<Sprite>($"UIs/win"); }
-        else if (!playerHeroController.model.isAlive && enemyHeroController.model.isAlive) { resultImage.sprite = Resources.Load<Sprite>($"UIs/lose"); }
-        else if (!playerHeroController.model.isAlive && !enemyHeroController.model.isAlive) { resultImage.sprite = Resources.Load<Sprite>($"UIs/draw"); }
+        if (playerHeroController.model.isAlive && !enemyHeroController.model.isAlive)
+        {
+            AudioManager.instance.SoundWin();
+            resultImage.sprite = Resources.Load<Sprite>($"UIs/win");
+        }
+        else if (!playerHeroController.model.isAlive && enemyHeroController.model.isAlive)
+        {
+            AudioManager.instance.SoundLose();
+            resultImage.sprite = Resources.Load<Sprite>($"UIs/lose");
+        }
+        else if (!playerHeroController.model.isAlive && !enemyHeroController.model.isAlive)
+        {
+            AudioManager.instance.SoundLose();
+            resultImage.sprite = Resources.Load<Sprite>($"UIs/draw");
+        }
         Invoke("ChangeMenuScene", 3);
     }
     private void ChangeMenuScene()

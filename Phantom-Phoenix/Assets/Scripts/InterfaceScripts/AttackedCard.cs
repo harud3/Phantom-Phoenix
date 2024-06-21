@@ -32,6 +32,7 @@ public class AttackedCard : MonoBehaviour, IDropHandler
     {
         yield return new WaitForSeconds(0.25f);
         //ŠJí‚Ì‹V
+        AudioManager.instance.SoundCardAttack();
         GameManager.instance.CardsBattle(attacker, target);
         SkillManager.instance.ExecutePierce(attacker, target);
     }

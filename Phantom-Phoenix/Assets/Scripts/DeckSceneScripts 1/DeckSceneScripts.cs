@@ -16,8 +16,16 @@ public class DeckSceneManager : MonoBehaviour
     private int id = 1;
     private void Start()
     {
-        ButtonLeft.onClick.AddListener(() => ButtonPageOnClick(true));
-        ButtonRight.onClick.AddListener(() => ButtonPageOnClick(false));
+        ButtonLeft.onClick.AddListener(() =>
+        {
+            AudioManager.instance.SoundCardMove();
+            ButtonPageOnClick(true);
+        });
+        ButtonRight.onClick.AddListener(() =>
+        {
+            AudioManager.instance.SoundCardMove();
+            ButtonPageOnClick(false);
+        });
 
         GetNewStock();
 
