@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEditor.Experimental.GraphView;
 using System.Linq;
 
 /// <summary>
@@ -74,11 +73,11 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
         if (targetCheck(cc, clickedGameObject) is var x && x.passed)
         {
             //カードをfieldに置く処理
-            cc.movement.SetDefaultParent(this.transform, fieldID, x.targets.Select(i => i.model.fieldID).ToArray());
+            cc.movement.SetDefaultParent(this.transform, fieldID, x.targets);
             cc.transform.SetParent(this.transform);
             //modelにfieldIDを設定し、fieldに置く時の処理を行う
             cc.MoveField(fieldID);
-            cc.putOnField(isPlayerField, x.targets);
+            cc.putOnField(isPlayerField, x.cctargets);
             cc.movement.GetComponent<CanvasGroup>().blocksRaycasts = true;
         }
         else
@@ -92,7 +91,7 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
         if (x.Count != 0) { return true; }
         return false;
     }
-    private (bool passed,CardController[] targets) targetCheck(CardController cc, GameObject clickGameObject)
+    private (bool passed, CardController[] cctargets,int[] targets) targetCheck(CardController cc, GameObject clickGameObject)
     {
         HeroController hc = null;
         CardController c = null;
@@ -101,14 +100,14 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
         if (cc.model.spellTarget == CardEntity.SpellTarget.enemyUnit)
         {
             var x = SkillManager.instance.GetCardsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 });
-            if (x.Count == 0) { return (true, null); }
+            if (x.Count == 0) { return (true, null, null); }
             if (c != null)
             {
                 var y = x.Where(i => i.model.fieldID == c.model.fieldID);
-                if(y.Count() == 0) { return (false, null); }
-                else { return (true, y.ToArray()); }
+                if(y.Count() == 0) { return (false, null, null); }
+                else { return (true, y.ToArray(), y.Select(i => i.model.fieldID - 6).ToArray() ); }
             }
         }
-        return (false, null);
+        return (false, null, null);
     }
 }

@@ -20,7 +20,7 @@ public class TurnButtonClick : MonoBehaviour
                 {
                     GameManager.instance.SendChangeTurn();
                 }
-                GameManager.instance.ChangeTurn();
+                StartCoroutine(GameManager.instance.ChangeTurn());
                 
             }
         });

@@ -10,6 +10,7 @@ using Photon.Pun;
 
 public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
+    public AudioClip audioClip;
     public Transform defaultParent {  get; private set; } //オブジェクトの親
     public Transform recordDefaultParent { get; private set; } //手札から移動→他の位置に動かさなかった時→手札に戻った時に順番が入れ替わらないようにするため、移動前の親を記録
 
@@ -21,6 +22,10 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     {
         //nullケア
         recordDefaultParent =  defaultParent = transform.parent;
+    }
+    public void PlayCardSound()
+    {
+        this.GetComponent<AudioSource>().PlayOneShot(audioClip);
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -82,7 +87,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     public IEnumerator MoveToField(Transform field)
     {
         if(defaultParent is null) { defaultParent = transform.parent; } //EnemyAIが先攻だった時のnullエラー対策
-        transform.SetParent(defaultParent.parent);
+        transform.SetParent(defaultParent);
         transform.DOMove(field.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
         defaultParent = field;
@@ -104,13 +109,6 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         yield return new WaitForSeconds(0.25f);
         transform.SetParent(defaultParent);
     }
-    public IEnumerator MoveToThisField(Transform target)
-    {
-        transform.DOMove(target.position, 0.25f);
-        yield return new WaitForSeconds(0.25f);
-        transform.SetParent(defaultParent, false);
-        transform.SetSiblingIndex(siblingIndex);
-    }
 
     /// <summary>
     /// DropPlace.csからのdefaultParent変更用
@@ -121,16 +119,8 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         defaultParent = dropPlace;
         if (GameDataManager.instance.isOnlineBattle)
         {
-            SendMoveField(fieldID, targets);
+            GameManager.instance.SendMoveField(fieldID, siblingIndex, targets);
         }
     }
-    public void SendMoveField(int fieldID, int[] targets = null)
-    {
-        photonView.RPC(nameof(MoveField), RpcTarget.Others, fieldID, siblingIndex, targets);
-    }
-    [PunRPC]
-    void MoveField(int fieldID, int handIndex, int[] targets = null)
-    {
-        StartCoroutine(GameManager.instance.MoveToField(handIndex, fieldID, targets));
-    }
+    
 }

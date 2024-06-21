@@ -7,6 +7,8 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
 {
     bool inRoom;
     bool isMatching = false;
+    [SerializeField]
+    AudioClip audioClip;
     public void OnMatchingButton()
     {
         if (!PlayerPrefs.HasKey("PlayerDeckData"))
@@ -32,7 +34,8 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default); //TODO:人数直す
         GameDataManager.instance.isMaster = true;
-        SceneManager.LoadScene("OnlineScene");
+        Invoke("ChangeOnlineScene", 0.5f);
+        this.GetComponent<AudioSource>().PlayOneShot(audioClip);
     }
 
     //部屋が2人ならシーンを変える
@@ -41,7 +44,16 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
         if(!isMatching && inRoom && PhotonNetwork.CurrentRoom.MaxPlayers == PhotonNetwork.CurrentRoom.PlayerCount)
         {
             isMatching = true;
-            SceneManager.LoadScene("BattleScene");
+            Invoke("ChangeBattleScene", 0.5f);
+            this.GetComponent<AudioSource>().PlayOneShot(audioClip);
         }
+    }
+    private void ChangeBattleScene()
+    {
+        SceneManager.LoadScene("BattleScene");
+    }
+    private void ChangeOnlineScene()
+    {
+        SceneManager.LoadScene("OnlineScene");
     }
 }

@@ -7,11 +7,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Data;
-using static UnityEngine.Rendering.DebugUI;
 using TMPro;
-using static UnityEngine.GraphicsBuffer;
 using Photon.Pun;
 using Photon.Realtime;
+using DG.Tweening;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager instance { get; private set; }
@@ -22,7 +21,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             instance = this;
         }
     }
-
+    [SerializeField] private Transform canvas;
     [SerializeField] private HeroController playerHeroController, enemyHeroController;
 
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6];
@@ -30,7 +29,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     
     [SerializeField] private CardController cardPrefab;
 
-    [SerializeField] private UnityEngine.UI.Button turnButton;
+    [SerializeField] private UnityEngine.UI.Button ButtonTurn;
+    [SerializeField] private GameObject ButtonTurnGuard;
     [SerializeField] private Sprite playerTurnSprite,enemyTurnSprite; //ターン終了、相手のターンのスプライト
 
     [SerializeField] private TextMeshProUGUI timeCountText; //ターンの残り時間の表示部
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             SetTime();
             SettingInitHero();
             SettingInitHand();
-            TurnCalc();
+            StartCoroutine(ChangeTurn(true));
         }
     }
     void StartGame()
@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             SetTime();
             SettingInitHero();
             SettingInitHand();
-            TurnCalc();
+            StartCoroutine(ChangeTurn(true));
         }
     }
     public void SendSetSeed(int seed)
@@ -126,11 +126,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     void SettingInitHand()
     {
-        for (int i = 0; i < 3; i++) //初期手札は3枚
-        {
-            GiveCardToHand(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer);
-            GiveCardToHand(enemyDeck.deck, enemyHandTransform, enemyHeroController.model.isPlayer);
-        }
+        GiveCard(true, 3);
+        GiveCard(false, 3);
     }
     #endregion
     #region　時間管理
@@ -152,7 +149,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             SendChangeTurn();
         }
-        ChangeTurn();
     }
     #endregion
     #region カード生成
@@ -163,11 +159,16 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <param name="drawCount"></param>
     public void GiveCard(bool isPlayer, int drawCount)
     {
+        StartCoroutine(_GiveCard(isPlayer, drawCount));
+    }
+    private IEnumerator _GiveCard(bool isPlayer, int drawCount)
+    {
         if (isPlayer)
         {
             for (int i = 0; i < drawCount; i++)
             {
                 GiveCardToHand(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer);
+                yield return new WaitForSeconds(0.25f);
             }
         }
 
@@ -176,6 +177,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             for (int i = 0; i < drawCount; i++)
             {
                 GiveCardToHand(enemyDeck.deck, enemyHandTransform, enemyHeroController.model.isPlayer);
+                yield return new WaitForSeconds(0.25f);
             }
         }
     }
@@ -195,7 +197,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         deck.RemoveAt(0);
         if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); } 
         else { enemyHeroController.ReShowStackCards(deck.Count()); }
-        CreateCard(cardID, hand, isPlayer);
+        if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました"); return; }
+        StartCoroutine(CreateCard(cardID, hand, isPlayer));
     }
     /// <summary>
     /// カードの生成
@@ -203,22 +206,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <param name="cardID"></param>
     /// <param name="hand"></param>
     /// <param name="isPlayer"></param>
-    void CreateCard(int cardID, Transform hand, bool isPlayer)
+    IEnumerator CreateCard(int cardID, Transform hand, bool isPlayer)
     {
-        if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました");  return; }
-        //CardController card = Instantiate(cardPrefab, hand, false);
-        if (GameDataManager.instance.isOnlineBattle)
-        {
-            GameObject x = PhotonNetwork.Instantiate("Card", new Vector3(0, 0, 0), Quaternion.identity);
-            x.transform.SetParent(hand);
-            CardController card = x.GetComponent<CardController>();
-            card.Init(cardID, isPlayer);
-        }
-        else
-        {
-            Instantiate(cardPrefab, hand).GetComponent<CardController>().Init(cardID, isPlayer);
-        }
-        
+
+        CardController x = Instantiate(cardPrefab, canvas);
+        x.transform.Translate(new Vector3(isPlayer ? -550 : 550, 0, 0), Space.Self);
+        x.GetComponent<CardController>().Init(cardID, isPlayer);
+        x.transform.DOLocalMove(new Vector3(isPlayer ? -100 : 100, 0, 0), 0.25f);
+        yield return new WaitForSeconds(0.25f);
+        x.transform.DOMove(hand.position, 0.25f);
+        yield return new WaitForSeconds(0.25f);
+        x.transform.SetParent(hand);
     }
     #endregion
 
@@ -230,29 +228,66 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void PChangeTurn()
     {
-        ChangeTurn();
+        StartCoroutine(ChangeTurn());
     }
-    public void ChangeTurn()
+    public IEnumerator ChangeTurn(bool isFirst = false)
     {
-        if (isPlayerTurn) {
+        if (isFirst)
+        {
+            yield return new WaitForSeconds(1.6f);
+        }
+
+        if (isPlayerTurn)
+        {
             playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
             enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
         }
-        else {
+        else
+        {
             enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
             playerFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).ToList().ForEach(i => { i.ExecuteSpecialSkillEndTurn(isPlayerTurn); });
         }
 
-        isPlayerTurn = !isPlayerTurn;
-        
-        if (isPlayerTurn)
+        ButtonTurnGuard.gameObject.SetActive(true);
+        if (!isFirst)
         {
+            isPlayerTurn = !isPlayerTurn;
+            yield return new WaitForSeconds(0.6f);
+        }
+
+        
+        
+        if (isPlayerTurn && !isFirst)
+        {
+
             GiveCardToHand(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer);
         }
-        else
+        else if(!isFirst)
         {
             GiveCardToHand(enemyDeck.deck, enemyHandTransform, enemyHeroController.model.isPlayer);
         }
+
+        if (isPlayerTurn)
+        {
+            ButtonTurn.image.sprite = playerTurnSprite;
+            Debug.Log("味方ターン");
+            playerHeroController.ResetMP();
+            SetCanAttackAllFieldUnit(playerFields, true, true);
+            SetCanAttackAllFieldUnit(enemyFields, false, false);
+        }
+        else
+        {
+            ButtonTurn.image.sprite = enemyTurnSprite;
+            Debug.Log("相手ターン");
+            enemyHeroController.ResetMP();
+            SetCanAttackAllFieldUnit(playerFields, false, false);
+            SetCanAttackAllFieldUnit(enemyFields, true, true);
+        }
+
+        yield return new WaitForSeconds(0.6f);
+
+        ButtonTurnGuard.gameObject.SetActive(false);
+
         TurnCalc();
     }
     void TurnCalc()
@@ -289,19 +324,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     void PlayerTurn()
     {
-        turnButton.image.sprite = playerTurnSprite;
-        Debug.Log("味方ターン");
-        playerHeroController.ResetMP();
-        SetCanAttackAllFieldUnit(playerFields, true, true);
-        SetCanAttackAllFieldUnit(enemyFields, false, false);
     }
     void EnemyTurn()
     {
-        turnButton.image.sprite = enemyTurnSprite;
-        Debug.Log("相手ターン");
-        enemyHeroController.ResetMP();
-        SetCanAttackAllFieldUnit(playerFields, false, false);
-        SetCanAttackAllFieldUnit(enemyFields, true, true);
     }
     public IEnumerator MoveToField(int handIndex, int fieldID, int[] targets = null)
     {
@@ -315,12 +340,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     IEnumerator AIEnemyTurn()
     {
-        
-        turnButton.image.sprite = enemyTurnSprite;
-        Debug.Log("相手ターン");
-        enemyHeroController.ResetMP();
-        SetCanAttackAllFieldUnit(playerFields, false, false);
-        SetCanAttackAllFieldUnit(enemyFields, true, true);
 
         yield return new WaitForSeconds(1f);
 
@@ -387,10 +406,8 @@ public class GameManager : MonoBehaviourPunCallbacks
                 yield return null;
             }
         }
-
-        yield return new WaitForSeconds(1f);
         
-        ChangeTurn();
+        StartCoroutine(ChangeTurn());
     }
     #endregion
     #region 行動
@@ -498,15 +515,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     private void ViewResultPanel()
     {
+        if (resultPanel.activeSelf)
+        {
+            return;
+        }
         resultPanel.SetActive(true);
         if (playerHeroController.model.isAlive && !enemyHeroController.model.isAlive) { resultImage.sprite = Resources.Load<Sprite>($"UIs/win"); }
         else if (!playerHeroController.model.isAlive && enemyHeroController.model.isAlive) { resultImage.sprite = Resources.Load<Sprite>($"UIs/lose"); }
         else if (!playerHeroController.model.isAlive && !enemyHeroController.model.isAlive) { resultImage.sprite = Resources.Load<Sprite>($"UIs/draw"); }
-        StopAllCoroutines();
-        Invoke("ChangeMenuScene", 5);
+        Invoke("ChangeMenuScene", 3);
     }
     private void ChangeMenuScene()
     {
+        StopAllCoroutines();
         if (PhotonNetwork.IsConnected) { PhotonNetwork.LeaveRoom(); PhotonNetwork.Disconnect(); }
         SceneManager.LoadScene("MenuScene");
     }
@@ -520,4 +541,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
     #endregion
+    public void SendMoveField(int fieldID, int siblingIndex, int[] targets = null)
+    {
+        photonView.RPC(nameof(MoveField), RpcTarget.Others, fieldID, siblingIndex, targets);
+    }
+    [PunRPC]
+    void MoveField(int fieldID, int handIndex, int[] targets = null)
+    {
+        StartCoroutine(GameManager.instance.MoveToField(handIndex, fieldID, targets));
+    }
 }

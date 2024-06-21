@@ -106,6 +106,7 @@ public class CardController : Controller
     /// <param name="fieldID"></param>
     public void MoveField(int fieldID)
     {
+        movement.PlayCardSound();
         model.SetIsFieldID(fieldID);
     }
     public void Show(bool viewOpenSide)
