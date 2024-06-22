@@ -3,7 +3,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class OnlineMenuManager : MonoBehaviourPunCallbacks
+public class OnlineManager : MonoBehaviourPunCallbacks
 {
     bool inRoom;
     bool isMatching = false;

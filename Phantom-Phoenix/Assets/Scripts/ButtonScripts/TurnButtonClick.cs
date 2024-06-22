@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
-/// TurnButton‚ğ‰Ÿ‚µ‚½‚Æ‚«‚Ìˆ—
+/// ƒoƒgƒ‹‰æ–Ê@ButtonTurn‚ğ‰Ÿ‚µ‚½‚Æ‚«‚Ìˆ—
 /// </summary>
 public class TurnButtonClick : MonoBehaviour
 {

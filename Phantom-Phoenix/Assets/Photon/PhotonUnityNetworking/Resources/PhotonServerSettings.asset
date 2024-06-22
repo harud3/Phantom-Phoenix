@@ -53,6 +53,14 @@ MonoBehaviour:
   - PAttackToHero
   - PSetSeed
   - PSendConcede
+  - RPCMoveField
+  - RPCSetEnemyDeck
+  - RPCSetIsPlayerTurn
+  - RPCSetSeed
+  - RPCChangeTurn
+  - RPCAttackToHero
+  - RPCCardsBattle
+  - RPCSendConcede
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

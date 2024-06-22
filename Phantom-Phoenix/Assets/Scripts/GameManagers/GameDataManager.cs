@@ -11,6 +11,7 @@ public class GameDataManager : MonoBehaviour
     public static GameDataManager instance {  get; private set; }
     private void Awake()
     {
+        //初期デッキが必要なら用意
         if (!PlayerPrefs.HasKey("PlayerDeckData"))
         {
             DeckData data = new DeckData()

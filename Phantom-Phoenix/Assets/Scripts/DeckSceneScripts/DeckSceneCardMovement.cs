@@ -7,7 +7,9 @@ using UnityEngine.UI;
 using DG.Tweening;
 using static UnityEngine.GraphicsBuffer;
 using System.Linq;
-
+/// <summary>
+/// デッキ編成画面のカードの挙動
+/// </summary>
 public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
@@ -27,12 +29,12 @@ public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHand
         //親を記録
         recordDefaultParent = defaultParent = transform.parent;
 
-        if(recordDefaultParent.name == "PanelDeck")
+        if(recordDefaultParent.name == "PanelDeck") //デッキから動いたものは消される運命にある
         {
             Destroy(this.gameObject); return;
         }
 
-        if (recordDefaultParent.name == "PanelStock")
+        if (recordDefaultParent.name == "PanelStock") //カード一覧から動かした場合、その場にコピーを作成する
         {
             siblingIndex = transform.GetSiblingIndex();
             DeckSceneCardController card = Instantiate(cardPrefab, this.recordDefaultParent).GetComponent<DeckSceneCardController>();
@@ -57,11 +59,11 @@ public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHand
         transform.SetParent(defaultParent, false);
         if (recordDefaultParent.name == "PanelStock" && defaultParent.name == "PanelStock")
         {
-            Destroy(this.gameObject);
+            Destroy(this.gameObject); //パネルには既にコピーがいるので消さないと増え続けることになる
         }
         else
         {
-            SortPanelDeck();
+            SortPanelDeck(); //デッキ並べ替え
         }
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
@@ -73,6 +75,9 @@ public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHand
     {
         defaultParent = dropPlace;
     }
+    /// <summary>
+    /// デッキに対して、CardID昇順で並び替えを行う
+    /// </summary>
     private void SortPanelDeck()
     {
         var children = new List<Transform> { };

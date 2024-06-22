@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// BGMà»äOÇÃå¯â âπÇìùäáÇ∑ÇÈ
+/// </summary>
 public class AudioManager : MonoBehaviour
 {
     [SerializeField]
@@ -23,6 +26,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioClip soundcCardHeal;
 
+    private AudioSource audioSource;
+
     public static AudioManager instance {  get; private set; }
     private void Awake()
     {
@@ -36,40 +41,53 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void Start()
+    {
+        audioSource = this.GetComponent<AudioSource>();
+    }
     public void SoundCardMove()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundCardMove);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundCardMove);
     }
     public void SoundCardAttack()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundCardAttack);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundCardAttack);
     }
     public void SoundButtonClick()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundButtonClick);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundButtonClick);
     }
     public void SoundWin()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundWin);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundWin);
     }
     public void SoundLose()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundLose);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundLose);
     }
     public void SoundButtonClick2()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundButtonClick2);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundButtonClick2);
     }
     public void SoundCardFire()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundCardFire);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundCardFire);
     }
     public void SoundCardDeBuff()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundCardDeBuff);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundCardDeBuff);
     }
     public void SoundCardHeal()
     {
-        this.GetComponent<AudioSource>().PlayOneShot(soundcCardHeal);
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundcCardHeal);
     }
 }

@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
-/// カードの見た目
+/// デッキ編成画面のカードの見た目
 /// </summary>
 public class DeckSceneCardView : MonoBehaviour
 {

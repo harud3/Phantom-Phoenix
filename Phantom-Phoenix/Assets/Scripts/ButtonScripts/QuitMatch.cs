@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
+/// <summary>
+/// OnlineSceneの処理　メニューに戻る　部屋からも抜ける
+/// </summary>
 public class QuitMatch : MonoBehaviour
 {
     [SerializeField]

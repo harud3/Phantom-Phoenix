@@ -257,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 25883226}
   Deck: {fileID: 437524006}
-  hintText: {fileID: 542480736}
+  textHint: {fileID: 542480736}
 --- !u!1 &203844586
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,7 +850,7 @@ GameObject:
   - component: {fileID: 542480737}
   - component: {fileID: 542480736}
   m_Layer: 5
-  m_Name: HintText
+  m_Name: TextHint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

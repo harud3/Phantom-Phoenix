@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
 
-//攻撃対象側のカード
+//攻撃対象側のカード カードについている
 public class AttackedCard : MonoBehaviour, IDropHandler
 {
     public void OnDrop(PointerEventData eventData)
@@ -15,11 +15,11 @@ public class AttackedCard : MonoBehaviour, IDropHandler
             && attacker.model.canAttack
             && attacker.model.isPlayerCard != target.model.isPlayerCard)
         {
-            if (SkillManager.instance.CheckCanAttackUnit(attacker, target))
+            if (FieldManager.instance.CheckCanAttackUnit(attacker, target))
             {
                 if (GameDataManager.instance.isOnlineBattle)
                 {
-                    GameManager.instance.SendCardBattle(attacker.model.fieldID, target.model.fieldID);
+                    GameManager.instance.SendCardBattle(attacker.model.thisFieldID, target.model.thisFieldID); //バトル情報を対戦相手に送信
                 }
                 StartCoroutine(ExecuteCardsBattle(attacker, target));
                 

@@ -9,7 +9,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CardEntity", menuName = "Create CardEntity")]
 public class CardEntity : ScriptableObject
 {
-    public Sprite icon;
+    public Sprite charcter;
     public new string name;
     public int cost;
     public int atk;
@@ -17,17 +17,17 @@ public class CardEntity : ScriptableObject
     public Category category;
     public Rarity rarity;
     public Skill skill1, skill2, skill3;
-    public string cardText;
-    public SpellTarget spellTarget;
+    public string textCard;
+    public Target target;
 
     public enum Category { unit, spell, item }
     public enum Rarity { R, SR, SSR}
 
-    public enum Skill { none, fast, taunt, snipe, pierce, doubleAction}
+    public enum Skill { none, fast, taunt, snipe, pierce, doubleAction} //なし、即撃、挑発、狙撃、貫通、連撃　これらは効果持ちカードが多くなりがちな効果群なので特別枠
     /// <summary>
-    /// そのスペルの効果範囲　このカードがユニットならnone
+    /// 効果範囲　ユニットの召喚時選択効果もここで管理する、スペルの効果範囲
     /// </summary>
-    public enum SpellTarget { 
+    public enum Target { 
         none, //対象なし
         unit, //ユニット単体
         enemyUnit, //敵ユニット単体

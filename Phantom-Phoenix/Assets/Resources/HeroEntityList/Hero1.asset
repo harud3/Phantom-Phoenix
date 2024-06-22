@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9df44ca60cd94b5409db85f5aaf3308c, type: 3}
   m_Name: Hero1
   m_EditorClassIdentifier: 
+  character: {fileID: 21300000, guid: a5ef7844bffb5734482ad053bae8ad79, type: 3}
   name: elf
   hp: 30
-  icon: {fileID: 21300000, guid: a5ef7844bffb5734482ad053bae8ad79, type: 3}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
   m_Name: Card13
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: b35205501ec7aaf449a3bc9087e14511, type: 3}
+  charcter: {fileID: 21300000, guid: b35205501ec7aaf449a3bc9087e14511, type: 3}
   name: 445
   cost: 4
   atk: 4
@@ -22,5 +22,5 @@ MonoBehaviour:
   skill1: 0
   skill2: 0
   skill3: 0
-  cardText: 
-  spellTarget: 0
+  textCard: 
+  target: 0

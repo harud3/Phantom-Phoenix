@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+/// <summary>
+/// Menu‚Åg‚¤@Menu‚©‚ç‚Ì‘JˆÚ
+/// </summary>
 public class ChangeScene : MonoBehaviour
 {
     [SerializeField]

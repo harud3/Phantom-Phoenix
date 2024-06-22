@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
   m_Name: Card4
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: f450e37a3d78aa140b8cd107e0026791, type: 3}
+  charcter: {fileID: 21300000, guid: f450e37a3d78aa140b8cd107e0026791, type: 3}
   name: Dwarf
   cost: 1
   atk: 1
@@ -22,5 +22,5 @@ MonoBehaviour:
   skill1: 1
   skill2: 3
   skill3: 5
-  cardText: "\u5373\u6483\\n\u72D9\u6483\\n\u9023\u6483"
-  spellTarget: 0
+  textCard: "\u5373\u6483\\n\u72D9\u6483\\n\u4E8C\u56DE\u653B\u6483"
+  target: 0

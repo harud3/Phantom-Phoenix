@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+/// <summary>
+/// メインメニューに戻る時の処理
+/// </summary>
 public class DeckScenebackmenu : MonoBehaviour
 {
     [SerializeField]
@@ -13,18 +16,20 @@ public class DeckScenebackmenu : MonoBehaviour
     [SerializeField]
     Transform Deck;
     [SerializeField]
-    TextMeshProUGUI hintText;
+    TextMeshProUGUI textHint;
     private void Start()
     {
         button.onClick.AddListener(() =>
         {
-            if (Deck.childCount < 30)
+            if (Deck.childCount < 30) //デッキが30枚未満なら逃がさない
             {
                 StopAllCoroutines();
                 StartCoroutine(ChangeText());
                 return;
             }
-            StopAllCoroutines();
+            StopAllCoroutines(); 
+            
+            //jsonファイルに記録
             List<int> cardIDs = new List<int>();
             foreach (Transform card in Deck)
             {
@@ -32,7 +37,7 @@ public class DeckScenebackmenu : MonoBehaviour
             }
             DeckData data = new DeckData()
             {
-                useHeroID = 1, deck = cardIDs
+                useHeroID = 1, deck = cardIDs //TODO:ヒーローIDも可変にする
             };
             string json = JsonUtility.ToJson(data, true);
             PlayerPrefs.SetString("PlayerDeckData", json);
@@ -43,9 +48,9 @@ public class DeckScenebackmenu : MonoBehaviour
     }
     IEnumerator ChangeText()
     {
-        hintText.text = "デッキが30枚未満です";
+        textHint.text = "デッキが30枚未満です";
         yield return new WaitForSeconds(2f);
-        hintText.text = "カードをデッキにドラッグ&ドロップ";
+        textHint.text = "カードをデッキにドラッグ&ドロップ";
         StopAllCoroutines();
     }
 }

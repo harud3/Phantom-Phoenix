@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
 
-//UŒ‚‘ÎÛ‘¤‚Ìƒq[ƒ[
+//UŒ‚‘ÎÛ‘¤‚Ìƒq[ƒ[ ƒq[ƒ[‚É‚Â‚¢‚Ä‚¢‚é
 public class AttackedHero : MonoBehaviour, IDropHandler
 {
     private HeroController target;
@@ -19,10 +19,10 @@ public class AttackedHero : MonoBehaviour, IDropHandler
             && attacker.model.isPlayerCard != target.model.isPlayer)
         {
 
-            if (SkillManager.instance.CheckCanAttackHero(attacker, target)){
+            if (FieldManager.instance.CheckCanAttackHero(attacker, target)){ //ƒEƒH[ƒ‹‚â’§”­‚ª‚ ‚é‚ÆUŒ‚•s‰Â
                 if (GameDataManager.instance.isOnlineBattle)
                 {
-                    GameManager.instance.SendAttackToHero(attacker.model.fieldID);
+                    GameManager.instance.SendAttackToHero(attacker.model.thisFieldID); //ƒq[ƒ[‚ğUŒ‚‚·‚é‚±‚Æ‚ğ‘Îí‘Šè‚É‘—M
                 }
                 AudioManager.instance.SoundCardAttack();
                 //UŒ‚‚·‚é‘¤–Úü‚Ìˆ—

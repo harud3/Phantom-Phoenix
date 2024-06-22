@@ -23,7 +23,7 @@ public class HeroController : Controller
         view.SetHero(model);
     }
     /// <summary>
-    /// 見た目の再表示
+    /// HPの再表示
     /// </summary>
     private void ReShowHP()
     {
@@ -45,20 +45,44 @@ public class HeroController : Controller
         model.Damage(atk);
         ReShowHP();
     }
+    /// <summary>
+    /// あきらめた時
+    /// </summary>
+    public void Concede()
+    {
+        model.Concede();
+    }
+    /// <summary>
+    /// ターン開始時のMPリセット
+    /// </summary>
     public void ResetMP()
     {
         model.ResetMP();
         view.ReShowMP(model);
     }
+    /// <summary>
+    /// (主にカードを出した時に)MPを減らす
+    /// </summary>
+    /// <param name="reduce"></param>
     public void ReduceMP(int reduce)
     {
         model.ReduceMP(reduce);
         view.ReShowMP(model);
     }
+    /// <summary>
+    /// 何らかの効果によりMaxMPが増減するときの処理
+    /// </summary>
+    /// <param name="up"></param>
     public void ChangeMaxMP(int up)
     {
+        //ターン開始時の最大MP増加は、model.ResetMP()の中で行っているので、効果音は鳴らない
+        if (up > 0) { } 
+        else { AudioManager.instance.SoundCardDeBuff(); }
         model.ChangeMaxMP(up);
         view.ReShowMP(model);
     }
 }
+/// <summary>
+/// カードとヒーローを同時に処理できるようにするための基底クラス
+/// </summary>
 public class Controller : MonoBehaviour { }

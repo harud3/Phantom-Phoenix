@@ -8,15 +8,19 @@ using DG.Tweening;
 using static UnityEngine.GraphicsBuffer;
 using Photon.Pun;
 
+/// <summary>
+/// カードの挙動 Cardプレハブについてる
+/// </summary>
 public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
-    public Transform recordDefaultParent { get; private set; } //手札から移動→他の位置に動かさなかった時→手札に戻った時に順番が入れ替わらないようにするため、移動前の親を記録
+    public Transform recordDefaultParent { get; private set; } //オブジェクト移動前の親　
+    int siblingIndex; //手札から移動→他の位置に動かさなかった時→手札に戻った時に順番が入れ替わらないようにするため
 
     [NonSerialized]
     public bool isDraggable; //動かせるかどうか
 
-    int siblingIndex;
+    
     void Start()
     {
         //nullケア
@@ -24,13 +28,13 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!GameManager.instance.isPlayerTurn) { isDraggable = false;  return; } //TODO
+        if (!GameManager.instance.isPlayerTurn) { isDraggable = false;  return; } //自分のターンではないのに動かそうとするのは見過ごせない
         siblingIndex = transform.GetSiblingIndex();
 
-        //手札のカードかつheroのMP > カードのコストなら動かせる
-        //fieldのカードで攻撃可能なら動かせる
         CardController cardController = GetComponent<CardController>();
-        if (!cardController.model.isPlayerCard) { Debug.Log("koko"); isDraggable = false;  return; }
+        //手札のカードかつ、ヒーローのMP > カードのコストなら動かせる
+        //フィールドのカードで攻撃可能なら動かせる
+        if (!cardController.model.isPlayerCard) { isDraggable = false;  return; }
         if(!cardController.model.isFieldCard && cardController.model.cost <= GameManager.instance.GetHeroMP(cardController.model.isPlayerCard))
         {
             isDraggable = true;
@@ -49,7 +53,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         recordDefaultParent =  defaultParent = transform.parent;
         //移動の見た目の問題で、親を親の親に変更
         transform.SetParent(defaultParent.parent, false);
-        //ドロップできるように
+        //DropField.csが反応するように
         GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
@@ -63,10 +67,10 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!isDraggable) { return; }
-        //親を変更 DropPlace.csからdefaultParentが変更されている場合、移動前とは別の親となる　手札→field
+        //親を変更 DropPlace.csからdefaultParentが変更されている場合、移動前とは別の親となる　手札→フィールド
         
         if (recordDefaultParent == defaultParent) { 
-            StartCoroutine(MoveToField(defaultParent));
+            StartCoroutine(MoveToArea(defaultParent));
         }
         else
         {
@@ -75,22 +79,22 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
     /// <summary>
-    /// enemyAI関係の処理
+    /// 一方通行の移動演出
     /// </summary>
-    /// <param name="field"></param>
+    /// <param name="targetArea"></param>
     /// <returns></returns>
-    public IEnumerator MoveToField(Transform field)
+    public IEnumerator MoveToArea(Transform targetArea)
     {
-        if(defaultParent is null) { defaultParent = transform.parent; } //EnemyAIが先攻だった時のnullエラー対策
+        if(defaultParent is null) { defaultParent = transform.parent; } //nullエラー対策
         transform.SetParent(defaultParent);
-        transform.DOMove(field.position, 0.25f);
+        transform.DOMove(targetArea.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
-        defaultParent = field;
+        defaultParent = targetArea;
         transform.SetParent(defaultParent);
         transform.SetSiblingIndex(siblingIndex);
     }
     /// <summary>
-    /// enemyAi関係の処理
+    /// 往復の移動演出 バトルで使うので途中でサウンドも再生
     /// </summary>
     /// <param name="target"></param>
     /// <returns></returns>
@@ -100,7 +104,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         transform.SetParent(defaultParent.parent);
         transform.DOMove(target.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
-        AudioManager.instance.SoundCardAttack();
+        AudioManager.instance.SoundCardAttack(); //targetいる == バトル です
         transform.DOMove(currentPosition, 0.25f);
         yield return new WaitForSeconds(0.25f);
         transform.SetParent(defaultParent);
@@ -110,13 +114,20 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
     /// DropPlace.csからのdefaultParent変更用
     /// </summary>
     /// <param name="dropPlace"></param>
-    public void SetDefaultParent(Transform dropPlace, int fieldID, int[] targets = null)
+    public void SetDefaultParent(Transform dropPlace, int fieldID)
     {
         defaultParent = dropPlace;
+    }
+    /// <summary>
+    /// 手札に出たことを対戦相手に送信　cardMovement.csで取得したsiblingIndexが必要なのでcardMovement.cs内にある
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <param name="targets"></param>
+    public void SendMoveToField(int fieldID, int[] targetsByReceiver = null)
+    {
         if (GameDataManager.instance.isOnlineBattle)
         {
-            GameManager.instance.SendMoveField(fieldID, siblingIndex, targets);
+            GameManager.instance.SendMoveToField(fieldID, siblingIndex, targetsByReceiver);
         }
     }
-    
 }

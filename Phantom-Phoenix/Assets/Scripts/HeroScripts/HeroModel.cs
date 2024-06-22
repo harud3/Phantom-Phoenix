@@ -7,16 +7,18 @@ using UnityEngine;
 /// </summary>
 public class HeroModel
 {
+    public int heroID {  get; private set; }
+    public Sprite character { get; private set; }
     public string name {  get; private set; }
+    public int atk { get; private set; }
+    public int maxHP { get; private set; }
     public int hp {  get; private set; }
-    public int atk {  get; private set; }
     public int maxMP {  get; private set; }
     public int mp {  get; private set; }
-    public Sprite icon {  get; private set; }
+    
     public bool isPlayer { get; private set; }
     public bool isAlive {  get; private set; }
     public bool canAttack {  get; private set; }
-    public bool isWall {  get; private set; }
     public bool usedTensionCard {  get; private set; }
     public int Tension { get; private set; }
     
@@ -25,20 +27,20 @@ public class HeroModel
     {
         //heroIDを基に対象のヒーローデータを取得する
         HeroEntity heroEntity = Resources.Load<HeroEntity>($"HeroEntityList/Hero{heroID}");
+        this.heroID = heroID;
+        character = heroEntity.character;
         name = heroEntity.name;
-        hp = heroEntity.hp;
         atk = 0;
+        maxHP = hp = heroEntity.hp;
         mp =  maxMP = 2; //TODO:直す　0始まり
-        icon = heroEntity.icon;
         this.isPlayer = isPlayer;
         isAlive = true;
         canAttack = false;
-        isWall = false;
         usedTensionCard = false;
         Tension = 0;
     }
     /// <summary>
-    /// ヒーローがダメージを受けた時の処理 view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない
+    /// ヒーローがダメージを受けた時の処理 直接呼ばない
     /// </summary>
     /// <param name="dmg"></param>
     public void Damage(int dmg)
@@ -50,12 +52,12 @@ public class HeroModel
             isAlive = false;
         }
     }
-    public void isConcede()
+    public void Concede()
     {
         isAlive = false;
     }
     /// <summary>
-    /// ターン開始時のMPリセット view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない
+    /// ターン開始時のMPリセット 直接呼ばない
     /// </summary>
     public void ResetMP()
     {
@@ -63,7 +65,7 @@ public class HeroModel
         mp = maxMP;
     }
     /// <summary>
-    /// (主にターン開始時に)最大MP上限＋ view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない
+    /// (主にターン開始時に)最大MP上限＋ 直接呼ばない
     /// </summary>
     public void ChangeMaxMP(int up)
     {
@@ -75,7 +77,7 @@ public class HeroModel
         else if(maxMP < 0){ maxMP = 0; }
     }
     /// <summary>
-    /// (主にカードを出した時に)MPを減らす view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない
+    /// (主にカードを出した時に)MPを減らす 直接呼ばない
     /// </summary>
     /// <param name="reduce"></param>
     public void ReduceMP(int reduce)
@@ -87,7 +89,7 @@ public class HeroModel
         }
     }
     /// <summary>
-    /// 何らかの外部要因により、MPが回復する時 view.Reshow()も必要なので、Controllerから呼ぶこと 直接呼ばない
+    /// 何らかの外部要因により、MPが回復する時 直接呼ばない
     /// </summary>
     /// <param name="heal"></param>
     public void HealMP(int heal)

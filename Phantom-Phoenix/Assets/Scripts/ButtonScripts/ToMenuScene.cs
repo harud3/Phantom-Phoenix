@@ -5,7 +5,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-
+/// <summary>
+/// バトル画面　ButtonConcedeの処理　コンシしたことにしてシーン遷移を起こす
+/// </summary>
 public class ToMenuScene : MonoBehaviour
 {
     [SerializeField]

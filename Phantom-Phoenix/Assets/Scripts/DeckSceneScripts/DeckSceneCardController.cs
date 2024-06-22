@@ -8,6 +8,9 @@ using UnityEngine.Rendering.Universal;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using static UnityEngine.EventSystems.EventTrigger;
 
+/// <summary>
+/// デッキシーンのCCはやることが少ない
+/// </summary>
 public class DeckSceneCardController : Controller
 {
     DeckSceneCardView view;

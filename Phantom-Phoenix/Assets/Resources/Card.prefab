@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2915173743717647006}
   - component: {fileID: 5024825069844174376}
   m_Layer: 5
-  m_Name: SelectablePanel
+  m_Name: PanelSelectable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -234,17 +234,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 442961662a799b84684503de39e5fff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iconImage: {fileID: 6809076558420923766}
-  frameImage: {fileID: 3194769564570123980}
-  backFrameImage: {fileID: 7646628524351348588}
-  backCost: {fileID: 186319235692280480}
-  costText: {fileID: 9005062849205849030}
-  backATK: {fileID: 1202177780393916950}
-  atkText: {fileID: 3209119379820024908}
-  backHP: {fileID: 4746704382920921764}
-  hpText: {fileID: 582673717202071759}
-  cardText: {fileID: 1918496475515222403}
-  selectablePanel: {fileID: 58156062978928197}
+  imageCharacter: {fileID: 6809076558420923766}
+  imageFrame: {fileID: 3194769564570123980}
+  imageBack: {fileID: 7646628524351348588}
+  imageBackCost: {fileID: 186319235692280480}
+  textCost: {fileID: 9005062849205849030}
+  imageBackATK: {fileID: 1202177780393916950}
+  textATK: {fileID: 3209119379820024908}
+  imageBackHP: {fileID: 4746704382920921764}
+  textHP: {fileID: 582673717202071759}
+  textCard: {fileID: 1918496475515222403}
+  panelSelectable: {fileID: 58156062978928197}
   frameTaunt: {fileID: 1041388108661729903}
 --- !u!114 &3922260373383917843
 MonoBehaviour:
@@ -567,7 +567,7 @@ GameObject:
   - component: {fileID: 3427105849890882690}
   - component: {fileID: 1918496475515222403}
   m_Layer: 5
-  m_Name: CardText
+  m_Name: TextCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1351,7 +1351,7 @@ GameObject:
   - component: {fileID: 9132605374381090769}
   - component: {fileID: 7646628524351348588}
   m_Layer: 5
-  m_Name: BackFrame
+  m_Name: FrameBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

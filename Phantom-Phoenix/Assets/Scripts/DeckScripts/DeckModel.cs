@@ -32,12 +32,6 @@ public class DeckModel
     {
         this.useHeroID = useheroID;
         deck = deckIDs.ToList();
-#if UNITY_EDITOR
-        deck = deckIDs.ToList();
-        string str = "";
-        deck.ForEach(i => str += $"{i.ToString()},");
-        Debug.Log(str);
-#endif
 
         return this;
     }
