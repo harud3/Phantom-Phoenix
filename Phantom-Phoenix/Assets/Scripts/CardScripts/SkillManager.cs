@@ -158,14 +158,16 @@ public class SkillManager : MonoBehaviour
     /// <param name="target"></param>
     public void ExecutePierce(CardController attacker, CardController target)
     {
-
         int targetFieldID = target.model.thisFieldID;
-        if (isPierce(attacker.model) 
-            && ( 
-                (1 <= targetFieldID &&  targetFieldID <= 3) 
-                || (7 <= targetFieldID && targetFieldID <= 9 ) 
+        if (isPierce(attacker.model)
+            && (
+                (1 <= targetFieldID && targetFieldID <= 3)
+                || (7 <= targetFieldID && targetFieldID <= 9)
             )
-            ) { FieldManager.instance.GetUnitByFieldID(target.model.thisFieldID + 3)?.Damage(attacker.model.atk); }　//前列のfieldIDに+3したら、後列のfieldIDになる
+            )
+        {
+            FieldManager.instance.GetUnitByFieldID(target.model.thisFieldID + 3)?.Damage(attacker.model.atk);
+        }　//前列のfieldIDに+3したら、後列のfieldIDになる
     }
     /// <summary>
     /// 各種カードの特殊効果を羅列する
@@ -243,13 +245,13 @@ public class SkillManager : MonoBehaviour
             //FireLord
             case 12:
                 {
-                    var x = FieldManager.instance.GetUnitsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
                     if (x.Count != 0) {
                         x.ForEach(i => i.Damage(2));
                     }
                     c.SpecialSkillBeforeDie = () =>
                     {
-                        var x = FieldManager.instance.GetUnitsByFieldID(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                        var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
                         if (x.Count != 0)
                         {
                             x.ForEach(i => i.Damage(2));

@@ -30,7 +30,8 @@ public class DeckSceneCardModel
         icon = cardEntity.charcter;
         name = cardEntity.name;
         cost = cardEntity.cost;
-        atk = cardEntity.atk;
+        atk = cardEntity.atk; 
+        hp = cardEntity.hp;
         category = cardEntity.category;
         spellTarget = cardEntity.target;
         rarity = cardEntity.rarity;

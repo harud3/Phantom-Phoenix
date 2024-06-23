@@ -11,7 +11,7 @@ using Photon.Pun;
 /// <summary>
 /// カードの挙動 Cardプレハブについてる
 /// </summary>
-public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class CardMovement : MonoBehaviourPunCallbacks, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
     public Transform recordDefaultParent { get; private set; } //オブジェクト移動前の親　
@@ -26,15 +26,27 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         //nullケア
         recordDefaultParent =  defaultParent = transform.parent;
     }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        CardController cardController = GetComponent<CardController>();
+
+        //マリガン処理
+        if (cardController.model.isMulliganCard)
+        {
+            cardController.SetIsMulligan(!cardController.model.isMulligan);
+        }
+    }
     public void OnBeginDrag(PointerEventData eventData)
     {
+
         if (!GameManager.instance.isPlayerTurn) { isDraggable = false;  return; } //自分のターンではないのに動かそうとするのは見過ごせない
         siblingIndex = transform.GetSiblingIndex();
 
         CardController cardController = GetComponent<CardController>();
+
         //手札のカードかつ、ヒーローのMP > カードのコストなら動かせる
         //フィールドのカードで攻撃可能なら動かせる
-        if (!cardController.model.isPlayerCard) { isDraggable = false;  return; }
+        if (cardController.model.isMulliganCard || !cardController.model.isPlayerCard) { isDraggable = false;  return; }
         if(!cardController.model.isFieldCard && cardController.model.cost <= GameManager.instance.GetHeroMP(cardController.model.isPlayerCard))
         {
             isDraggable = true;
@@ -70,7 +82,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IDragHandler, IBeginDragH
         //親を変更 DropPlace.csからdefaultParentが変更されている場合、移動前とは別の親となる　手札→フィールド
         
         if (recordDefaultParent == defaultParent) { 
-            StartCoroutine(MoveToArea(defaultParent));
+            StartCoroutine(MoveToArea(recordDefaultParent));
         }
         else
         {

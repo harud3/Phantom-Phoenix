@@ -59,6 +59,7 @@ public class HeroController : Controller
     {
         model.ResetMP();
         view.ReShowMP(model);
+        
     }
     /// <summary>
     /// (主にカードを出した時に)MPを減らす

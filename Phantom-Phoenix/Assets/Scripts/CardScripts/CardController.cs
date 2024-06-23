@@ -119,16 +119,15 @@ public class CardController : Controller
 
         SkillManager.instance.specialSkills(this, targets); //召喚時効果の発動　誘発効果の紐づけ
 
-        if (SkillManager.instance.isFast(model)) //即撃効果付与
-        {
-            SetCanAttack(true);
-        }
+        SetCanAttack(SkillManager.instance.isFast(model)); //即撃付与 CanSummonの無効化も兼ねる
+
         if (SkillManager.instance.isTaunt(model)) //挑発効果付与 前列に召喚された時だけ
         {
             model.SetIsTaunt(true);
             view.SetViewFrameTaunt(true);
         }
-        if (SkillManager.instance.isDoubleAction(model)){ //二回攻撃効果付与
+        if (SkillManager.instance.isDoubleAction(model))
+        { //二回攻撃効果付与
             model.SetIsActiveDoubleAction(true);
         }
 
@@ -140,6 +139,23 @@ public class CardController : Controller
     public void Show(bool viewOpenSide)
     {
         view.Show(viewOpenSide);
+    }
+    /// <summary>
+    /// マリガン候補かどうか
+    /// </summary>
+    public void SetIsMulliganCard()
+    {
+        model.SetIsMulliganCard();
+        view.SetActiveSelectablePanel(true); //最初は返さない前提とする
+    }
+    /// <summary>
+    /// マリガンするかどうか
+    /// </summary>
+    /// <param name="isMulligan"></param>
+    public void SetIsMulligan(bool isMulligan)
+    {
+        model.SetIsMulligan(isMulligan);
+        view.SetActiveSelectablePanel(!isMulligan); //マリガンで返す→光らせない　マリガンで返さない→光らせる　なので否定する
     }
     /// <summary>
     /// ユニットが攻撃によりダメージを受けた時の処理　ここでは、CheckAliveは不都合が出るので行わない
@@ -203,7 +219,7 @@ public class CardController : Controller
         ExecuteSpecialSkillBeforeAttack(isAttacker); //攻撃前効果 攻撃時はこちら
         model.Attack(enemy);
         ExecuteSpecialSkillAfterAttack(isAttacker); //攻撃後効果
-        if (!model.isAlive) { return; }　//しんでるなら連撃
+        if (!model.isAlive) { return; }　//しんでるなら連撃は考えない
 
         //連撃判定の特殊処理
         if (SkillManager.instance.isActiveDoubleAction(model)) //ユニットが連撃持ちで、連撃権があるならtrue
@@ -226,6 +242,10 @@ public class CardController : Controller
         {
             model.SetIsActiveDoubleAction(true);
         }
+    }
+    public void SetCanSummon(bool canSummon)
+    {
+        view.SetActiveSelectablePanel(canSummon);
     }
     /// <summary>
     /// 攻撃前効果　攻撃時効果

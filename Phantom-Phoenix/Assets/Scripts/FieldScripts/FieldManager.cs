@@ -2,18 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FieldManager : MonoBehaviour
 {
     public static FieldManager instance { get; private set; }
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6];
     [SerializeField] private HeroController playerHeroController, enemyHeroController;
+    [SerializeField] private GameObject[] playerSelectablePanel = new GameObject[6], enemySelectablePanel = new GameObject[6];
+    private GameObject[] selectablePanel = new GameObject[12];
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
         }
+    }
+    private void Start()
+    {
+        selectablePanel = playerSelectablePanel.Concat(enemySelectablePanel).ToArray();
     }
     #region 盤面取得
     //fieldIDは、　
@@ -181,6 +188,28 @@ public class FieldManager : MonoBehaviour
             if (SkillManager.instance.isWall(false)) { return false; }
         }
         return true;
+    }
+    /// <summary>
+    /// 選択効果において、選択可能なフィールドの選択可能パネルを表示する
+    /// </summary>
+    /// <param name="fieldIDs"></param>
+    /// <param name="isActive"></param>
+    public void SetSelectablePanel(int[] fieldIDs, bool isActive)
+    {
+        foreach (var fieldID in fieldIDs)
+        {
+            selectablePanel[fieldID - 1].SetActive(isActive);
+        }
+    }
+    /// <summary>
+    /// 選択可能パネルの色を変える　召喚予定の箇所は緑色で表示したいので
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <param name="willSummon"></param>
+    public void ChangeSelectablePanelColor(int fieldID, bool willSummon)
+    {
+        if (willSummon) { selectablePanel[fieldID - 1].GetComponent<Image>().color = new Color(0, 255, 0); }
+        else { selectablePanel[fieldID - 1].GetComponent<Image>().color = new Color(255, 0, 0);  }
     }
     #endregion
 }

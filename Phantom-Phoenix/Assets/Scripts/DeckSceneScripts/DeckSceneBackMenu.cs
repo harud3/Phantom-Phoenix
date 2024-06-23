@@ -42,7 +42,7 @@ public class DeckScenebackmenu : MonoBehaviour
             string json = JsonUtility.ToJson(data, true);
             PlayerPrefs.SetString("PlayerDeckData", json);
             PlayerPrefs.Save();
-            SceneManager.LoadScene("MenuScene");
+            StartCoroutine(ChangeMenuScene());
         });
 
     }
@@ -53,4 +53,11 @@ public class DeckScenebackmenu : MonoBehaviour
         textHint.text = "カードをデッキにドラッグ&ドロップ";
         StopAllCoroutines();
     }
+    IEnumerator ChangeMenuScene()
+    {
+        AudioManager.instance.SoundButtonClick3();
+        yield return new WaitForSeconds(0.7f);
+        SceneManager.LoadScene("MenuScene");
+    }
+
 }

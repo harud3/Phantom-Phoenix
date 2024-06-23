@@ -65,7 +65,6 @@ public class CardView : MonoBehaviour
         imageBack.gameObject.SetActive(!viewOpenSide);
 
         imageFrame.gameObject.SetActive(viewOpenSide);
-        imageBackCost.gameObject.SetActive(viewOpenSide);
         imageBackATK.gameObject.SetActive(viewOpenSide);
         imageBackHP.gameObject.SetActive(viewOpenSide);
     }
@@ -80,7 +79,7 @@ public class CardView : MonoBehaviour
         textHP.text = cardModel.hp.ToString();
     }
     /// <summary>
-    /// ユニットを動かせるか否かの可視化 基本的にCardControllerを通して呼ぶことになる
+    /// 主にユニットを動かせるか否かの可視化 基本的にCardControllerを通して呼ぶことになる
     /// </summary>
     /// <param name="isActive"></param>
     public void SetActiveSelectablePanel(bool isActive)

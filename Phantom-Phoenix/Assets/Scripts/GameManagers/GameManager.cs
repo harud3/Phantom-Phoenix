@@ -12,6 +12,7 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using DG.Tweening;
+using UnityEngine.XR;
 /// <summary>
 /// バトルを統括するスクリプト
 /// </summary>
@@ -31,12 +32,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6];
     [SerializeField] private Transform playerHandTransform, enemyHandTransform;
-    
+    [SerializeField] private Transform playerMulliganTransform;
+    [SerializeField] private GameObject HintMessage;
+
     [SerializeField] private CardController cardPrefab;
 
     [SerializeField] private UnityEngine.UI.Button ButtonTurn;
     [SerializeField] private GameObject ButtonTurnGuard;
-    [SerializeField] private Sprite playerTurnSprite,enemyTurnSprite; //ターン終了、相手のターンのスプライト
+    [SerializeField] private Sprite playerTurnSprite, enemyTurnSprite; //ターン終了、相手のターンのスプライト
 
     [SerializeField] private TextMeshProUGUI timeCountText; //ターンの残り時間の表示部
     [SerializeField] int timeLimit; //ターンの時間制限
@@ -55,18 +58,97 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         StartGame();
     }
-    bool isWaitBegin = true;
+    private enum eGameState
+    {
+        isBigin,
+        isGetPlayerTurn,
+        isWaitMulligan,
+        isProcessMulligan,
+        isWaitStart,
+        isStarted
+    }
+    eGameState gameState = eGameState.isBigin;
     private void Update()
     {
-        //オンライン対戦では、相手のデッキがなければ始められないので、ここで開始する
-        if (GameDataManager.instance.isOnlineBattle && isWaitBegin && enemyDeck != null)
+        //オンライン対戦では、相手のデッキがなければ始められないので、ここで開始する それに伴い、AI戦もここで開始する
+        if (gameState == eGameState.isGetPlayerTurn)
         {
-            isWaitBegin = false;
+            gameState = eGameState.isWaitMulligan;
+            StartCoroutine(WaitMulligan());
+        }
+        else if (gameState == eGameState.isWaitStart && enemyDeck != null)
+        {
+            HintMessage.SetActive(false);
+            HintMessage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"対象を選択してください";
+
+            gameState = eGameState.isStarted;
+            if (GameDataManager.instance.isOnlineBattle)
+            {
+                int seed = int.Parse(DateTime.Now.ToString("ddHHmmss")); //ランダム要素をプレイヤー間で揃えるため、シード値を共有することで対応する
+                UnityEngine.Random.InitState(seed);
+                SendSetSeed(seed);
+            }
             SetTime();
             SettingInitHero();
             SettingInitHand();
             StartCoroutine(ChangeTurn(true));
         }
+    }
+    public void FinishMulligan()
+    {
+        gameState = eGameState.isProcessMulligan;
+    }
+    IEnumerator WaitMulligan()
+    {
+        for(var i = 0; i < (isPlayerTurn ? 3 : 4); i++)
+        {
+            CardController cc = Instantiate(cardPrefab, playerMulliganTransform);
+            cc.Init(playerDeck.deck[i]);
+            cc.SetIsMulliganCard();
+        }
+
+        //PlayerMulligan → PanelMulligan → FrameMulligan → TextHintMuligan
+        playerMulliganTransform.parent.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = $"マリガン　{(isPlayerTurn ? "先攻" : "後攻")}";
+
+        //入力待ち
+        yield return new WaitUntil(() => gameState == eGameState.isProcessMulligan);
+
+        HintMessage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"相手のマリガンを待っています";
+
+        //マリガン処理
+        //Deck 0, 1, 2, 3 が、CardID A, B, C, D であり、 B, Dを残すとする
+        //この時、Aから順に残すか返すかの判定を行う 変数keppIndexに0を代入する
+        //AのisMulliganを見て、返すことにした　何もしない         A, B, C, D
+        //BのisMulliganを見て、残すことにした　ここで、Deck[0]のAと、Bの位置をスワップする そして、keepIndex+1            B, A, C, D
+        //CのisMulliganを見て、返すことにした　何もしない         B, A, C, D
+        //DのisMulliganを見て、残すことにした　ここで、keepInedxの値から既にスワップしたカードがあると分かるので、その次のDeck[1]のAと、Dの位置をスワップする　そして、keepIndex+1          B, D, C, A
+        //現在のkeepIndexは2    Deckの先頭2枚(0番目～1番目)が残したいカードとなる　よって先頭の2枚(B, D)を固定
+        //Deckの2番目～29番目までをシャッフルする　これは、「Deckの keepIndex番目 から、30 - keepIndex 枚を並べ替える」 と表せる
+        int deckIndex = 0, keepIndex=0;
+        int[] mulliganCards = new int[isPlayerTurn ? 3 : 4];
+        foreach (Transform mc in playerMulliganTransform)
+        {
+            CardController cc = mc.GetComponent<CardController>();
+            if (!cc.model.isMulligan)
+            {
+                var c = playerDeck.deck[keepIndex];
+                playerDeck.deck[keepIndex++] = cc.model.cardID;
+                playerDeck.deck[deckIndex] = c;
+            }
+            deckIndex++;
+
+        }
+        playerMulliganTransform.parent.gameObject.SetActive(false);
+
+        //返したカードが戻ってくるケースがあるけど、まあひとまずこれでいいと思います
+        playerDeck.deck = playerDeck.deck.GetRange(0, keepIndex).Concat(playerDeck.deck.GetRange(keepIndex, 30 - keepIndex).OrderBy(i => Guid.NewGuid())).ToList();
+
+        if (GameDataManager.instance.isOnlineBattle)
+        {
+            SendSetEnemyDeck(playerDeck);
+        }
+
+        gameState = eGameState.isWaitStart;
     }
     void StartGame()
     {
@@ -77,21 +159,15 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
                 SendSetIsPlayerTurn(isPlayerTurn);
-
-                int seed = int.Parse(DateTime.Now.ToString("ddHHmmss")); //ランダム要素をプレイヤー間で揃えるため、シード値を共有することで対応する
-                UnityEngine.Random.InitState(seed);
-                SendSetSeed(seed);
+                gameState = eGameState.isGetPlayerTurn;
             }
-            SendSetEnemyDeck(playerDeck);
+            
         }
-        else //オンライン対戦ではない==AI戦なので、ここで開始する
+        else //オンライン対戦ではない==AI戦
         {
             enemyDeck = new DeckModel().Init();
             isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
-            SetTime();
-            SettingInitHero();
-            SettingInitHand();
-            StartCoroutine(ChangeTurn(true));
+            gameState = eGameState.isGetPlayerTurn;
         }
     }
     /// <summary>
@@ -119,6 +195,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RPCSetIsPlayerTurn(bool isPlayerTurn)
     {
         this.isPlayerTurn = !isPlayerTurn;
+        gameState = eGameState.isGetPlayerTurn;
     }
     /// <summary>
     /// 自身のデッキを対戦相手に送信する
@@ -232,14 +309,15 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <param name="isPlayer"></param>
     IEnumerator CreateCard(int cardID, Transform hand, bool isPlayer)
     {
-        CardController x = Instantiate(cardPrefab, canvas);
-        x.transform.Translate(new Vector3(isPlayer ? -550 : 550, 0, 0), Space.Self);
-        x.GetComponent<CardController>().Init(cardID, isPlayer);
-        x.transform.DOLocalMove(new Vector3(isPlayer ? -100 : 100, 0, 0), 0.25f);
+        CardController cc = Instantiate(cardPrefab, canvas);
+        cc.transform.Translate(new Vector3(isPlayer ? -550 : 550, 0, 0), Space.Self);
+        cc.GetComponent<CardController>().Init(cardID, isPlayer);
+        cc.transform.DOLocalMove(new Vector3(isPlayer ? -100 : 100, 0, 0), 0.25f);
         yield return new WaitForSeconds(0.25f);
-        x.transform.DOMove(hand.position, 0.25f);
+        cc.transform.DOMove(hand.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
-        x.transform.SetParent(hand);
+        cc.transform.SetParent(hand);
+        if (isPlayer) { SetCanSummonHandCard(cc); }
     }
     #endregion
     #region　ターン制御
@@ -257,6 +335,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public IEnumerator ChangeTurn(bool isFirst = false)
     {
+        ButtonTurnGuard.gameObject.SetActive(true);
+
         if (isFirst) //ゲーム開始時はドロー処理があるので待つ
         {
             yield return new WaitForSeconds(1.6f);
@@ -267,9 +347,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         //ターン終了時処理
-        List<CardController> playerCardsHasSSED = FieldManager.instance.GetUnitsByFieldID(new int[] { 1, 2, 3, 4, 5, 6 }).Where(i => i.SpecialSkillEndTurn != null).ToList();
-        List<CardController> enemyCardsHasSSED = FieldManager.instance.GetUnitsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 }).Where(i => i.SpecialSkillEndTurn != null).ToList();
+        List<CardController> playerCardsHasSSED = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 6).ToArray()).Where(i => i.SpecialSkillEndTurn != null).ToList();
+        List<CardController> enemyCardsHasSSED = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray()).Where(i => i.SpecialSkillEndTurn != null).ToList();
         int unitCount = playerCardsHasSSED.Concat(enemyCardsHasSSED).Count();
+
+        SetCanSummonHandCards(true);
         if (isPlayerTurn)
         {
             foreach (var i in playerCardsHasSSED)
@@ -298,14 +380,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         //ターン終了時処理待ち時間
-        ButtonTurnGuard.gameObject.SetActive(true);
         if (!isFirst)
         {
             isPlayerTurn = !isPlayerTurn;
             yield return new WaitForSeconds(unitCount * 0.1f);
         }
 
-        //最初のターンはドローなしにするため
+        //ターン開始でのドロー処理　最初のターンはドローなしにするため
         if (isPlayerTurn && !isFirst)
         {
             GivesCard(true, 1);
@@ -323,6 +404,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             playerHeroController.ResetMP();
             SetCanAttackAllFieldUnit(playerFields, true, true);　//連撃権の復活も行う
             SetCanAttackAllFieldUnit(enemyFields, false);
+            SetCanSummonHandCards(); //手札から出せるかどうかの表示
         }
         else
         {
@@ -346,6 +428,33 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (!isPlayerTurn && !GameDataManager.instance.isOnlineBattle)
         {
             StartCoroutine(AIEnemyTurn());
+        }
+    }
+    /// <summary>
+    /// 味方のカードを召喚可能か判断し、表示を変更する
+    /// </summary>
+    /// <param name="cc"></param>
+    /// <param name="setCanNotSummon"></param>
+    private void SetCanSummonHandCard(CardController cc, bool setCanNotSummon = false)
+    {
+        if (cc.model.isPlayerCard && cc.model.cost <= GetHeroMP(true) && !setCanNotSummon) //誤って敵手札が通らないように setCanNotSummonがtrueなら、召喚不可にする
+        {
+            cc.SetCanSummon(true);
+        }
+        else
+        {
+            cc.SetCanSummon(false);
+        }
+    }
+    /// <summary>
+    /// 味方手札のカードが召喚可能か判断し、表示を変更する
+    /// </summary>
+    /// <param name="setCanNotSummon"></param>
+    public void SetCanSummonHandCards(bool setCanNotSummon = false)
+    {
+        foreach (Transform handCards in playerHandTransform) //敵手札の情報開示はしないので、味方固定
+        {
+            SetCanSummonHandCard(handCards.GetComponent<CardController>(), setCanNotSummon);
         }
     }
     /// <summary>
@@ -405,15 +514,14 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 if (playerField.childCount != 0)
                 {
-                    if (playerField.GetComponentInChildren<CardController>() is var pcc && pcc.model.isAlive)
+                    if (canAttackFieldEnemyCard.model.isAlive && playerField.GetComponentInChildren<CardController>() is var pcc && pcc.model.isAlive)
                     {
                         if (!FieldManager.instance.CheckCanAttackUnit(canAttackFieldEnemyCard, pcc)) { continue; }
 
                         StartCoroutine(canAttackFieldEnemyCard.movement.MoveToTarget(playerField));
                         yield return new WaitForSeconds(1f);
-                        CardsBattle(canAttackFieldEnemyCard, pcc);
-                        SkillManager.instance.ExecutePierce(canAttackFieldEnemyCard, pcc);
-                        yield return null;
+                        StartCoroutine(CardsBattle(canAttackFieldEnemyCard, pcc));
+                        yield return new WaitForSeconds(0.3f);
                         break;
                     }
 
@@ -424,7 +532,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             = enemyFields.Where(i => i.childCount != 0).Select(i => i.GetComponentInChildren<CardController>()).Where(i => i.model.canAttack);
         foreach (var canAttackFieldEnemyCard in canAttackFieldEnemyCards)
         { 
-            if (canAttackFieldEnemyCard.model.canAttack && playerHeroController.model.isAlive)
+            if (canAttackFieldEnemyCard.model.canAttack && canAttackFieldEnemyCard.model.isAlive && playerHeroController.model.isAlive)
             {
                 if (!FieldManager.instance.CheckCanAttackHero(canAttackFieldEnemyCard ,playerHeroController)) { continue; }
 
@@ -468,10 +576,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="attacker"></param>
     /// <param name="target"></param>
-    public void CardsBattle(CardController attacker, CardController target)
-    {   
+    public IEnumerator CardsBattle(CardController attacker, CardController target)
+    {
+        //開戦の儀
         attacker.Attack(target,true);
+        SkillManager.instance.ExecutePierce(attacker, target);
         target.Attack(attacker, false);
+
+        yield return new WaitForSeconds(0.25f);
 
         StartCoroutine(attacker.CheckAlive()); //ここで生きてるかを判断
         StartCoroutine(target.CheckAlive());
@@ -492,15 +604,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         //受信者から見ると、attackerは敵であり、targetは味方である　
         //targetFieldIDを-6して、味方のフィールドに変換する必要がある
         //Fields[]は0～5 FieldIDは1～6 よって、FieldIDからFieldを取得するには-1する必要がある
-        
+
         //敵のattackerを取得して、味方のtargetまで移動演出を起こす
-        StartCoroutine(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>().movement.MoveToTarget(playerFields[targetFieldID - 6 - 1]));
+        CardController attacker = enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>();
+        CardController target = playerFields[targetFieldID - 6 - 1].GetChild(0).GetComponent<CardController>();
+
+        StartCoroutine(attacker.movement.MoveToTarget(playerFields[targetFieldID - 6 - 1]));
         yield return new WaitForSeconds(0.25f);
-        //開戦の儀
-        CardsBattle(
-            enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>(),
-            playerFields[targetFieldID - 6 - 1].GetChild(0).GetComponent<CardController>()
-            );
+        StartCoroutine(CardsBattle( attacker, target ));
     }
     /// <summary>
     /// ヒーローへの攻撃
@@ -564,6 +675,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             enemyHeroController.ReduceMP(reduce);
         }
+        SetCanSummonHandCards();
     }
 
     #endregion
@@ -615,11 +727,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             AudioManager.instance.SoundLose();
             resultImage.sprite = Resources.Load<Sprite>($"UIs/draw"); //両者敗北
         }
+        StopAllCoroutines();
         Invoke("ChangeMenuScene", 3);
     }
     private void ChangeMenuScene()
     {
-        StopAllCoroutines();
         if (PhotonNetwork.IsConnected) { PhotonNetwork.LeaveRoom(); PhotonNetwork.Disconnect(); }
         SceneManager.LoadScene("MenuScene");
     }

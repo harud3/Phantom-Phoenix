@@ -15,11 +15,11 @@ public class ChangeScene : MonoBehaviour
         buttonVSAI.onClick.AddListener(() => {
             GameDataManager.instance.isOnlineBattle = false;
             Invoke("ChangeBattleScene", 0.5f);
-            AudioManager.instance.SoundButtonClick();
+            AudioManager.instance.SoundButtonClick1();
         });
         buttonDeck.onClick.AddListener(() => {
             Invoke("ChangeDeckScene", 0.5f);
-            AudioManager.instance.SoundButtonClick();
+            AudioManager.instance.SoundButtonClick1();
         });
     }
     private void ChangeBattleScene()

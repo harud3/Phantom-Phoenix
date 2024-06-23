@@ -32,7 +32,6 @@ public class DeckModel
     {
         this.useHeroID = useheroID;
         deck = deckIDs.ToList();
-
         return this;
     }
 }

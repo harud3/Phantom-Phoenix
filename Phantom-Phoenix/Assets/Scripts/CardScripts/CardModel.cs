@@ -26,6 +26,9 @@ public class CardModel
     public string textCard { get; private set; }
     public CardEntity.Target target { get; private set; }
 
+    public bool isMulliganCard { get; private set; }
+    public bool isMulligan {  get; private set; }
+
     public bool isPlayerCard { get; private set; }
     public bool isFieldCard { get; private set; }
     public int thisFieldID { get; private set; }
@@ -62,6 +65,7 @@ public class CardModel
         textCard = cardEntity.textCard;
         target = cardEntity.target;
 
+        isMulliganCard = isMulligan = false;
         isPlayerCard = isPlayer;
         isFieldCard = false;
         thisFieldID = 0;
@@ -79,6 +83,21 @@ public class CardModel
         {
             HasSelectSpeciallSkill = false;
         }
+    }
+    /// <summary>
+    /// マリガン候補かどうか 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    public void SetIsMulliganCard()
+    {
+        this.isMulliganCard = true;
+    }
+    /// <summary>
+    /// マリガンするかどうか 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="isMulligan"></param>
+    public void SetIsMulligan(bool isMulligan)
+    {
+        this.isMulligan = isMulligan;
     }
     /// <summary>
     /// ユニットがダメージを受けた時の処理 基本的にCardControllerを通して呼ぶことになる

@@ -21,19 +21,17 @@ public class AttackedCard : MonoBehaviour, IDropHandler
                 {
                     GameManager.instance.SendCardBattle(attacker.model.thisFieldID, target.model.thisFieldID); //バトル情報を対戦相手に送信
                 }
-                StartCoroutine(ExecuteCardsBattle(attacker, target));
+                ExecuteCardsBattle(attacker, target);
                 
             }
 
             
         }
     }
-    IEnumerator  ExecuteCardsBattle(CardController attacker, CardController target)
+    void  ExecuteCardsBattle(CardController attacker, CardController target)
     {
-        yield return new WaitForSeconds(0.25f);
-        //開戦の儀
         AudioManager.instance.SoundCardAttack();
-        GameManager.instance.CardsBattle(attacker, target);
-        SkillManager.instance.ExecutePierce(attacker, target);
+        //開戦の儀
+        StartCoroutine(GameManager.instance.CardsBattle(attacker, target));
     }
 }

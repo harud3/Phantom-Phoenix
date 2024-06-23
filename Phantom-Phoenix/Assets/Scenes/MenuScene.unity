@@ -826,10 +826,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundCardMove: {fileID: 8300000, guid: 002c71ff7ade10b409c415629a809c92, type: 3}
   soundCardAttack: {fileID: 8300000, guid: bdce105f30e0c5c4b82b0b0c648cddfd, type: 3}
-  soundButtonClick: {fileID: 8300000, guid: b48218577d18e0f48b245c78253f69f7, type: 3}
+  soundButtonClick1: {fileID: 8300000, guid: b48218577d18e0f48b245c78253f69f7, type: 3}
+  soundButtonClick2: {fileID: 8300000, guid: 5b5de6d13e3d19f4ba304400bf0a9dd4, type: 3}
+  soundButtonClick3: {fileID: 8300000, guid: 727a591e193018f468da356dd320e2c9, type: 3}
   soundWin: {fileID: 8300000, guid: 70ea2d0078274fc438ec4e0b957c6ca8, type: 3}
   soundLose: {fileID: 8300000, guid: 6104023b1e5fc104a9090190279be703, type: 3}
-  soundButtonClick2: {fileID: 8300000, guid: 5b5de6d13e3d19f4ba304400bf0a9dd4, type: 3}
   soundCardFire: {fileID: 8300000, guid: e77a89e56d019894fa4d1fadd27e1624, type: 3}
   soundCardDeBuff: {fileID: 8300000, guid: 24c5aef8bf6b4c44f9a58b0e4c0cf4a4, type: 3}
   soundcCardHeal: {fileID: 8300000, guid: 3d5847db9b6e49649a55c3baf3f568bc, type: 3}

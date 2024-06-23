@@ -33,7 +33,7 @@ public class OnlineManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default); //TODO:人数直す
         GameDataManager.instance.isMaster = true;
         SceneManager.LoadScene("OnlineScene");
-        AudioManager.instance.SoundButtonClick();
+        AudioManager.instance.SoundButtonClick1();
     }
 
     //部屋が2人ならシーンを変える
@@ -43,7 +43,7 @@ public class OnlineManager : MonoBehaviourPunCallbacks
         {
             isMatching = true;
             SceneManager.LoadScene("BattleScene");
-            AudioManager.instance.SoundButtonClick();
+            AudioManager.instance.SoundButtonClick1();
         }
     }
 }

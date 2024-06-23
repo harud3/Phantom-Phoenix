@@ -12,13 +12,15 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioClip soundCardAttack;
     [SerializeField]
-    private AudioClip soundButtonClick;
+    private AudioClip soundButtonClick1;
+    [SerializeField]
+    private AudioClip soundButtonClick2;
+    [SerializeField]
+    private AudioClip soundButtonClick3;
     [SerializeField]
     private AudioClip soundWin;
     [SerializeField]
     private AudioClip soundLose;
-    [SerializeField]
-    private AudioClip soundButtonClick2;
     [SerializeField]
     private AudioClip soundCardFire;
     [SerializeField]
@@ -55,10 +57,20 @@ public class AudioManager : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(soundCardAttack);
     }
-    public void SoundButtonClick()
+    public void SoundButtonClick1()
     {
         audioSource.Stop();
-        audioSource.PlayOneShot(soundButtonClick);
+        audioSource.PlayOneShot(soundButtonClick1);
+    }
+    public void SoundButtonClick2()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundButtonClick2);
+    }
+    public void SoundButtonClick3()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundButtonClick3);
     }
     public void SoundWin()
     {
@@ -69,11 +81,6 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.Stop();
         audioSource.PlayOneShot(soundLose);
-    }
-    public void SoundButtonClick2()
-    {
-        audioSource.Stop();
-        audioSource.PlayOneShot(soundButtonClick2);
     }
     public void SoundCardFire()
     {

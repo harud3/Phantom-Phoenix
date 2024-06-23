@@ -15,6 +15,8 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
     private bool isPlayerField; //playerかenemyか　事前にインスペクター上で設定　不変
     [SerializeField]
     private int _fieldID; //fieldIDも事前にインスペクター上で設定　不変
+    [SerializeField]
+    private GameObject HintMessage;
     public int fieldID { get { return _fieldID; } }
     public void OnDrop(PointerEventData eventData)
     {
@@ -58,8 +60,17 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
     /// <returns></returns>
     IEnumerator waitPlayerClick(CardController cc)
     {
-        cc.gameObject.SetActive(false);　//効果を持つカードを無効化する
+        FieldManager.instance.ChangeSelectablePanelColor(fieldID, true); //召喚予定フィールドのパネル色変更　赤→緑
+        FieldManager.instance.SetSelectablePanel(new int[] { fieldID }.ToArray(), true); //召喚予定フィールドのパネルを表示する
+        HintMessage.SetActive(true); //ヒントの表示
+        cc.gameObject.SetActive(false);　//効果を持つカードを無効化する //選択中は宙吊り状態のまま、非表示にしたい
+
+        //入力待ち
         yield return new WaitUntil(() => Input.GetMouseButton(0));
+
+        FieldManager.instance.ChangeSelectablePanelColor(fieldID, false);　//召喚予定フィールドのパネル色変更　緑→赤
+        FieldManager.instance.SetSelectablePanel(Enumerable.Range(1, 12).ToArray(), false); //フィールドの選択可能パネルを非表示にする
+        HintMessage.SetActive(false);
         cc.gameObject.SetActive(true); //効果を持つカードを有効化する
 
 
@@ -104,8 +115,12 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
     {
         if (cc.model.target == CardEntity.Target.enemyUnit)
         {
-            var x = FieldManager.instance.GetUnitsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 });
-            if (x.Count != 0) { return true; }
+            var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
+            if (x.Count != 0)
+            {
+                FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
+                return true;
+            }
         }
         return false;
     }
@@ -123,14 +138,14 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
         clickGameObject?.TryGetComponent<CardController>(out c); //取れたらいいですね
         if (cc.model.target == CardEntity.Target.enemyUnit)
         {
-            var x = FieldManager.instance.GetUnitsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 });
+            var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
             if (x.Count == 0) { return (true, null, null); }//ここ通ることない気がするけど…
             if (c != null)
             {
                 var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
                 if(y.Count() == 0) { return (false, null, null); }
-                else { return (true, y.ToArray(), y.Select(i => i.model.thisFieldID - 6).ToArray() ); }//現状では該当するの最大1個しかないけど、複数選択を見据えて配列にしておく
-                //ex) targetsは選んだ対象であり、送信者目線で敵の7なら、受信者目線では味方の1となる
+                else { return (true, y.ToArray(), y.Select(i => i.model.thisFieldID - 6).ToArray() ); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
+                //ex) targetsは選んだ対象であり、送信者目線で敵のfieldID7なら、受信者目線では味方のfieldID1となる
             }
         }
         return (false, null, null);

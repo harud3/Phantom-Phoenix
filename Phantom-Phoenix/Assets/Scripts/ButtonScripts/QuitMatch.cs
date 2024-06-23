@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using System;
 
 /// <summary>
 /// OnlineSceneの処理　メニューに戻る　部屋からも抜ける
@@ -18,7 +19,16 @@ public class QuitMatch : MonoBehaviour
         button.onClick.AddListener(() =>
         {
             if (PhotonNetwork.IsConnected) { PhotonNetwork.LeaveRoom(); PhotonNetwork.Disconnect(); }
+            //StartCoroutine(ChangeMenuScene());
             SceneManager.LoadScene("MenuScene");
+            AudioManager.instance.SoundButtonClick3();
         });
+    }
+    [Obsolete]
+    IEnumerator ChangeMenuScene() //使ったらPhotonがnullエラーを起こすのだが…
+    {
+        AudioManager.instance.SoundButtonClick3();
+        yield return new WaitForSeconds(0.7f);
+        SceneManager.LoadScene("MenuScene");
     }
 }
