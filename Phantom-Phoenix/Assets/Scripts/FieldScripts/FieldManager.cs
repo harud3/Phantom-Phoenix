@@ -9,6 +9,7 @@ public class FieldManager : MonoBehaviour
 {
     public static FieldManager instance { get; private set; }
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6];
+    [SerializeField] private Transform playerHand, enemyHand;
     [SerializeField] private HeroController playerHeroController, enemyHeroController;
     [SerializeField] private GameObject[] playerSelectablePanel = new GameObject[6], enemySelectablePanel = new GameObject[6];
     private GameObject[] selectablePanel = new GameObject[12];
@@ -23,6 +24,17 @@ public class FieldManager : MonoBehaviour
     {
         selectablePanel = playerSelectablePanel.Concat(enemySelectablePanel).ToArray();
     }
+    #region 手札取得
+    /// <summary>
+    /// playerかenemyの手札のカードを取得する
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    public List<CardController> GetUnitsInHand(bool isPlayerHand)
+    {
+        return (isPlayerHand ? playerHand : enemyHand).OfType<Transform>().Select(i => i.GetComponent<CardController>()).ToList();
+    }
+    #endregion
     #region 盤面取得
     //fieldIDは、　
     //             後列前列    前列後列

@@ -1876,7 +1876,7 @@ GameObject:
   - component: {fileID: 556285608}
   - component: {fileID: 556285607}
   m_Layer: 5
-  m_Name: FrameHintMulligan
+  m_Name: FrameHintSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2226,7 +2226,7 @@ GameObject:
   - component: {fileID: 668667010}
   - component: {fileID: 668667009}
   m_Layer: 5
-  m_Name: PanelMulligan
+  m_Name: PanelSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5166,7 +5166,7 @@ GameObject:
   - component: {fileID: 1299675488}
   - component: {fileID: 1299675487}
   m_Layer: 5
-  m_Name: PlayerMulligan
+  m_Name: PlayerSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5654,7 +5654,7 @@ GameObject:
   - component: {fileID: 1421632654}
   - component: {fileID: 1421632657}
   m_Layer: 5
-  m_Name: ButtonFinishMulligan
+  m_Name: ButtonFinishSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6370,8 +6370,8 @@ MonoBehaviour:
   - {fileID: 772933919}
   - {fileID: 2081932941}
   - {fileID: 789070768}
-  playerHeroController: {fileID: 1180896660}
-  enemyHeroController: {fileID: 550862160}
+  _playerHeroController: {fileID: 1180896660}
+  _enemyHeroController: {fileID: 550862160}
 --- !u!4 &1753854763
 Transform:
   m_ObjectHideFlags: 0
@@ -6684,6 +6684,8 @@ MonoBehaviour:
   - {fileID: 772933919}
   - {fileID: 2081932941}
   - {fileID: 789070768}
+  playerHand: {fileID: 1489626060}
+  enemyHand: {fileID: 1371586486}
   playerHeroController: {fileID: 1180896660}
   enemyHeroController: {fileID: 550862160}
   playerSelectablePanel:
@@ -7751,7 +7753,7 @@ MonoBehaviour:
   - {fileID: 789070768}
   playerHandTransform: {fileID: 1489626060}
   enemyHandTransform: {fileID: 1371586486}
-  playerMulliganTransform: {fileID: 1299675486}
+  playerSelectionTransform: {fileID: 1299675486}
   HintMessage: {fileID: 1930949004}
   cardPrefab: {fileID: -7060814915658875771, guid: 64e3b038805b8464890da531d00aedd7,
     type: 3}

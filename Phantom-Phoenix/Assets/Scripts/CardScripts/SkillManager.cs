@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class SkillManager : MonoBehaviour
 {
     public static SkillManager instance { get; private set; }
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6];
-    [SerializeField] private HeroController playerHeroController, enemyHeroController;
+    [SerializeField] HeroController _playerHeroController, _enemyHeroController;
+    public HeroController playerHeroController {  get { return _playerHeroController; } private set { _playerHeroController = value; } }
+    public HeroController enemyHeroController { get { return _enemyHeroController; } private set { _enemyHeroController = value; } }
     private void Awake()
     {
         if (instance == null)
@@ -201,34 +204,34 @@ public class SkillManager : MonoBehaviour
             //    }
 
             //122
-            case 1: { break; }
+            case 1: { break; } //なし
             //103
-            case 2: { break; }
+            case 2: { break; } //挑発
             //121
-            case 3: { break; }
+            case 3: { break; } //狙撃
             //Dwarf
-            case 4: { break; }
+            case 4: { break; } //即撃狙撃連撃
             //Behemoth
-            case 5:
+            case 5: //召喚時:味方ヒーローのMP-1
                 {
                     h.ChangeMaxMP(-1);
                     break;
                 }
             //223
-            case 6: { break; }
+            case 6: { break; } //挑発
             //232
-            case 7: { break; }
+            case 7: { break; } //貫通
             //Cerberus
-            case 8: { break; }
+            case 8: { break; } //即撃
             //321
-            case 9:
+            case 9: //両ヒーローはカードを2枚引く
                 {
                     GameManager.instance.GivesCard(h.model.isPlayer, 2);
                     GameManager.instance.GivesCard(!h.model.isPlayer, 2);
                     break;
                 }
-            //333
-            case 10:
+            //333 
+            case 10: //味方ターン終了時:HP1回復
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
@@ -239,8 +242,8 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //323
-            case 11:
+            //322
+            case 11: //味方ターン終了時:ランダムなユニット1体に1ダメージ
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
@@ -256,7 +259,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //FireLord
-            case 12:
+            case 12: //召喚時&死亡時:全てのユニットに2ダメージ
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
                     if (x.Count != 0) {
@@ -273,9 +276,9 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //445
-            case 13: { break; }
+            case 13: { break; }　//なし
             //443
-            case 14:
+            case 14: //召喚時:敵ユニット1体に2ダメージ
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
                     {
@@ -292,7 +295,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //434
-            case 15:
+            case 15: //召喚時:ユニット1体を封印する
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
                     {
@@ -312,6 +315,48 @@ public class SkillManager : MonoBehaviour
                     {
                         targets.First().SetIsSeal(true);
                     }
+                    break;
+                }
+            //king
+            case 16: { h.Heal(5); break; } //召喚時:味方ヒーローのHP5回復
+            //501
+            case 17: //死亡時:全ての敵ユニットを燃焼させる
+                {
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        var x = FieldManager.instance.GetUnitsByFieldID(
+                            c.model.isPlayerCard ? Enumerable.Range(7, 6).ToArray() : Enumerable.Range(1, 6).ToArray()
+                            ).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                        if (x.Count != 0)
+                        {
+                            //対象ユニットのターン終了時特殊スキルを追加する
+                            x.ForEach(i => i.SpecialSkillEndTurn += (bool isPlayerTurn) => { i.Damage(1); });
+                        }
+                    };
+                    break;
+                }
+                //517
+            case 18: //攻撃時:味方ヒーローはカードを1枚引く
+                {
+                    c.SpecialSkillBeforeAttack = (bool isAttacker) =>
+                    {
+                        if (isAttacker) { GameManager.instance.GivesCard(h.model.isPlayer, 1); }
+                    };
+                    break;
+                }
+                //Driller
+            case 19: //召喚時:このバトル中、元のATKが2以下の味方ユニットは+2/+2
+                {
+                    //Drillerは2/2なので対象
+                    c.Buff(2, 2);
+                    //フィールドの対象ユニットを+2/+2
+                    FieldManager.instance.GetUnitsByFieldID(
+                            c.model.isPlayerCard ? Enumerable.Range(1, 6).ToArray() : Enumerable.Range(7, 6).ToArray()
+                            ).Where(i => i.model.defaultATK <= 2 && i.model.thisFieldID != c.model.thisFieldID).ToList()?.ForEach(i => i.Buff(2, 2));
+                    //手札の対象カードを+2/+2
+                    FieldManager.instance.GetUnitsInHand(c.model.isPlayerCard)?.Where(i => i.model.defaultATK <= 2).ToList().ForEach(i => i.SilentBuff(2,2) );
+                    //今後引くカードを+2/+2するように
+                    h.ccExternalBuff += (CardController cc) => { if (cc.model.defaultATK <= 2) { cc.SilentBuff(2, 2); } };
                     break;
                 }
 

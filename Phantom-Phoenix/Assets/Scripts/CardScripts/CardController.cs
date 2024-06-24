@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.PunBasics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +28,14 @@ public class CardController : Controller
     public void Init(int CardID, bool isPlayer = true)
     {
         model = new CardModel(CardID, isPlayer);
+        if (isPlayer)
+        {
+            SkillManager.instance.playerHeroController.ccExternalBuff(this);
+        }
+        else
+        {
+            SkillManager.instance.enemyHeroController.ccExternalBuff(this);
+        }
         view.SetCard(model);
 
         //スペルカードならここで効果を設定しておく　
@@ -290,14 +299,29 @@ public class CardController : Controller
     /// <param name="isSeal"></param>
     public void SetIsSeal(bool isSeal)
     {
-        if (model.isActiveDoubleAction)
-            model.SetIsSeal(isSeal);
+        model.SetIsSeal(isSeal);
         view.SetViewFrameSeal(isSeal);
         view.SetViewFrameTaunt(!isSeal);
         if (model.isSummonThisTurn || SkillManager.instance.HasDoubleActionAndIsNotActiveDoubleAction(model))//即撃対策 連撃対策
         {
             SetCanAttack(false);
         }
-        
+        view.ReShow(model);
+    }
+    public void Buff(int atk, int hp)
+    {
+        AudioManager.instance.SoundcCardBuff();
+        SilentBuff(atk, hp);
+    }
+    public void SilentBuff(int atk, int hp)
+    {
+        model.Buff(atk, hp);
+        view.ReShow(model);
+    }
+    public void DeBuff(int atk, int hp)
+    {
+        AudioManager.instance.SoundcCardDeBuff();
+        model.DeBuff(atk, hp);
+        view.ReShow(model);
     }
 }

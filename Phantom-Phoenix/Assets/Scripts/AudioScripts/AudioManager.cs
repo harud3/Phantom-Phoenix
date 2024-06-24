@@ -24,9 +24,15 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioClip soundCardFire;
     [SerializeField]
-    private AudioClip soundCardDeBuff;
+    private AudioClip soundMPDeBuff;
     [SerializeField]
     private AudioClip soundcCardHeal;
+    [SerializeField]
+    private AudioClip soundcCardBuff;
+    [SerializeField]
+    private AudioClip soundcCardDeBuff;
+    [SerializeField]
+    private AudioClip soundcCardSeal;
 
     private AudioSource audioSource;
 
@@ -87,14 +93,29 @@ public class AudioManager : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(soundCardFire);
     }
-    public void SoundCardDeBuff()
+    public void SoundMPDeBuff()
     {
         audioSource.Stop();
-        audioSource.PlayOneShot(soundCardDeBuff);
+        audioSource.PlayOneShot(soundMPDeBuff);
     }
     public void SoundCardHeal()
     {
         audioSource.Stop();
         audioSource.PlayOneShot(soundcCardHeal);
+    }
+    public void SoundcCardBuff()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundcCardBuff);
+    }
+    public void SoundcCardDeBuff()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundcCardDeBuff);
+    }
+    public void SoundcCardSeal()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundcCardSeal);
     }
 }

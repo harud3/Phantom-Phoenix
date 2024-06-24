@@ -8,17 +8,18 @@ using UnityEngine;
 /// </summary>
 public class CardModel
 {
-    public int cardID {  get; private set; }
+    public int cardID { get; private set; }
     public Sprite character { get; private set; }
-    public string name {  get; private set; }
+    public string name { get; private set; }
 
     public int cost { get; private set; }
-    public int maxATK { get; private set; }
+    public int defaultATK { get; private set; }
     public int atk { get; private set; }
+    public int defaultHP { get; private set; }
     public int maxHP { get; private set; }
-    public int hp {  get; private set; }
-    
-    public CardEntity.Category category{ get; private set; }
+    public int hp { get; private set; }
+
+    public CardEntity.Category category { get; private set; }
     public CardEntity.Rarity rarity { get; private set; }
 
     public CardEntity.Skill skill1 { get; private set; }
@@ -28,19 +29,19 @@ public class CardModel
     public CardEntity.Target target { get; private set; }
 
     public bool isMulliganCard { get; private set; }
-    public bool isMulligan {  get; private set; }
+    public bool isMulligan { get; private set; }
 
     public bool isPlayerCard { get; private set; }
     public bool isFieldCard { get; private set; }
     public int thisFieldID { get; private set; }
-    public bool isAlive {  get; private set; }
-    public bool isSummonThisTurn {  get; private set; }
-    public bool canAttack {  get; private set; }
+    public bool isAlive { get; private set; }
+    public bool isSummonThisTurn { get; private set; }
+    public bool canAttack { get; private set; }
     public bool isTaunt { get; private set; }
     /// <summary>
     /// 連撃権 これがtrueなら、攻撃時にcanAttackをfalseにせず、代わりにこれをfalseにする　攻撃時の行動消費を1回なかったことにする
     /// </summary>
-    public bool isActiveDoubleAction {  get; private set; }
+    public bool isActiveDoubleAction { get; private set; }
 
     public bool HasSelectSpeciallSkill { get; private set; }
     public bool isSeal { get; private set; }
@@ -54,12 +55,13 @@ public class CardModel
         name = cardEntity.name;
 
         cost = cardEntity.cost;
-        maxATK = atk = cardEntity.atk;
-        maxHP = hp = cardEntity.hp;
+        defaultATK = atk = cardEntity.atk;
+        Debug.Log(defaultATK);
+        defaultHP = maxHP = hp = cardEntity.hp;
 
         category = cardEntity.category;
         rarity = cardEntity.rarity;
-        
+
         skill1 = cardEntity.skill1;
         skill2 = cardEntity.skill2;
         skill3 = cardEntity.skill3;
@@ -151,7 +153,8 @@ public class CardModel
     /// フィールドに置かれているかどうかを設定　基本的にCardControllerを通して呼ぶことになる
     /// </summary>
     /// <param name="isFieldCard"></param>
-    public void SetIsFieldCard(bool isFieldCard) { 
+    public void SetIsFieldCard(bool isFieldCard)
+    {
         this.isFieldCard = isFieldCard;
     }
     /// <summary>
@@ -185,6 +188,42 @@ public class CardModel
     public void SetIsSeal(bool isSeal)
     {
         this.isSeal = isSeal;
+        SetDefaultStats();
         isTaunt = false;
+    }
+    public void Buff(int atk, int hp)
+    {
+        this.atk += atk;
+        maxHP += hp;
+        this.hp += hp;
+    }
+    public void DeBuff(int atk, int hp)
+    {
+        this.atk -= atk;
+        maxHP -= hp;
+        this.hp -= hp;
+        if (atk < 0)
+        {
+            atk = 0;
+        }
+        if (hp < 0)
+        {
+            hp = 0;
+        }
+    }
+    /// <summary>
+    /// 規定値に戻す　主に封印用
+    /// </summary>
+    public void SetDefaultStats()
+    {
+        if (hp > defaultHP)
+        {
+            maxHP = hp = defaultHP;
+        }
+        else
+        {
+            maxHP = defaultHP;
+        }
+        atk = defaultATK;
     }
 }

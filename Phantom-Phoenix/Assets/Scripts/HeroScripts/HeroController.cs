@@ -45,6 +45,13 @@ public class HeroController : Controller
         model.Damage(atk);
         ReShowHP();
     }
+    public void Heal(int hl)
+    {
+        if (model.hp == model.maxHP) { return; }
+        AudioManager.instance.SoundCardHeal();
+        model.Heal(hl);
+        ReShowHP();
+    }
     /// <summary>
     /// あきらめた時
     /// </summary>
@@ -78,10 +85,11 @@ public class HeroController : Controller
     {
         //ターン開始時の最大MP増加は、model.ResetMP()の中で行っているので、効果音は鳴らない
         if (up > 0) { } 
-        else { AudioManager.instance.SoundCardDeBuff(); }
+        else { AudioManager.instance.SoundMPDeBuff(); }
         model.ChangeMaxMP(up);
         view.ReShowMP(model);
     }
+    public Action<CardController> ccExternalBuff = new Action<CardController>((unit) => { });
 }
 /// <summary>
 /// カードとヒーローを同時に処理できるようにするための基底クラス

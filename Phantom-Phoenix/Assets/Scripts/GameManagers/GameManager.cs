@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6]; //味方フィールド、敵フィールド
     [SerializeField] private Transform playerHandTransform, enemyHandTransform; //味方手札、敵手札
-    [SerializeField] private Transform playerMulliganTransform; //マリガンフィールド
+    [SerializeField] private Transform playerSelectionTransform; //選択フィールド
     [SerializeField] private GameObject HintMessage;
 
     [SerializeField] private CardController cardPrefab; //カード
@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         isWaitMulligan,
         isProcessMulligan,
         isWaitStart,
-        isStarted
+        isStarted,
     }
     eGameState gameState = eGameState.isBigin;
     void Start()
@@ -143,13 +143,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         for(var i = 0; i < (isPlayerTurn ? 3 : 4); i++)
         {
-            CardController cc = Instantiate(cardPrefab, playerMulliganTransform);
+            CardController cc = Instantiate(cardPrefab, playerSelectionTransform);
             cc.Init(playerDeck.deck[i]);
             cc.SetIsMulliganCard();
         }
 
         //PlayerMulligan → PanelMulligan → FrameMulligan → TextHintMuligan
-        playerMulliganTransform.parent.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = $"マリガン　{(isPlayerTurn ? "先攻" : "後攻")}";
+        playerSelectionTransform.parent.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = $"マリガン　{(isPlayerTurn ? "先攻" : "後攻")}";
 
         //入力待ち
         yield return new WaitUntil(() => gameState == eGameState.isProcessMulligan);
@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         //Deckの2番目～29番目までをシャッフルする　これは、「Deckの keepIndex番目 から、30 - keepIndex 枚を並べ替える」 と表せる
         int deckIndex = 0, keepIndex=0;
         int[] mulliganCards = new int[isPlayerTurn ? 3 : 4];
-        foreach (Transform mc in playerMulliganTransform)
+        foreach (Transform mc in playerSelectionTransform)
         {
             CardController cc = mc.GetComponent<CardController>();
             if (!cc.model.isMulligan)
@@ -179,7 +179,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             deckIndex++;
 
         }
-        playerMulliganTransform.parent.gameObject.SetActive(false);
+        playerSelectionTransform.parent.gameObject.SetActive(false);
 
         //返したカードが戻ってくるケースがあるけど、まあひとまずこれでいいと思います
         playerDeck.deck = playerDeck.deck.GetRange(0, keepIndex).Concat(playerDeck.deck.GetRange(keepIndex, 30 - keepIndex).OrderBy(i => Guid.NewGuid())).ToList();

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd02cba1d3ecd1247b2b7ee6f977b035, type: 3}
-  m_Name: Card15
+  m_Name: Card17
   m_EditorClassIdentifier: 
-  charcter: {fileID: 21300000, guid: 496a2f6dc61784744a5e3e2fd8b72661, type: 3}
-  name: 434
-  cost: 4
-  atk: 3
-  hp: 4
+  charcter: {fileID: 21300000, guid: 539b521bedefeaa4ab48d86f4d88d22f, type: 3}
+  name: 501
+  cost: 5
+  atk: 0
+  hp: 1
   category: 0
   rarity: 1
   skill1: 0
   skill2: 0
   skill3: 0
-  textCard: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u3092\\n\u5C01\u5370\u3059\u308B"
-  target: 1
+  textCard: "\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n\u71C3\u713C\u3055\u305B\u308B"
+  target: 11

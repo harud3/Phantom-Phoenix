@@ -52,6 +52,18 @@ public class HeroModel
             isAlive = false;
         }
     }
+    /// <summary>
+    /// ƒq[ƒ[‚ª‰ñ•œ‚ğó‚¯‚½‚Ìˆ— ’¼ÚŒÄ‚Î‚È‚¢
+    /// </summary>
+    /// <param name="hl"></param>
+    public void Heal(int hl)
+    {
+        hp += hl;
+        if (hp > maxHP)
+        {
+            hp = maxHP;
+        }
+    }
     public void Concede()
     {
         isAlive = false;
