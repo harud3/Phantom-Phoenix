@@ -113,15 +113,30 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
     /// <returns></returns>
     private bool IsExistTarget(CardController cc)
     {
-        if (cc.model.target == CardEntity.Target.enemyUnit)
+        switch (cc.model.target)
         {
-            var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
-            if (x.Count != 0)
-            {
-                FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
-                return true;
-            }
+            case CardEntity.Target.unit:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray());
+                    if (x.Count != 0)
+                    {
+                        FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
+                        return true;
+                    }
+                    break;
+                }
+            case CardEntity.Target.enemyUnit:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
+                    if (x.Count != 0)
+                    {
+                        FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
+                        return true;
+                    }
+                    break;
+                }
         }
+
         return false;
     }
     /// <summary>
@@ -136,17 +151,32 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
         CardController c = null;
         clickGameObject?.TryGetComponent<HeroController>(out hc); //取れたらいいですね
         clickGameObject?.TryGetComponent<CardController>(out c); //取れたらいいですね
-        if (cc.model.target == CardEntity.Target.enemyUnit)
-        {
-            var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
-            if (x.Count == 0) { return (true, null, null); }//ここ通ることない気がするけど…
-            if (c != null)
-            {
-                var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
-                if(y.Count() == 0) { return (false, null, null); }
-                else { return (true, y.ToArray(), y.Select(i => i.model.thisFieldID - 6).ToArray() ); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
-                //ex) targetsは選んだ対象であり、送信者目線で敵のfieldID7なら、受信者目線では味方のfieldID1となる
-            }
+        switch(cc.model.target){
+            case CardEntity.Target.unit:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray());
+                    if (x.Count == 0) { return (true, null, null); }//ここ通ることない気がするけど…
+                    if (c != null)
+                    {
+                        var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
+                        if (y.Count() == 0) { return (false, null, null); }
+                        else { return (true, y.ToArray(), y.Select(i => FieldManager.instance.ChangeFieldID(i.model.thisFieldID)).ToArray()); }
+                    }
+                    break;
+                }
+            case CardEntity.Target.enemyUnit:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
+                    if (x.Count == 0) { return (true, null, null); }//ここ通ることない気がするけど…
+                    if (c != null)
+                    {
+                        var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
+                        if (y.Count() == 0) { return (false, null, null); }
+                        else { return (true, y.ToArray(), y.Select(i => i.model.thisFieldID - 6).ToArray()); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
+                                                                                                         //ex) targetsは選んだ対象であり、送信者目線で敵のfieldID7なら、受信者目線では味方のfieldID1となる
+                    }
+                    break;
+                }
         }
         return (false, null, null);
     }

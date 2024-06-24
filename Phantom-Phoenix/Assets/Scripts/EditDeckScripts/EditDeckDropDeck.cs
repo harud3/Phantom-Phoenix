@@ -8,14 +8,14 @@ using TMPro;
 /// <summary>
 /// デッキ編成画面　カードをデッキ欄にドロップした時の処理
 /// </summary>
-public class DeckSceneDropDeck : MonoBehaviour, IDropHandler
+public class EditDeckDropDeck : MonoBehaviour, IDropHandler
 {
     [SerializeField]
     TextMeshProUGUI hintText;
     public void OnDrop(PointerEventData eventData)
     {
 
-        DeckSceneCardController cc = eventData.pointerDrag.GetComponent<DeckSceneCardController>();
+        EditDeckCardController cc = eventData.pointerDrag.GetComponent<EditDeckCardController>();
         if (cc == null) { return; }
 
         if (this.transform.childCount < 30)
@@ -29,7 +29,7 @@ public class DeckSceneDropDeck : MonoBehaviour, IDropHandler
 #endif
             foreach (Transform t in this.transform)
             {
-                if (t.gameObject.GetComponent<DeckSceneCardController>().model.cardID == cardID) { cardcount++; }
+                if (t.gameObject.GetComponent<EditDeckCardController>().model.cardID == cardID) { cardcount++; }
 
                 if (cardcount > maxCount) //欲張りだよそれは
                 {

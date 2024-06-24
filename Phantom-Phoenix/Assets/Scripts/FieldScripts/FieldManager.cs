@@ -1,3 +1,4 @@
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,6 +117,23 @@ public class FieldManager : MonoBehaviour
         }
     }
     /// <summary>
+    /// 味方fieldIDを敵fieldIDに 敵fieldIDを味方fieldIDに変換する　通信対戦用
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    public int ChangeFieldID(int fieldID)
+    {
+        if (1 <= fieldID && fieldID <= 6)
+        {
+            return fieldID + 6;
+        }
+        else if (7 <= fieldID && fieldID <= 12)
+        {
+            return fieldID - 6;
+        }
+        return 0; //ここ来るのはまずい
+    }
+    /// <summary>
     /// 対象ユニットを攻撃可能かどうかを判定する
     /// </summary>
     /// <param name="attacker"></param>
@@ -132,22 +150,22 @@ public class FieldManager : MonoBehaviour
         //              6   3   |   9   12
         //となっている
         if (target.model.isTaunt   /*isTauntはfield1,2,3またはfield7,8,9にいる時にtrueとなる設定　よって、targetがisTauntしてるなら即開戦でOK */
-            || SkillManager.instance.isSnipe(attacker.model)) //isSnipeはどこでも攻撃できる
+            || SkillManager.instance.IsSnipe(attacker.model)) //isSnipeはどこでも攻撃できる
         {
             return true;
         }
 
         if (target.model.isPlayerCard) //targetのisPlayerCardと、攻撃される側のフィールド群がプレイヤーのフィールドであるか は一致する
         {
-            if (SkillManager.instance.isAnyTaunt(true)) { return false; }
+            if (SkillManager.instance.IsAnyTaunt(true)) { return false; }
 
-            if (SkillManager.instance.isBlock(true, target.model.thisFieldID)) { return false; }
+            if (SkillManager.instance.IsBlock(true, target.model.thisFieldID)) { return false; }
         }
         else //それ以外のfieldはenemy側
         {
-            if (SkillManager.instance.isAnyTaunt(false)) { return false; }
+            if (SkillManager.instance.IsAnyTaunt(false)) { return false; }
 
-            if (SkillManager.instance.isBlock(false, target.model.thisFieldID)) { return false; }
+            if (SkillManager.instance.IsBlock(false, target.model.thisFieldID)) { return false; }
 
         }
         return true;
@@ -168,24 +186,24 @@ public class FieldManager : MonoBehaviour
         //playerHero    5   2   |   8   11  enemyHero
         //              6   3   |   9   12
         //となっている
-        if (SkillManager.instance.isSnipe(attacker.model)) //isSnipeはどこでも攻撃できる
+        if (SkillManager.instance.IsSnipe(attacker.model)) //isSnipeはどこでも攻撃できる
         {
             return true;
         }
 
         if (target.model.isPlayer) //targetのisPlayerと、攻撃される側のフィールド群がプレイヤーのフィールドであるか は一致する
         {
-            if (SkillManager.instance.isAnyTaunt(true)) { return false; }
+            if (SkillManager.instance.IsAnyTaunt(true)) { return false; }
 
             //ウォール
-            if (SkillManager.instance.isWall(true)) { return false; }
+            if (SkillManager.instance.IsWall(true)) { return false; }
         }
         else //それ以外はenemy側
         {
-            if (SkillManager.instance.isAnyTaunt(false)) { return false; }
+            if (SkillManager.instance.IsAnyTaunt(false)) { return false; }
 
             //ウォール
-            if (SkillManager.instance.isWall(false)) { return false; }
+            if (SkillManager.instance.IsWall(false)) { return false; }
         }
         return true;
     }

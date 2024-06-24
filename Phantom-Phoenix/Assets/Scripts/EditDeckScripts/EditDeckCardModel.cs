@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// デッキ編成画面のカードの実体
 /// </summary>
-public class DeckSceneCardModel
+public class EditDeckCardModel
 {
     public int cardID {  get; private set; }
     public Sprite icon { get; private set; }
@@ -22,7 +22,7 @@ public class DeckSceneCardModel
     public CardEntity.Skill skill3 { get; private set; }
     public string cardText { get; private set; }
 
-    public DeckSceneCardModel(int cardID, bool isPlayer)
+    public EditDeckCardModel(int cardID, bool isPlayer)
     {
         //cardIDを基に対象のカードデータを取得する
         CardEntity cardEntity = Resources.Load<CardEntity>($"CardEntityList/Card{cardID}");

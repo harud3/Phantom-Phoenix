@@ -9,7 +9,7 @@ using TMPro;
 /// <summary>
 /// ƒƒCƒ“ƒƒjƒ…[‚É–ß‚é‚Ìˆ—
 /// </summary>
-public class DeckScenebackmenu : MonoBehaviour
+public class EditDeckbackmenu : MonoBehaviour
 {
     [SerializeField]
     Button button;
@@ -33,7 +33,7 @@ public class DeckScenebackmenu : MonoBehaviour
             List<int> cardIDs = new List<int>();
             foreach (Transform card in Deck)
             {
-                cardIDs.Add(card.GetComponent<DeckSceneCardController>().model.cardID);
+                cardIDs.Add(card.GetComponent<EditDeckCardController>().model.cardID);
             }
             DeckData data = new DeckData()
             {

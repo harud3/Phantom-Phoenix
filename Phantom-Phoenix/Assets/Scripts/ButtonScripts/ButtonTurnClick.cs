@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// ƒoƒgƒ‹‰æ–Ê@ButtonTurn‚ğ‰Ÿ‚µ‚½‚Æ‚«‚Ìˆ—
 /// </summary>
-public class TurnButtonClick : MonoBehaviour
+public class ButtonTurnClick : MonoBehaviour
 {
     [SerializeField]
     Button button;

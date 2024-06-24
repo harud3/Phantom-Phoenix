@@ -17,7 +17,7 @@ public class SkillManager : MonoBehaviour
         }
     }
     #region 5大スキル
-    public bool isFast(CardModel model) //即撃
+    public bool IsFast(CardModel model) //即撃
     {
         if (model.skill1 == CardEntity.Skill.fast || model.skill2 == CardEntity.Skill.fast || model.skill3 == CardEntity.Skill.fast)
         {
@@ -25,7 +25,7 @@ public class SkillManager : MonoBehaviour
         }
         return false;
     }
-    public bool isTaunt(CardModel model) //挑発
+    public bool IsTaunt(CardModel model) //挑発
     {
         if (model.skill1 == CardEntity.Skill.taunt || model.skill2 == CardEntity.Skill.taunt || model.skill3 == CardEntity.Skill.taunt)
         {
@@ -39,33 +39,46 @@ public class SkillManager : MonoBehaviour
         }
         return false;
     }
-    public bool isSnipe(CardModel model) //狙撃
+    public bool IsSnipe(CardModel model) //狙撃
     {
-        if (model.skill1 == CardEntity.Skill.snipe || model.skill2 == CardEntity.Skill.snipe || model.skill3 == CardEntity.Skill.snipe)
+        if (!model.isSeal && (model.skill1 == CardEntity.Skill.snipe || model.skill2 == CardEntity.Skill.snipe || model.skill3 == CardEntity.Skill.snipe))
         {
             return true;
         }
         return false;
     }
-    public bool isPierce(CardModel model) //貫通
+    public bool IsPierce(CardModel model) //貫通
     {
-        if (model.skill1 == CardEntity.Skill.pierce || model.skill2 == CardEntity.Skill.pierce || model.skill3 == CardEntity.Skill.pierce)
+        if (!model.isSeal &&  (model.skill1 == CardEntity.Skill.pierce || model.skill2 == CardEntity.Skill.pierce || model.skill3 == CardEntity.Skill.pierce))
         {
             return true;
         }
         return false;
     }
-    public bool isActiveDoubleAction(CardModel model) //連撃権
+    public bool IsActiveDoubleAction(CardModel model) //連撃権
     {
-        if (isDoubleAction(model))
+        if (!model.isSeal &&  IsDoubleAction(model))
         {
             if (model.isActiveDoubleAction) { return true; }
         }
         return false;
     }
-    public bool isDoubleAction(CardModel model) //連撃
+    public bool IsDoubleAction(CardModel model) //連撃
     {
-        if (model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction)
+        if (!model.isSeal && ( model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction ))
+        {
+            return true;
+        }
+        return false;
+    }
+    /// <summary>
+    /// 封印用　連撃効果を持っていると、召喚時とターン開始時に連撃権がtrueとなる  つまり、連撃効果持ちで連撃権がfalseの時は、1回目の攻撃を済ませている    よって、その時は行動できないようにしたい
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public bool HasDoubleActionAndIsNotActiveDoubleAction(CardModel model)
+    {
+        if (!model.isActiveDoubleAction && (model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction))
         {
             return true;
         }
@@ -77,7 +90,7 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     /// <param name="isPlayerField"></param>
     /// <returns></returns>
-    public bool isAnyTaunt(bool isPlayerField)
+    public bool IsAnyTaunt(bool isPlayerField)
     {
 
         if (isPlayerField)
@@ -98,7 +111,7 @@ public class SkillManager : MonoBehaviour
     /// <param name="isPlayerField"></param>
     /// <param name="thisFieldID"></param>
     /// <returns></returns>
-    public bool isBlock(bool isPlayerField, int thisFieldID)
+    public bool IsBlock(bool isPlayerField, int thisFieldID)
     {
         //fieldIDは、　
         //             後列前列    前列後列
@@ -131,7 +144,7 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     /// <param name="isPlayerField"></param>
     /// <returns></returns>
-    public bool isWall(bool isPlayerField)
+    public bool IsWall(bool isPlayerField)
     {
         if (isPlayerField
             && (FieldManager.instance.GetUnitByFieldID(1) != null || FieldManager.instance.GetUnitByFieldID(4) != null)
@@ -159,7 +172,7 @@ public class SkillManager : MonoBehaviour
     public void ExecutePierce(CardController attacker, CardController target)
     {
         int targetFieldID = target.model.thisFieldID;
-        if (isPierce(attacker.model)
+        if (IsPierce(attacker.model)
             && (
                 (1 <= targetFieldID && targetFieldID <= 3)
                 || (7 <= targetFieldID && targetFieldID <= 9)
@@ -174,7 +187,7 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     /// <param name="c"></param>
     /// <param name="targets"></param>
-    public void specialSkills(CardController c, CardController[] targets = null)
+    public void SpecialSkills(CardController c, CardController[] targets = null)
     {
         HeroController h = c.model.isPlayerCard ? playerHeroController : enemyHeroController;
         switch (c.model.cardID)
@@ -259,10 +272,12 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
+            //445
             case 13: { break; }
+            //443
             case 14:
                 {
-                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard)
+                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
                     {
                         var x = FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard);
                         if (x != null)
@@ -270,9 +285,32 @@ public class SkillManager : MonoBehaviour
                             x.Damage(2);
                         }
                     }
-                    if (targets != null)
+                    else if (targets != null)
                     {
                         targets.First().Damage(2);
+                    }
+                    break;
+                }
+            //434
+            case 15:
+                {
+                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
+                    {
+                        var x = FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard);
+                        if (x != null)
+                        {
+                            x.SetIsSeal(true);
+                        }
+                        else if(FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard) is var y){
+                            if (y != null)
+                            {
+                                y.SetIsSeal(true);
+                            }
+                        }
+                    }
+                    else if (targets != null)
+                    {
+                        targets.First().SetIsSeal(true);
                     }
                     break;
                 }

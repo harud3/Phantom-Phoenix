@@ -32,7 +32,7 @@ public class CardController : Controller
         //スペルカードならここで効果を設定しておく　
         if(model.category == CardEntity.Category.spell)
         {
-            SkillManager.instance.specialSkills(this);
+            SkillManager.instance.SpecialSkills(this);
         }
     }
     /// <summary>
@@ -117,16 +117,16 @@ public class CardController : Controller
         view.HideCost(false);
         Show(true);
 
-        SkillManager.instance.specialSkills(this, targets); //召喚時効果の発動　誘発効果の紐づけ
+        SkillManager.instance.SpecialSkills(this, targets); //召喚時効果の発動　誘発効果の紐づけ
 
-        SetCanAttack(SkillManager.instance.isFast(model)); //即撃付与 CanSummonの無効化も兼ねる
+        SetCanAttack(SkillManager.instance.IsFast(model)); //即撃付与 CanSummonの無効化も兼ねる
 
-        if (SkillManager.instance.isTaunt(model)) //挑発効果付与 前列に召喚された時だけ
+        if (SkillManager.instance.IsTaunt(model)) //挑発効果付与 前列に召喚された時だけ
         {
             model.SetIsTaunt(true);
             view.SetViewFrameTaunt(true);
         }
-        if (SkillManager.instance.isDoubleAction(model))
+        if (SkillManager.instance.IsDoubleAction(model))
         { //二回攻撃効果付与
             model.SetIsActiveDoubleAction(true);
         }
@@ -222,7 +222,7 @@ public class CardController : Controller
         if (!model.isAlive) { return; }　//しんでるなら連撃は考えない
 
         //連撃判定の特殊処理
-        if (SkillManager.instance.isActiveDoubleAction(model)) //ユニットが連撃持ちで、連撃権があるならtrue
+        if (SkillManager.instance.IsActiveDoubleAction(model)) //ユニットが連撃持ちで、連撃権があるならtrue
         {
             SetCanAttack(true); //もう1回戦えるドン
             model.SetIsActiveDoubleAction(false); //連撃権の無効化
@@ -238,10 +238,14 @@ public class CardController : Controller
     {
         model.SetCanAttack(canAttack);
         view.SetActiveSelectablePanel(canAttack);
-        if (ResetIsActiveDoubleAction && SkillManager.instance.isDoubleAction(model))
+        if (ResetIsActiveDoubleAction && SkillManager.instance.IsDoubleAction(model))
         {
             model.SetIsActiveDoubleAction(true);
         }
+    }
+    public void SetIsNotSummonThisTurn()
+    {
+        model.SetIsNotSummonThisTurn();
     }
     public void SetCanSummon(bool canSummon)
     {
@@ -253,7 +257,7 @@ public class CardController : Controller
     public Action<bool> SpecialSkillBeforeAttack = null;
     public void ExecuteSpecialSkillBeforeAttack(bool isAttacker)
     {
-        SpecialSkillBeforeAttack?.Invoke(isAttacker);
+        if(!model.isSeal)SpecialSkillBeforeAttack?.Invoke(isAttacker);
     }
     /// <summary>
     /// 攻撃後効果 使うことあるんだろうか…
@@ -261,7 +265,7 @@ public class CardController : Controller
     public Action<bool> SpecialSkillAfterAttack = null;
     public void ExecuteSpecialSkillAfterAttack(bool isAttacker)
     {
-        SpecialSkillAfterAttack?.Invoke(isAttacker);
+        if (!model.isSeal) SpecialSkillAfterAttack?.Invoke(isAttacker);
     }
     /// <summary>
     /// ターン終了時効果
@@ -269,7 +273,7 @@ public class CardController : Controller
     public Action<bool> SpecialSkillEndTurn = null;
     public void ExecuteSpecialSkillEndTurn(bool isPlayerTurn)
     {
-        SpecialSkillEndTurn?.Invoke(isPlayerTurn);
+        if (!model.isSeal) SpecialSkillEndTurn?.Invoke(isPlayerTurn);
     }
     private bool ExecutedSSBD = false;
     /// <summary>
@@ -278,6 +282,22 @@ public class CardController : Controller
     public Action SpecialSkillBeforeDie = null;
     public void ExecuteSpecialSkillBeforeDie()
     {
-        SpecialSkillBeforeDie?.Invoke();
+        if (!model.isSeal) SpecialSkillBeforeDie?.Invoke();
+    }
+    /// <summary>
+    /// 封印効果
+    /// </summary>
+    /// <param name="isSeal"></param>
+    public void SetIsSeal(bool isSeal)
+    {
+        if (model.isActiveDoubleAction)
+            model.SetIsSeal(isSeal);
+        view.SetViewFrameSeal(isSeal);
+        view.SetViewFrameTaunt(!isSeal);
+        if (model.isSummonThisTurn || SkillManager.instance.HasDoubleActionAndIsNotActiveDoubleAction(model))//即撃対策 連撃対策
+        {
+            SetCanAttack(false);
+        }
+        
     }
 }

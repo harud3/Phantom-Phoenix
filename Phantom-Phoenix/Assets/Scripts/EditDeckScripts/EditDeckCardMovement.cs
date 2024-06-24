@@ -10,7 +10,7 @@ using System.Linq;
 /// <summary>
 /// デッキ編成画面のカードの挙動
 /// </summary>
-public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class EditDeckCardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
     public Transform recordDefaultParent { get; private set; } //同じ位置に戻った時に順番が入れ替わらないようにするため、移動前の親を記録
@@ -37,8 +37,8 @@ public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHand
         if (recordDefaultParent.name == "PanelStock") //カード一覧から動かした場合、その場にコピーを作成する
         {
             siblingIndex = transform.GetSiblingIndex();
-            DeckSceneCardController card = Instantiate(cardPrefab, this.recordDefaultParent).GetComponent<DeckSceneCardController>();
-            card.Init(this.GetComponent<DeckSceneCardController>().model.cardID);
+            EditDeckCardController card = Instantiate(cardPrefab, this.recordDefaultParent).GetComponent<EditDeckCardController>();
+            card.Init(this.GetComponent<EditDeckCardController>().model.cardID);
             card.transform.SetSiblingIndex(siblingIndex);
         }
 
@@ -86,7 +86,7 @@ public class DeckSceneCardMovement : MonoBehaviour, IDragHandler, IBeginDragHand
             children.Add(t);
         }
         var siblingIndex = 0;
-        foreach (var sortedItem in children.OrderBy(x => x.GetComponent<DeckSceneCardController>().model.cardID))
+        foreach (var sortedItem in children.OrderBy(x => x.GetComponent<EditDeckCardController>().model.cardID))
         {
             sortedItem.SetSiblingIndex(siblingIndex++);
         }

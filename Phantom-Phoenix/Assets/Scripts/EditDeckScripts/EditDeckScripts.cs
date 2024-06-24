@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// <summary>
 /// デッキ編成画面　主にカード一覧のページ管理を行う　1ページ最大8枚
 /// </summary>
-public class DeckSceneManager : MonoBehaviour
+public class EditDeckManager : MonoBehaviour
 {
     [SerializeField] Button ButtonLeft;
     [SerializeField] Button ButtonRight;
@@ -36,7 +36,7 @@ public class DeckSceneManager : MonoBehaviour
         DeckModel deckmodel = new DeckModel().Init();
         deckmodel.deck.OrderBy(i => i).ToList().ForEach(i =>
         {
-            Instantiate(cardPrefab, Deck).GetComponent<DeckSceneCardController>().Init(i);
+            Instantiate(cardPrefab, Deck).GetComponent<EditDeckCardController>().Init(i);
         });
     }
     private void GetNewStock()
@@ -56,7 +56,7 @@ public class DeckSceneManager : MonoBehaviour
         do
         {
             if (Resources.Load<CardEntity>($"CardEntityList/Card{id + (8 * pages) - 8}") == null) { break; } //取得できなかったら抜ける
-            DeckSceneCardController card = Instantiate(cardPrefab, Stock).GetComponent<DeckSceneCardController>();
+            EditDeckCardController card = Instantiate(cardPrefab, Stock).GetComponent<EditDeckCardController>();
             card.Init((id++) + (8 * pages) - 8);
         } while (++viewCount < 8);
     }

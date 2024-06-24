@@ -9,22 +9,22 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using static UnityEngine.EventSystems.EventTrigger;
 
 /// <summary>
-/// デッキシーンのCCはやることが少ない
+/// デッキ編成画面のCCはやることが少ない
 /// </summary>
-public class DeckSceneCardController : Controller
+public class EditDeckCardController : Controller
 {
-    DeckSceneCardView view;
-    public DeckSceneCardModel model {  get; private set; }
-    public DeckSceneCardMovement movement {  get; private set; }
+    EditDeckCardView view;
+    public EditDeckCardModel model {  get; private set; }
+    public EditDeckCardMovement movement {  get; private set; }
     private void Awake()
     {
-        view = GetComponent<DeckSceneCardView>();
-        movement = GetComponent<DeckSceneCardMovement>();
+        view = GetComponent<EditDeckCardView>();
+        movement = GetComponent<EditDeckCardMovement>();
     }
 
     public void Init(int CardID, bool isPlayer = true)
     {
-        model = new DeckSceneCardModel(CardID, isPlayer);
+        model = new EditDeckCardModel(CardID, isPlayer);
         view.SetCard(model);
     }
 }

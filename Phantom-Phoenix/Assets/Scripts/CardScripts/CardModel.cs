@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 /// <summary>
 /// カードの実体 Cardプレハブについてる
@@ -33,8 +34,8 @@ public class CardModel
     public bool isFieldCard { get; private set; }
     public int thisFieldID { get; private set; }
     public bool isAlive {  get; private set; }
+    public bool isSummonThisTurn {  get; private set; }
     public bool canAttack {  get; private set; }
-
     public bool isTaunt { get; private set; }
     /// <summary>
     /// 連撃権 これがtrueなら、攻撃時にcanAttackをfalseにせず、代わりにこれをfalseにする　攻撃時の行動消費を1回なかったことにする
@@ -42,7 +43,7 @@ public class CardModel
     public bool isActiveDoubleAction {  get; private set; }
 
     public bool HasSelectSpeciallSkill { get; private set; }
-
+    public bool isSeal { get; private set; }
     public CardModel(int cardID, bool isPlayer)
     {
         //cardIDを基に対象のカードデータを取得する
@@ -70,12 +71,13 @@ public class CardModel
         isFieldCard = false;
         thisFieldID = 0;
         isAlive = true;
+        isSummonThisTurn = true;
         canAttack = false;
 
         isTaunt = false;
         isActiveDoubleAction = true;
         //選択が必要な場合、このフラグをtrueにして管理する
-        if (target == CardEntity.Target.enemyUnit)
+        if (target == CardEntity.Target.unit || target == CardEntity.Target.enemyUnit)
         {
             HasSelectSpeciallSkill = true;
         }
@@ -160,6 +162,10 @@ public class CardModel
     {
         this.thisFieldID = thisFieldID;
     }
+    public void SetIsNotSummonThisTurn()
+    {
+        this.isSummonThisTurn = false;
+    }
     /// <summary>
     /// 挑発中かどうかを設定　基本的にCardControllerを通して呼ぶことになる
     /// </summary>
@@ -175,5 +181,10 @@ public class CardModel
     public void SetIsActiveDoubleAction(bool isActiveDoubleAction)
     {
         this.isActiveDoubleAction = isActiveDoubleAction;
+    }
+    public void SetIsSeal(bool isSeal)
+    {
+        this.isSeal = isSeal;
+        isTaunt = false;
     }
 }

@@ -28,17 +28,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [SerializeField] private Transform canvas;
-    [SerializeField] private HeroController playerHeroController, enemyHeroController;
+    [SerializeField] private HeroController playerHeroController, enemyHeroController; //味方ヒーロー、敵ヒーロー
 
-    [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6];
-    [SerializeField] private Transform playerHandTransform, enemyHandTransform;
-    [SerializeField] private Transform playerMulliganTransform;
+    [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6]; //味方フィールド、敵フィールド
+    [SerializeField] private Transform playerHandTransform, enemyHandTransform; //味方手札、敵手札
+    [SerializeField] private Transform playerMulliganTransform; //マリガンフィールド
     [SerializeField] private GameObject HintMessage;
 
-    [SerializeField] private CardController cardPrefab;
+    [SerializeField] private CardController cardPrefab; //カード
 
-    [SerializeField] private UnityEngine.UI.Button ButtonTurn;
-    [SerializeField] private GameObject ButtonTurnGuard;
+    [SerializeField] private UnityEngine.UI.Button ButtonTurn; //ターン変更ボタン
+    [SerializeField] private GameObject ButtonTurnGuard; //ターン変更ボタン連打を対策
     [SerializeField] private Sprite playerTurnSprite, enemyTurnSprite; //ターン終了、相手のターンのスプライト
 
     [SerializeField] private TextMeshProUGUI timeCountText; //ターンの残り時間の表示部
@@ -54,24 +54,61 @@ public class GameManager : MonoBehaviourPunCallbacks
     DeckModel playerDeck = null;
     DeckModel enemyDeck = null;
     #region 初期設定
-    void Start()
-    {
-        StartGame();
-    }
+    /// <summary>
+    /// ゲームの状態 通信対戦において、最初に相互データ通信(デッキ、シード値)があるので管理必須
+    /// </summary>
     private enum eGameState
     {
         isBigin,
-        isGetPlayerTurn,
+        isGotPlayerTurn,
         isWaitMulligan,
         isProcessMulligan,
         isWaitStart,
         isStarted
     }
     eGameState gameState = eGameState.isBigin;
+    void Start()
+    {
+        StartGame();
+    }
+    void StartGame()
+    {
+        playerDeck = new DeckModel().Init();
+        if (GameDataManager.instance.isOnlineBattle)
+        {
+            if (GameDataManager.instance.isMaster) //部屋主が音頭を取る
+            {
+                isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
+                SendSetIsPlayerTurn(isPlayerTurn);
+                gameState = eGameState.isGotPlayerTurn;
+            }
+
+        }
+        else //オンライン対戦ではない==AI戦
+        {
+            enemyDeck = new DeckModel().Init();
+            isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
+            gameState = eGameState.isGotPlayerTurn;
+        }
+    }
+    /// <summary>
+    /// どちらから開始するのかを対戦相手に送信する
+    /// </summary>
+    /// <param name="isPlayerTurn"></param>
+    public void SendSetIsPlayerTurn(bool isPlayerTurn)
+    {
+        photonView.RPC(nameof(RPCSetIsPlayerTurn), RpcTarget.Others, isPlayerTurn);
+    }
+    [PunRPC]
+    void RPCSetIsPlayerTurn(bool isPlayerTurn)
+    {
+        this.isPlayerTurn = !isPlayerTurn;
+        gameState = eGameState.isGotPlayerTurn;
+    }
     private void Update()
     {
         //オンライン対戦では、相手のデッキがなければ始められないので、ここで開始する それに伴い、AI戦もここで開始する
-        if (gameState == eGameState.isGetPlayerTurn)
+        if (gameState == eGameState.isGotPlayerTurn)
         {
             gameState = eGameState.isWaitMulligan;
             StartCoroutine(WaitMulligan());
@@ -86,7 +123,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 int seed = int.Parse(DateTime.Now.ToString("ddHHmmss")); //ランダム要素をプレイヤー間で揃えるため、シード値を共有することで対応する
                 UnityEngine.Random.InitState(seed);
-                SendSetSeed(seed);
+                SendSetSeed(seed); //厳密にはシード値が正しく受信されたかチェックすべきな気もする
             }
             SetTime();
             SettingInitHero();
@@ -98,6 +135,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         gameState = eGameState.isProcessMulligan;
     }
+    /// <summary>
+    /// マリガン入力待ち→マリガン処理
+    /// </summary>
+    /// <returns></returns>
     IEnumerator WaitMulligan()
     {
         for(var i = 0; i < (isPlayerTurn ? 3 : 4); i++)
@@ -150,25 +191,18 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         gameState = eGameState.isWaitStart;
     }
-    void StartGame()
+    /// <summary>
+    /// 自身のデッキを対戦相手に送信する
+    /// </summary>
+    /// <param name="playerDeck"></param>
+    public void SendSetEnemyDeck(DeckModel playerDeck)
     {
-        playerDeck = new DeckModel().Init();
-        if (GameDataManager.instance.isOnlineBattle)
-        {
-            if (GameDataManager.instance.isMaster) //部屋主が音頭を取る
-            {
-                isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
-                SendSetIsPlayerTurn(isPlayerTurn);
-                gameState = eGameState.isGetPlayerTurn;
-            }
-            
-        }
-        else //オンライン対戦ではない==AI戦
-        {
-            enemyDeck = new DeckModel().Init();
-            isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
-            gameState = eGameState.isGetPlayerTurn;
-        }
+        photonView.RPC(nameof(RPCSetEnemyDeck), RpcTarget.Others, playerDeck.useHeroID, playerDeck.deck.ToArray());
+    }
+    [PunRPC]
+    void RPCSetEnemyDeck(int useheroID, int[] deckIDs)
+    {
+        enemyDeck = new DeckModel().Init(useheroID, deckIDs);
     }
     /// <summary>
     /// シード値を対戦相手に送信する
@@ -182,33 +216,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RPCSetSeed(int seed)
     {
         UnityEngine.Random.InitState(seed);
-    }
-    /// <summary>
-    /// どちらから開始するのかを対戦相手に送信する
-    /// </summary>
-    /// <param name="isPlayerTurn"></param>
-    public void SendSetIsPlayerTurn(bool isPlayerTurn)
-    {
-        photonView.RPC(nameof(RPCSetIsPlayerTurn), RpcTarget.Others, isPlayerTurn);
-    }
-    [PunRPC]
-    void RPCSetIsPlayerTurn(bool isPlayerTurn)
-    {
-        this.isPlayerTurn = !isPlayerTurn;
-        gameState = eGameState.isGetPlayerTurn;
-    }
-    /// <summary>
-    /// 自身のデッキを対戦相手に送信する
-    /// </summary>
-    /// <param name="playerDeck"></param>
-    public void SendSetEnemyDeck(DeckModel playerDeck)
-    {
-        photonView.RPC(nameof(RPCSetEnemyDeck), RpcTarget.Others, playerDeck.useHeroID, playerDeck.deck.ToArray());
-    }
-    [PunRPC]
-    void RPCSetEnemyDeck(int useheroID, int[] deckIDs)
-    {
-        enemyDeck = new DeckModel().Init(useheroID, deckIDs);
     }
     /// <summary>
     /// ヒーローの設定
@@ -469,7 +476,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (field.childCount != 0)
             {
-                field.GetChild(0).GetComponent<CardController>().SetCanAttack(CanAttack, ResetIsActiveDoubleAciton);
+                var cc = field.GetChild(0).GetComponent<CardController>();
+                cc.SetCanAttack(CanAttack, ResetIsActiveDoubleAciton);
+                cc.SetIsNotSummonThisTurn();
             }
         }
     }
@@ -647,7 +656,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     IEnumerator RPCAttackToHero(int attackerFieldID)
     {
         StartCoroutine(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>().movement.MoveToTarget(playerHeroController.transform));
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.6f);
         AttackTohero(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>());
     }
     #endregion
@@ -715,7 +724,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (playerHeroController.model.isAlive && !enemyHeroController.model.isAlive)
         {
             AudioManager.instance.SoundWin();
-            resultImage.sprite = Resources.Load<Sprite>($"UIs/win"); //あなたの処理
+            resultImage.sprite = Resources.Load<Sprite>($"UIs/win"); //あなたの勝利
         }
         else if (!playerHeroController.model.isAlive && enemyHeroController.model.isAlive)
         {
