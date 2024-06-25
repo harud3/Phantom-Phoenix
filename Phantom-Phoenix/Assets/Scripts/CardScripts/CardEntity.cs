@@ -1,33 +1,33 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// カードデータ
-/// </summary>
-[CreateAssetMenu(fileName = "CardEntity", menuName = "Create CardEntity")]
-public class CardEntity : ScriptableObject
+[System.Serializable] // アトリビュートを付与
+public class CardEntity
 {
-    public Sprite charcter;
-    public new string name;
+    public int ID;
+    public Hero hero;
+    public Category category;
+    public Rarity rarity;
+    public string name;
     public int cost;
     public int atk;
     public int hp;
-    public Category category;
-    public Rarity rarity;
+
     public Skill skill1, skill2, skill3;
-    public string textCard;
     public Target target;
+    public string text;
 
+    public enum Hero { common, elf, witch, king, knight, devil }
     public enum Category { unit, spell, item }
-    public enum Rarity { R, SR, SSR}
+    public enum Rarity { R, SR, SSR }
 
-    public enum Skill { none, fast, taunt, snipe, pierce, doubleAction} //なし、即撃、挑発、狙撃、貫通、連撃　これらは効果持ちカードが多くなりがちな効果群なので特別枠
+    public enum Skill { none, fast, taunt, snipe, pierce, doubleAction } //なし、即撃、挑発、狙撃、貫通、連撃　これらは効果持ちカードが多くなりがちな効果群なので特別枠
     /// <summary>
     /// 効果範囲　ユニットの召喚時選択効果もここで管理する、スペルの効果範囲
     /// </summary>
-    public enum Target { 
+    public enum Target
+    {
         none, //対象なし
         unit, //ユニット単体
         enemyUnit, //敵ユニット単体
@@ -51,11 +51,11 @@ public class CardEntity : ScriptableObject
         selectionArea, //選択範囲
         selectionPlayerArea, //敵選択範囲
         selectionEnemyArea, //味方選択範囲
-        //UnitsV, //ユニット縦一列
-        //UnitsH, //ユニット横一列
-        //enemyUnitsV, //敵ユニット縦一列 
-        //enemyUnitsH, //敵ユニット横一列
-        //playerUnitsV, //味方ユニット縦一列
-        //playerUnitsH, //味方ユニット横一列
+                            //UnitsV, //ユニット縦一列
+                            //UnitsH, //ユニット横一列
+                            //enemyUnitsV, //敵ユニット縦一列 
+                            //enemyUnitsH, //敵ユニット横一列
+                            //playerUnitsV, //味方ユニット縦一列
+                            //playerUnitsH, //味方ユニット横一列
     }
 }

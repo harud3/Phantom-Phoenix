@@ -7,11 +7,12 @@ using UnityEngine.UI;
 using DG.Tweening;
 using static UnityEngine.GraphicsBuffer;
 using Photon.Pun;
+using Unity.VisualScripting;
 
 /// <summary>
 /// カードの挙動 Cardプレハブについてる
 /// </summary>
-public class CardMovement : MonoBehaviourPunCallbacks, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
     public Transform recordDefaultParent { get; private set; } //オブジェクト移動前の親　
@@ -26,6 +27,36 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerDownHandler, IDra
         //nullケア
         recordDefaultParent =  defaultParent = transform.parent;
     }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        CardController cardController = GetComponent<CardController>();
+
+        //マリガン処理
+        if (cardController.model.isMulliganCard || cardController.model.isFieldCard)
+        {
+            return;
+        }
+        else
+        {
+            transform.localScale = Vector3.one * 1.4f;
+
+        }
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        CardController cardController = GetComponent<CardController>();
+
+        //マリガン処理
+        if (cardController.model.isMulliganCard || cardController.model.isFieldCard)
+        {
+            return;
+        }
+        else
+        {
+            transform.localScale = Vector3.one;
+        }
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         CardController cardController = GetComponent<CardController>();

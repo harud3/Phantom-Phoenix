@@ -1,16 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameDataManager : MonoBehaviour
 {
+    [NonSerialized]
     //AI戦かPlayer戦か
     public bool isOnlineBattle;
     //部屋を立てた側か否か
+    [NonSerialized]
     public bool isMaster;
+    public PhantomPhoenixCardList cardlist;
     public static GameDataManager instance {  get; private set; }
     private void Awake()
     {
+
         //初期デッキが必要なら用意
         if (!PlayerPrefs.HasKey("PlayerDeckData"))
         {

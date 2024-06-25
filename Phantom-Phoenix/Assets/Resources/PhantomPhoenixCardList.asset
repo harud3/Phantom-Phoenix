@@ -1,0 +1,262 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d021a00b8886c4daefd96fc2e7fb2d, type: 3}
+  m_Name: PhantomPhoenixCardList
+  m_EditorClassIdentifier: 
+  cl:
+  - ID: 1
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit122
+    cost: 1
+    atk: 2
+    hp: 2
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: 
+  - ID: 2
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit103
+    cost: 1
+    atk: 0
+    hp: 3
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A"
+  - ID: 3
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit121
+    cost: 1
+    atk: 2
+    hp: 1
+    skill1: 3
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u72D9\u6483"
+  - ID: 4
+    hero: 0
+    category: 0
+    rarity: 2
+    name: dwarf
+    cost: 1
+    atk: 1
+    hp: 1
+    skill1: 1
+    skill2: 3
+    skill3: 5
+    target: 0
+    text: "\u5373\u6483\\n\u72D9\u6483\\n\u9023\u6483"
+  - ID: 5
+    hero: 0
+    category: 0
+    rarity: 2
+    name: behemoth
+    cost: 1
+    atk: 3
+    hp: 4
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u6700\u5927MP-1"
+  - ID: 6
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit223
+    cost: 2
+    atk: 2
+    hp: 3
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A"
+  - ID: 7
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit232
+    cost: 2
+    atk: 3
+    hp: 2
+    skill1: 4
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u8CAB\u901A"
+  - ID: 8
+    hero: 0
+    category: 0
+    rarity: 2
+    name: cerberus
+    cost: 2
+    atk: 4
+    hp: 1
+    skill1: 1
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u5373\u6483"
+  - ID: 9
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit321
+    cost: 3
+    atk: 2
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u4E21\u30D2\u30FC\u30ED\u30FC\u306F\\n\u30AB\u30FC\u30C9\u30922\u679A\u5F15\u304F"
+  - ID: 10
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit333
+    cost: 3
+    atk: 3
+    hp: 3
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u5473\u65B9\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\\nHP\u30921\u56DE\u5FA9"
+  - ID: 11
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit322
+    cost: 3
+    atk: 2
+    hp: 2
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u5473\u65B9\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8"
+  - ID: 12
+    hero: 0
+    category: 0
+    rarity: 2
+    name: fireLord
+    cost: 3
+    atk: 1
+    hp: 2
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A\\n\u3010\u53EC\u559A\u6642&\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306B\\n2\u30C0\u30E1\u30FC\u30B8"
+  - ID: 13
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit445
+    cost: 4
+    atk: 4
+    hp: 5
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: 
+  - ID: 14
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit443
+    cost: 4
+    atk: 4
+    hp: 3
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 2
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u6575\u30E6\u30CB\u30C3\u30C81\u4F53\u306B\\n2\u30C0\u30E1\u30FC\u30B8"
+  - ID: 15
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit434
+    cost: 4
+    atk: 3
+    hp: 4
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 1
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u3092\\n\u5C01\u5370\u3059\u308B"
+  - ID: 16
+    hero: 0
+    category: 0
+    rarity: 2
+    name: king
+    cost: 4
+    atk: 3
+    hp: 3
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\nHP\u30925\u56DE\u5FA9"
+  - ID: 17
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit501
+    cost: 5
+    atk: 0
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n\u71C3\u713C\u3055\u305B\u308B"
+  - ID: 18
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit517
+    cost: 5
+    atk: 1
+    hp: 7
+    skill1: 4
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u8CAB\u901A\\n\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306F\\n\u30AB\u30FC\u30C9\u30922\u679A\u5F15\u304F"
+  - ID: 19
+    hero: 0
+    category: 0
+    rarity: 2
+    name: driller
+    cost: 5
+    atk: 1
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u9023\u6483\\n\u3010\u53EC\u559A\u6642\u3011\\n\u3053\u306E\u30D0\u30C8\u30EB\u4E2D\\n\u5143\u306EATK\u304C2\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092+2/+2"

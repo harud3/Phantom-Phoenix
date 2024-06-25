@@ -48,15 +48,14 @@ public class CardModel
     public CardModel(int cardID, bool isPlayer)
     {
         //cardIDを基に対象のカードデータを取得する
-        CardEntity cardEntity = Resources.Load<CardEntity>($"CardEntityList/Card{cardID}");
+        CardEntity cardEntity = GameDataManager.instance.cardlist.cl[cardID - 1];
 
         this.cardID = cardID;
-        character = cardEntity.charcter;
         name = cardEntity.name;
+        character = Resources.Load<Sprite>($"Units/{name}");
 
         cost = cardEntity.cost;
         defaultATK = atk = cardEntity.atk;
-        Debug.Log(defaultATK);
         defaultHP = maxHP = hp = cardEntity.hp;
 
         category = cardEntity.category;
@@ -65,7 +64,7 @@ public class CardModel
         skill1 = cardEntity.skill1;
         skill2 = cardEntity.skill2;
         skill3 = cardEntity.skill3;
-        textCard = cardEntity.textCard;
+        textCard = cardEntity.text;
         target = cardEntity.target;
 
         isMulliganCard = isMulligan = false;

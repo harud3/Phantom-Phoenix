@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 /// <summary>
 /// デッキ編成画面のカードの実体
 /// </summary>
 public class EditDeckCardModel
 {
     public int cardID {  get; private set; }
-    public Sprite icon { get; private set; }
+    public Sprite character { get; private set; }
     public string name {  get; private set; }
     public int cost { get; private set; }
     public int atk { get; private set; }
@@ -25,10 +26,10 @@ public class EditDeckCardModel
     public EditDeckCardModel(int cardID, bool isPlayer)
     {
         //cardIDを基に対象のカードデータを取得する
-        CardEntity cardEntity = Resources.Load<CardEntity>($"CardEntityList/Card{cardID}");
+        CardEntity cardEntity = GameDataManager.instance.cardlist.cl[cardID - 1];
         this.cardID = cardID;
-        icon = cardEntity.charcter;
         name = cardEntity.name;
+        character = Resources.Load<Sprite>($"Units/{name}");
         cost = cardEntity.cost;
         atk = cardEntity.atk; 
         hp = cardEntity.hp;
@@ -38,6 +39,6 @@ public class EditDeckCardModel
         skill1 = cardEntity.skill1;
         skill2 = cardEntity.skill2;
         skill3 = cardEntity.skill3;
-        cardText = cardEntity.textCard;
+        cardText = cardEntity.text;
     }
 }

@@ -15,7 +15,6 @@ public class EditDeckManager : MonoBehaviour
     [SerializeField] Transform Stock;
     [SerializeField] Transform Deck;
     private int pages = 1;
-    private int id = 1;
     private void Start()
     {
         
@@ -41,24 +40,26 @@ public class EditDeckManager : MonoBehaviour
     }
     private void GetNewStock()
     {
-        
-        id = 1;
-        //これがない場合、ページを-1して辻褄合わせ
-        if (Resources.Load<CardEntity>($"CardEntityList/Card{id + (8 * pages) - 8}") == null) { pages--; }
+        int viewCount = 8;
+        int id = 1;
+
+        if (GameDataManager.instance.cardlist.cl.Count is int clc && clc < pages * 8)
+        {
+            if (clc < (pages - 1) * 8) { pages--; } //表示するカードがないので、page--で対処
+            viewCount = clc % 8;
+        }
 
         //今、カード一覧に表示されているカードを消す
         foreach (Transform child in Stock) { 
-           GameObject.Destroy(child.gameObject);
+           Destroy(child.gameObject);
         }
 
         //ページ数を基にしてカードを取得する
-        int viewCount = 0;
         do
         {
-            if (Resources.Load<CardEntity>($"CardEntityList/Card{id + (8 * pages) - 8}") == null) { break; } //取得できなかったら抜ける
             EditDeckCardController card = Instantiate(cardPrefab, Stock).GetComponent<EditDeckCardController>();
             card.Init((id++) + (8 * pages) - 8);
-        } while (++viewCount < 8);
+        } while (--viewCount > 0);
     }
     private void ButtonPageOnClick(bool isLeft)
     {

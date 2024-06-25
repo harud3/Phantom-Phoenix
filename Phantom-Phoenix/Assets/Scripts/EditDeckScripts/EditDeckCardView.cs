@@ -22,7 +22,7 @@ public class EditDeckCardView : MonoBehaviour
     /// <param name="cardModel"></param>
     public void SetCard(EditDeckCardModel cardModel)
     {
-        iconImage.sprite = cardModel.icon;
+        iconImage.sprite = cardModel.character;
         frameImage.sprite = Resources.Load<Sprite>($"Frames/{cardModel.category}{cardModel.rarity}");
         if(cardModel.category == CardEntity.Category.spell)
         {
