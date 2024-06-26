@@ -43,10 +43,10 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit103
+    name: unit102
     cost: 1
     atk: 0
-    hp: 3
+    hp: 2
     skill1: 2
     skill2: 0
     skill3: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
     name: behemoth
     cost: 1
     atk: 3
-    hp: 4
+    hp: 5
     skill1: 0
     skill2: 0
     skill3: 0
@@ -95,10 +95,10 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit223
+    name: unit222
     cost: 2
     atk: 2
-    hp: 3
+    hp: 2
     skill1: 2
     skill2: 0
     skill3: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u6311\u767A\\n\u3010\u53EC\u559A\u6642&\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306B\\n2\u30C0\u30E1\u30FC\u30B8"
+    text: "\u6311\u767A\\n\u3010\u53EC\u559A\u6642&\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8"
   - ID: 14
     hero: 0
     category: 0
@@ -272,7 +272,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u3053\u306E\u30D0\u30C8\u30EB\u4E2D\\n\u5143\u306EATK\u304C2\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092+2/+2"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u3053\u306E\u30D0\u30C8\u30EB\u4E2D\\n\u5143\u306EATK\u304C2\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092+1/+1"
   - ID: 21
     hero: 0
     category: 0
@@ -299,7 +299,7 @@ MonoBehaviour:
     skill3: 0
     target: 0
     text: "\u3010\u53EC\u559A\u6642&\u5473\u65B9\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306B\\n0/1/1\u30921\u4F53\u51FA\u3059"
-  - ID: 22
+  - ID: 23
     hero: 0
     category: 0
     rarity: 1
@@ -312,3 +312,42 @@ MonoBehaviour:
     skill3: 0
     target: 0
     text: "\u5373\u6483\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\u30B3\u30B9\u30C8-1"
+  - ID: 24
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit777
+    cost: 7
+    atk: 7
+    hp: 7
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A"
+  - ID: 25
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit746
+    cost: 7
+    atk: 4
+    hp: 6
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 1
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u3092\u9078\u3076\\n\u5473\u65B9\u306A\u3089HP\u30924\u56DE\u5FA9\\n\u6575\u306A\u30894\u30C0\u30E1\u30FC\u30B8"
+  - ID: 26
+    hero: 0
+    category: 0
+    rarity: 2
+    name: undead
+    cost: 7
+    atk: 2
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u524D\u5217\u6B7B\u4EA1\u6642\u3011\\n\u5F8C\u5217\u306B\u5FA9\u6D3B\u3059\u308B\\n\u3010\u5F8C\u5217\u6B7B\u4EA1\u6642\u3011\\n\u524D\u5217\u306B\u5FA9\u6D3B\u3059\u308B"

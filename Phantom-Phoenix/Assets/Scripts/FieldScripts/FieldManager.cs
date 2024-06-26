@@ -191,6 +191,40 @@ public class FieldManager : MonoBehaviour
         else if (GetUnitByFieldID(isPlayer ? 6 : 12) == null) { return isPlayer ? (playerFields[5], 6) : (enemyFields[5], 12); }
         return (null,0); //フィールドが全て埋まっている時
     }
+    public bool IsFront(int fieldID)
+    {
+        switch (fieldID)
+        {
+            case 1: case 2: case 3: case 7: case 8: case 9:
+                return true;
+            default: return false; //まあ1～12以外はなかろう
+
+        }
+    }
+    /// <summary>
+    /// 空きのある前列のフィールドを取得する
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <returns></returns>
+    public (Transform emptyField, int fieldID) GetEmptyFrontFieldID(bool isPlayer)
+    {
+        if (GetUnitByFieldID(isPlayer ? 1 : 7) == null) { return isPlayer ? (playerFields[0], 1) : (enemyFields[0], 7); }
+        else if (GetUnitByFieldID(isPlayer ? 2 : 8) == null) { return isPlayer ? (playerFields[1], 2) : (enemyFields[1], 8); }
+        else if (GetUnitByFieldID(isPlayer ? 3 : 9) == null) { return isPlayer ? (playerFields[2], 3) : (enemyFields[2], 9); }
+        return (null, 0); //フィールドが全て埋まっている時
+    }
+    /// <summary>
+    /// 空きのある後列のフィールドを取得する
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <returns></returns>
+    public (Transform emptyField, int fieldID) GetEmptyBackFieldID(bool isPlayer)
+    {
+        if (GetUnitByFieldID(isPlayer ? 4 : 10) == null) { return isPlayer ? (playerFields[3], 4) : (enemyFields[3], 10); }
+        else if (GetUnitByFieldID(isPlayer ? 5 : 11) == null) { return isPlayer ? (playerFields[4], 5) : (enemyFields[4], 11); }
+        else if (GetUnitByFieldID(isPlayer ? 6 : 12) == null) { return isPlayer ? (playerFields[5], 6) : (enemyFields[5], 12); }
+        return (null, 0); //フィールドが全て埋まっている時
+    }
     /// <summary>
     /// 各フィールドのユニット数を設定する
     /// </summary>

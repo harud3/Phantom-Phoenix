@@ -117,11 +117,11 @@ public class CardController : Controller
     /// フィールドに召喚する時の処理　　まれに、召喚時効果で対象選択を必要とする場合がある
     /// </summary>
     /// <param name="targets"></param>
-    public void SummonOnField(int fieldID, CardController[] targets = null)
+    public void SummonOnField(int fieldID, CardController[] targets = null, bool ExecuteReduceMP = true)
     {
         AudioManager.instance.SoundCardMove();
 
-        GameManager.instance.ReduceMP(model.cost, model.isPlayerCard); //ヒーローのMPを減らす
+        if (ExecuteReduceMP) { GameManager.instance.ReduceMP(model.cost, model.isPlayerCard); } //ヒーローのMPを減らす
         model.SetIsFieldCard(true);
         model.SetThisFieldID(fieldID);
         view.HideCost(false);
