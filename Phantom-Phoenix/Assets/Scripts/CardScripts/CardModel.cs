@@ -12,6 +12,7 @@ public class CardModel
     public Sprite character { get; private set; }
     public string name { get; private set; }
 
+    public int defaultCost { get; private set; }
     public int cost { get; private set; }
     public int defaultATK { get; private set; }
     public int atk { get; private set; }
@@ -54,7 +55,7 @@ public class CardModel
         name = cardEntity.name;
         character = Resources.Load<Sprite>($"Units/{name}");
 
-        cost = cardEntity.cost;
+        defaultCost = cost = cardEntity.cost;
         defaultATK = atk = cardEntity.atk;
         defaultHP = maxHP = hp = cardEntity.hp;
 
@@ -101,6 +102,18 @@ public class CardModel
     public void SetIsMulligan(bool isMulligan)
     {
         this.isMulligan = isMulligan;
+    }
+    /// <summary>
+    /// コストを指定された値にする 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="cnt"></param>
+    public void ChangeCost(int cnt)
+    {
+        cost = cnt;
+        if (cost < 0)
+        {
+            cost = 0;
+        }
     }
     /// <summary>
     /// ユニットがダメージを受けた時の処理 基本的にCardControllerを通して呼ぶことになる

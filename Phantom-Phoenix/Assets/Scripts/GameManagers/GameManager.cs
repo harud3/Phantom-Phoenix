@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private CardController cardPrefab; //カード
 
     [SerializeField] private UnityEngine.UI.Button ButtonTurn; //ターン変更ボタン
-    [SerializeField] private GameObject ButtonTurnGuard; //ターン変更ボタン連打を対策
+    [SerializeField] private GameObject PanelGuard; //操作をガードするパネル
     [SerializeField] private Sprite playerTurnSprite, enemyTurnSprite; //ターン終了、相手のターンのスプライト
 
     [SerializeField] private TextMeshProUGUI timeCountText; //ターンの残り時間の表示部
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
 
         }
-        else //オンライン対戦ではない==AI戦
+        else //オンライン対戦ではない→AI戦
         {
             enemyDeck = new DeckModel().Init();
             isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
@@ -154,9 +154,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         //入力待ち
         yield return new WaitUntil(() => gameState == eGameState.isProcessMulligan);
 
-        HintMessage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"相手のマリガンを待っています";
 
         //マリガン処理
+        //ex) 後攻でマリガンを行う時
         //Deck 0, 1, 2, 3 が、CardID A, B, C, D であり、 B, Dを残すとする
         //この時、Aから順に残すか返すかの判定を行う 変数keppIndexに0を代入する
         //AのisMulliganを見て、返すことにした　何もしない         A, B, C, D
@@ -188,6 +188,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             SendSetEnemyDeck(playerDeck);
         }
+
+        HintMessage.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"相手のマリガンを待っています";
 
         gameState = eGameState.isWaitStart;
     }
@@ -342,7 +344,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public IEnumerator ChangeTurn(bool isFirst = false)
     {
-        ButtonTurnGuard.gameObject.SetActive(true);
+        PanelGuard.gameObject.SetActive(true);
 
         if (isFirst) //ゲーム開始時はドロー処理があるので待つ
         {
@@ -424,7 +426,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(0.6f); //ドロー待ち時間
 
-        ButtonTurnGuard.gameObject.SetActive(false); //ターンボタン押せるように
+        PanelGuard.gameObject.SetActive(false); //ターンボタン押せるように
 
         TurnCalc();
     }
@@ -504,7 +506,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                     {
                         StartCoroutine(canPutCard.movement.MoveToArea(enemyField));
                         yield return new WaitForSeconds(0.25f);
-                        canPutCard.SummonOnField(false, enemyField.GetComponent<DropField>().fieldID);
+                        canPutCard.SummonOnField(enemyField.GetComponent<DropField>().fieldID);
                         canPutCard.Show(true);
                         yield return new WaitForSeconds(0.75f);
                         break;
@@ -577,7 +579,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartCoroutine(cc.movement.MoveToArea(enemyFields[fieldID - 1]));
         yield return new WaitForSeconds(0.25f);
         //PlayerFieldとして入力されてきている　よって、+6してやればEnemyFieldになる
-        cc.SummonOnField(false, fieldID + 6, targetsByReceiver == null ? null : FieldManager.instance.GetUnitsByFieldID(targetsByReceiver).ToArray());
+        cc.SummonOnField(fieldID + 6, targetsByReceiver == null ? null : FieldManager.instance.GetUnitsByFieldID(targetsByReceiver).ToArray());
         yield return new WaitForSeconds(0.75f);
     }
     /// <summary>
@@ -721,6 +723,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
        audioSourceBGM.Stop();
         resultPanel.SetActive(true);
+        resultPanel.transform.SetSiblingIndex(99); //最前面に表示
         if (playerHeroController.model.isAlive && !enemyHeroController.model.isAlive)
         {
             AudioManager.instance.SoundWin();

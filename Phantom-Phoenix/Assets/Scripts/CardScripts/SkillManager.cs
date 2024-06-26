@@ -10,6 +10,7 @@ public class SkillManager : MonoBehaviour
     public static SkillManager instance { get; private set; }
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6];
     [SerializeField] HeroController _playerHeroController, _enemyHeroController;
+    [SerializeField] CardController cardPrefab;
     public HeroController playerHeroController {  get { return _playerHeroController; } private set { _playerHeroController = value; } }
     public HeroController enemyHeroController { get { return _enemyHeroController; } private set { _enemyHeroController = value; } }
     private void Awake()
@@ -203,35 +204,37 @@ public class SkillManager : MonoBehaviour
             //        break;
             //    }
 
-            //122
+            //011
             case 1: { break; } //なし
+            //122
+            case 2: { break; } //なし
             //103
-            case 2: { break; } //挑発
+            case 3: { break; } //挑発
             //121
-            case 3: { break; } //狙撃
+            case 4: { break; } //狙撃
             //Dwarf
-            case 4: { break; } //即撃狙撃連撃
+            case 5: { break; } //即撃狙撃連撃
             //Behemoth
-            case 5: //召喚時:味方ヒーローのMP-1
+            case 6: //召喚時:味方ヒーローのMP-1
                 {
                     h.ChangeMaxMP(-1);
                     break;
                 }
             //223
-            case 6: { break; } //挑発
+            case 7: { break; } //挑発
             //232
-            case 7: { break; } //貫通
+            case 8: { break; } //貫通
             //Cerberus
-            case 8: { break; } //即撃
+            case 9: { break; } //即撃
             //321
-            case 9: //両ヒーローはカードを2枚引く
+            case 10: //両ヒーローはカードを2枚引く
                 {
                     GameManager.instance.GivesCard(h.model.isPlayer, 2);
                     GameManager.instance.GivesCard(!h.model.isPlayer, 2);
                     break;
                 }
             //333 
-            case 10: //味方ターン終了時:HP1回復
+            case 11: //味方ターン終了時:HP1回復
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
@@ -243,7 +246,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //322
-            case 11: //味方ターン終了時:ランダムなユニット1体に1ダメージ
+            case 12: //味方ターン終了時:ランダムなユニット1体に1ダメージ
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
@@ -259,10 +262,11 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //FireLord
-            case 12: //召喚時&死亡時:全てのユニットに2ダメージ
+            case 13: //召喚時&死亡時:全てのユニットに2ダメージ
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
-                    if (x.Count != 0) {
+                    if (x.Count != 0)
+                    {
                         x.ForEach(i => i.Damage(2));
                     }
                     c.SpecialSkillBeforeDie = () =>
@@ -276,9 +280,9 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //445
-            case 13: { break; }　//なし
+            case 14: { break; }　//なし
             //443
-            case 14: //召喚時:敵ユニット1体に2ダメージ
+            case 15: //召喚時:敵ユニット1体に2ダメージ
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
                     {
@@ -295,7 +299,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //434
-            case 15: //召喚時:ユニット1体を封印する
+            case 16: //召喚時:ユニット1体を封印する
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
                     {
@@ -304,7 +308,8 @@ public class SkillManager : MonoBehaviour
                         {
                             x.SetIsSeal(true);
                         }
-                        else if(FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard) is var y){
+                        else if (FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard) is var y)
+                        {
                             if (y != null)
                             {
                                 y.SetIsSeal(true);
@@ -318,9 +323,9 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //king
-            case 16: { h.Heal(5); break; } //召喚時:味方ヒーローのHP5回復
+            case 17: { h.Heal(5); break; } //召喚時:味方ヒーローのHP5回復
             //501
-            case 17: //死亡時:全ての敵ユニットを燃焼させる
+            case 18: //死亡時:全ての敵ユニットを燃焼させる
                 {
                     c.SpecialSkillBeforeDie = () =>
                     {
@@ -335,8 +340,8 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-                //517
-            case 18: //攻撃時:味方ヒーローはカードを1枚引く
+            //517
+            case 19: //貫通 攻撃時:味方ヒーローはカードを1枚引く
                 {
                     c.SpecialSkillBeforeAttack = (bool isAttacker) =>
                     {
@@ -344,8 +349,8 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-                //Driller
-            case 19: //召喚時:このバトル中、元のATKが2以下の味方ユニットは+2/+2
+            //Driller
+            case 20: //召喚時:このバトル中、元のATKが2以下の味方ユニットは+2/+2
                 {
                     //Drillerは2/2なので対象
                     c.Buff(2, 2);
@@ -354,13 +359,63 @@ public class SkillManager : MonoBehaviour
                             c.model.isPlayerCard ? Enumerable.Range(1, 6).ToArray() : Enumerable.Range(7, 6).ToArray()
                             ).Where(i => i.model.defaultATK <= 2 && i.model.thisFieldID != c.model.thisFieldID).ToList()?.ForEach(i => i.Buff(2, 2));
                     //手札の対象カードを+2/+2
-                    FieldManager.instance.GetUnitsInHand(c.model.isPlayerCard)?.Where(i => i.model.defaultATK <= 2).ToList().ForEach(i => i.SilentBuff(2,2) );
+                    FieldManager.instance.GetUnitsInHand(c.model.isPlayerCard)?.Where(i => i.model.defaultATK <= 2).ToList().ForEach(i => i.SilentBuff(2, 2));
                     //今後引くカードを+2/+2するように
                     h.ccExternalBuff += (CardController cc) => { if (cc.model.defaultATK <= 2) { cc.SilentBuff(2, 2); } };
                     break;
                 }
+            //656
+            case 21: //狙撃
+                { break; }
+            case 22: //召喚時&味方ターン終了時: 味方フィールドに、cardID1の0/1/1を1体出す
+                {
+                    void Summon011()
+                    {
+                        if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
+                        {
+                            CardController cc = Instantiate(cardPrefab, x.emptyField);
+                            cc.Init(1, c.model.isPlayerCard); // cardID1 = unit011;
+                            cc.SummonOnField(x.fieldID);
+                        }
+                    }
 
+                    Summon011();
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
+                    {
+                        if (isPlayerTurn == c.model.isPlayerCard)
+                        {
+                            Summon011();
+                        }
+                    };
+                    break;
+                }
+            //633
+            case 23: { break; } //即撃 味方フィールドの\nユニットの数分、コスト-1
         }
 
+    }
+    /// <summary>
+    /// 外部要因によって発生する受動的なスキルの紐づけ
+    /// </summary>
+    /// <param name="c"></param>
+    public void UpdateSkills(CardController c)
+    {
+        switch (c.model.cardID)
+        {
+            //633 //即撃 味方フィールドの\nユニットの数分、コスト-1
+            case 23:
+                {
+                    var recordCost = 6;
+                    c.UpdateSkill = () =>
+                    {
+                        if (recordCost != 6 - (c.model.isPlayerCard ? FieldManager.instance.playerFieldOnUnitCnt : FieldManager.instance.enemyFieldOnUnitCnt))
+                        {
+                            c.ChangeCost(6 - (c.model.isPlayerCard ? FieldManager.instance.playerFieldOnUnitCnt : FieldManager.instance.enemyFieldOnUnitCnt));
+                            recordCost = c.model.cost;
+                        }
+                    };
+                    break;
+                }
+        }
     }
 }

@@ -64,6 +64,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
         //マリガン処理
         if (cardController.model.isMulliganCard)
         {
+            AudioManager.instance.SoundCardMove();
             cardController.SetIsMulligan(!cardController.model.isMulligan);
         }
     }
@@ -160,6 +161,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
     public void SetDefaultParent(Transform dropPlace, int fieldID)
     {
         defaultParent = dropPlace;
+        transform.SetParent(defaultParent, false);
     }
     /// <summary>
     /// 手札に出たことを対戦相手に送信　cardMovement.csで取得したsiblingIndexが必要なのでcardMovement.cs内にある

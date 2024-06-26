@@ -2020,7 +2020,7 @@ GameObject:
   - component: {fileID: 653178452}
   - component: {fileID: 653178451}
   m_Layer: 5
-  m_Name: PanelButtonTurnGuard
+  m_Name: PanelGuard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2035,15 +2035,15 @@ RectTransform:
   m_GameObject: {fileID: 653178449}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 311531623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1, y: 475.8375}
-  m_SizeDelta: {x: -1539.7249, y: -934.925}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &653178451
 MonoBehaviour:
@@ -6372,6 +6372,8 @@ MonoBehaviour:
   - {fileID: 789070768}
   _playerHeroController: {fileID: 1180896660}
   _enemyHeroController: {fileID: 550862160}
+  cardPrefab: {fileID: -7060814915658875771, guid: 64e3b038805b8464890da531d00aedd7,
+    type: 3}
 --- !u!4 &1753854763
 Transform:
   m_ObjectHideFlags: 0
@@ -7758,7 +7760,7 @@ MonoBehaviour:
   cardPrefab: {fileID: -7060814915658875771, guid: 64e3b038805b8464890da531d00aedd7,
     type: 3}
   ButtonTurn: {fileID: 305668704}
-  ButtonTurnGuard: {fileID: 653178449}
+  PanelGuard: {fileID: 653178449}
   playerTurnSprite: {fileID: 21300000, guid: f33fb07f71c9cde4f9b266e5507fc02c, type: 3}
   enemyTurnSprite: {fileID: 21300000, guid: dfda8870bd4efba45b4c29399b410a31, type: 3}
   timeCountText: {fileID: 1137974619}

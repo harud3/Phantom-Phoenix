@@ -24,6 +24,7 @@ public class CardController : Controller
         view = GetComponent<CardView>();
         movement = GetComponent<CardMovement>();
     }
+    public Action UpdateSkill = null;　//外部要因によって発生する受動的なスキル
 
     public void Init(int CardID, bool isPlayer = true)
     {
@@ -37,6 +38,7 @@ public class CardController : Controller
             SkillManager.instance.enemyHeroController.ccExternalBuff(this);
         }
         view.SetCard(model);
+        SkillManager.instance.UpdateSkills(this);
 
         //スペルカードならここで効果を設定しておく　
         if(model.category == CardEntity.Category.spell)
@@ -114,18 +116,18 @@ public class CardController : Controller
     /// <summary>
     /// フィールドに召喚する時の処理　　まれに、召喚時効果で対象選択を必要とする場合がある
     /// </summary>
-    /// <param name="isPlayerField"></param>
     /// <param name="targets"></param>
-    public void SummonOnField(bool isPlayerField, int fieldID, CardController[] targets = null)
+    public void SummonOnField(int fieldID, CardController[] targets = null)
     {
         AudioManager.instance.SoundCardMove();
 
-        GameManager.instance.ReduceMP(model.cost, model.isPlayerCard); //ヒーローのMPを減らす　isPlayerCardと、isPlayerは一致しているに違いない
+        GameManager.instance.ReduceMP(model.cost, model.isPlayerCard); //ヒーローのMPを減らす
         model.SetIsFieldCard(true);
         model.SetThisFieldID(fieldID);
         view.HideCost(false);
         Show(true);
 
+        FieldManager.instance.SetFieldOnUnitcnt(model.isPlayerCard); //ユニット配置数の再設定
         SkillManager.instance.SpecialSkills(this, targets); //召喚時効果の発動　誘発効果の紐づけ
 
         SetCanAttack(SkillManager.instance.IsFast(model)); //即撃付与 CanSummonの無効化も兼ねる
@@ -139,7 +141,6 @@ public class CardController : Controller
         { //二回攻撃効果付与
             model.SetIsActiveDoubleAction(true);
         }
-
     }
     /// <summary>
     /// 表面・裏面の表示切替
@@ -165,6 +166,15 @@ public class CardController : Controller
     {
         model.SetIsMulligan(isMulligan);
         view.SetActiveSelectablePanel(!isMulligan); //マリガンで返す→光らせない　マリガンで返さない→光らせる　なので否定する
+    }
+    /// <summary>
+    /// コストを指定された値にする
+    /// </summary>
+    /// <param name="nextCost"></param>
+    public void ChangeCost(int nextCost)
+    {
+        model.ChangeCost(nextCost);
+        view.ReShow(model);
     }
     /// <summary>
     /// ユニットが攻撃によりダメージを受けた時の処理　ここでは、CheckAliveは不都合が出るので行わない
@@ -214,6 +224,7 @@ public class CardController : Controller
                 ExecuteSpecialSkillBeforeDie(); //死亡時効果
                 ExecutedSSBD = true;
             }
+            FieldManager.instance.Minus1FieldOnUnitCnt(model.isPlayerCard);
             Destroy(this.gameObject);
         }
     }

@@ -47,7 +47,7 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
                 cc.movement.SetDefaultParent(this.transform, fieldID);
                 cc.movement.SendMoveToField(fieldID);
 
-                cc.SummonOnField(isPlayerField, fieldID);
+                cc.SummonOnField(fieldID);
             }
             
         }
@@ -98,7 +98,7 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
             cc.movement.SendMoveToField(fieldID, x.targetsByReceiver);
             cc.transform.SetParent(this.transform);
 
-            cc.SummonOnField(isPlayerField, fieldID, x.cctargets);
+            cc.SummonOnField(fieldID, x.cctargets);
             cc.movement.GetComponent<CanvasGroup>().blocksRaycasts = true; //OnEndDragÇ≈Ç‚ÇÈèàóùÇë„ÇÌÇËÇ…Ç‚Ç¡ÇƒÇ®Ç≠
         }
         else

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// ƒoƒgƒ‹‰æ–Ê@ButtonTurn‚ğ‰Ÿ‚µ‚½‚Æ‚«‚Ìˆ—
 /// </summary>
-public class ButtonFinishMulliganClick : MonoBehaviour
+public class ButtonFinishSelectClick : MonoBehaviour
 {
     [SerializeField]
     Button button;
@@ -14,6 +14,7 @@ public class ButtonFinishMulliganClick : MonoBehaviour
     private void Start()
     {
         button.onClick.AddListener(() => {
+            AudioManager.instance.SoundButtonClick3();
             GameManager.instance.FinishMulligan();
         });
     }

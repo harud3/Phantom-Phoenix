@@ -51,11 +51,11 @@ public class CardEntity
         selectionArea, //選択範囲
         selectionPlayerArea, //敵選択範囲
         selectionEnemyArea, //味方選択範囲
-                            //UnitsV, //ユニット縦一列
-                            //UnitsH, //ユニット横一列
-                            //enemyUnitsV, //敵ユニット縦一列 
-                            //enemyUnitsH, //敵ユニット横一列
-                            //playerUnitsV, //味方ユニット縦一列
-                            //playerUnitsH, //味方ユニット横一列
+        //UnitsV, //ユニット縦一列
+        //UnitsH, //ユニット横一列
+        //enemyUnitsV, //敵ユニット縦一列 
+        //enemyUnitsH, //敵ユニット横一列
+        //playerUnitsV, //味方ユニット縦一列
+        //playerUnitsH, //味方ユニット横一列
     }
 }

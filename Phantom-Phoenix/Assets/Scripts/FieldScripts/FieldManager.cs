@@ -1,4 +1,5 @@
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,36 @@ public class FieldManager : MonoBehaviour
     [SerializeField] private HeroController playerHeroController, enemyHeroController;
     [SerializeField] private GameObject[] playerSelectablePanel = new GameObject[6], enemySelectablePanel = new GameObject[6];
     private GameObject[] selectablePanel = new GameObject[12];
+    private int _playerFieldOnUnitCnt;
+    public int playerFieldOnUnitCnt
+    {
+        get { return _playerFieldOnUnitCnt; }
+        private set
+        {
+            _playerFieldOnUnitCnt = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in playerHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            GameManager.instance.SetCanSummonHandCards();
+        }
+    }
+    private int _enemyFieldOnUnitCnt;
+    public int enemyFieldOnUnitCnt
+    {
+        get { return _enemyFieldOnUnitCnt; }
+        private set
+        {
+            _enemyFieldOnUnitCnt = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in enemyHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            GameManager.instance.SetCanSummonHandCards();
+        }
+    }
     private void Awake()
     {
         if (instance == null)
@@ -119,13 +150,13 @@ public class FieldManager : MonoBehaviour
         {
             var x = playerFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).ToList();
             if (!x.Any()) { return null; }
-            return x?[Random.Range(0, x.Count())];
+            return x?[UnityEngine.Random.Range(0, x.Count())];
         }
         else
         {
             var x = enemyFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).ToList();
             if (!x.Any()) { return null; }
-            return x?[Random.Range(0, x.Count())];
+            return x?[UnityEngine.Random.Range(0, x.Count())];
         }
     }
     /// <summary>
@@ -144,6 +175,46 @@ public class FieldManager : MonoBehaviour
             return fieldID - 6;
         }
         return 0; //ここ来るのはまずい
+    }
+    /// <summary>
+    /// 空きのあるフィールドを取得する
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <returns></returns>
+    public (Transform emptyField, int fieldID) GetEmptyFieldID(bool isPlayer)
+    {
+        if (GetUnitByFieldID(isPlayer ? 1 : 7) == null) { return isPlayer ? (playerFields[0],1) : (enemyFields[0], 7); }
+        else if (GetUnitByFieldID(isPlayer ? 2 : 8) == null) { return isPlayer ? (playerFields[1], 2) : (enemyFields[1], 8); }
+        else if (GetUnitByFieldID(isPlayer ? 3 : 9) == null) { return isPlayer ? (playerFields[2], 3) : (enemyFields[2], 9); }
+        else if (GetUnitByFieldID(isPlayer ? 4 : 10) == null) { return isPlayer ? (playerFields[3], 4) : (enemyFields[3], 10); }
+        else if (GetUnitByFieldID(isPlayer ? 5 : 11) == null) { return isPlayer ? (playerFields[4], 5) : (enemyFields[4], 11); }
+        else if (GetUnitByFieldID(isPlayer ? 6 : 12) == null) { return isPlayer ? (playerFields[5], 6) : (enemyFields[5], 12); }
+        return (null,0); //フィールドが全て埋まっている時
+    }
+    /// <summary>
+    /// 各フィールドのユニット数を設定する
+    /// </summary>
+    public void SetFieldOnUnitcnt(bool isPlayerField)
+    {
+        if (isPlayerField)
+        {
+            playerFieldOnUnitCnt = GetUnitsByFieldID(new int[] { 1, 2, 3, 4, 5, 6 })?.Count ?? 0;
+        }
+        else
+        {
+            enemyFieldOnUnitCnt = GetUnitsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 })?.Count ?? 0;
+        }
+    }
+    public void Minus1FieldOnUnitCnt(bool isPlayerField)
+    {
+        if (isPlayerField)
+        {
+            playerFieldOnUnitCnt -= 1;
+        }
+        else
+        {
+            enemyFieldOnUnitCnt -= 1;
+        }
     }
     /// <summary>
     /// 対象ユニットを攻撃可能かどうかを判定する
