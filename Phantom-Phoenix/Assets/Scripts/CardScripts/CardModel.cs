@@ -151,7 +151,7 @@ public class CardModel
         }
         else if (card is HeroController hc)
         {
-            hc.Damage(atk);
+            hc.DamageFromAttack(atk);
         }
     }
     /// <summary>

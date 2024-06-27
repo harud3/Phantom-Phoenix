@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private Transform canvas;
     [SerializeField] private HeroController playerHeroController, enemyHeroController; //味方ヒーロー、敵ヒーロー
+    [SerializeField] private TensionController playerTensionController, enemyTensionController; //味方テンション、敵テンション
 
     [SerializeField] private Transform[] playerFields = new Transform[6], enemyFields = new Transform[6]; //味方フィールド、敵フィールド
     [SerializeField] private Transform playerHandTransform, enemyHandTransform; //味方手札、敵手札
@@ -110,6 +111,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         //オンライン対戦では、相手のデッキがなければ始められないので、ここで開始する それに伴い、AI戦もここで開始する
         if (gameState == eGameState.isGotPlayerTurn)
         {
+            if (!isPlayerTurn)
+            {
+                playerTensionController.SetTension(3);
+
+            }
+            else { enemyTensionController.SetTension(3); }
             gameState = eGameState.isWaitMulligan;
             StartCoroutine(WaitMulligan());
         }
@@ -414,6 +421,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             SetCanAttackAllFieldUnit(playerFields, true, true);　//連撃権の復活も行う
             SetCanAttackAllFieldUnit(enemyFields, false);
             SetCanSummonHandCards(); //手札から出せるかどうかの表示
+            playerTensionController.CanUsetensionCard(true);
+            SetCanUsetension(true);
         }
         else
         {
@@ -422,6 +431,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             enemyHeroController.ResetMP();
             SetCanAttackAllFieldUnit(playerFields, false);
             SetCanAttackAllFieldUnit(enemyFields, true, true); //連撃権の復活も行う
+            enemyTensionController.CanUsetensionCard(true);
+            SetCanUsetension(true,true); //テンションが使えるかどうかの表示をなくす
         }
 
         yield return new WaitForSeconds(0.6f); //ドロー待ち時間
@@ -554,6 +565,19 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
         
+        if(enemyTensionController.model.tension == 3)
+        {
+            yield return 0.25f;
+            if (FieldManager.instance.GetRandomUnits(true) is CardController cc) { enemyTensionController.UseTensionSpell(cc);  }
+            else { enemyTensionController.UseTensionSpell(playerHeroController); }
+            yield return 0.5f;
+        }
+        if(GetHeroMP(false) > 0)
+        {
+            yield return 0.25f;
+            enemyTensionController.UseTensionCard();
+            yield return 0.5f;
+        }
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(ChangeTurn());
     }
@@ -662,7 +686,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         AttackTohero(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>());
     }
     #endregion
-    #region MP操作
+    #region ヒーロー操作
     /// <summary>
     /// ヒーローのMPを取得する
     /// </summary>
@@ -687,8 +711,66 @@ public class GameManager : MonoBehaviourPunCallbacks
             enemyHeroController.ReduceMP(reduce);
         }
         SetCanSummonHandCards();
+        SetCanUsetension(isPlayerCard);
     }
-
+    /// <summary>
+    /// テンションカード及びテンションスペルが使用可能か判断し、表示を変更する
+    /// </summary>
+    /// <param name="setCanNotSummon"></param>
+    public void SetCanUsetension(bool isPlayerCard, bool canNotUsetension = false)
+    {
+        if (!isPlayerCard) { return; }
+        else if (canNotUsetension) { playerTensionController.SetCanUseTension(false); }
+        else if (playerTensionController.model.tension == 3)
+        {
+            playerTensionController.SetCanUseTension(true);
+        }
+        else if (playerTensionController.model.isTensionUsedThisTurn || GetHeroMP(true) < 1)
+        {
+            playerTensionController.SetCanUseTension(false);
+        }
+        else
+        {
+            playerTensionController.SetCanUseTension(true);
+        }
+    }
+    /// <summary>
+    /// テンションカードの使用を対戦相手に送信する 
+    /// </summary>
+    /// <param name="attackerFieldID"></param>
+    public void SendUseTensionCard()
+    {
+        photonView.RPC(nameof(RPCSendUseTensionCard), RpcTarget.Others);
+    }
+    [PunRPC]
+    void RPCSendUseTensionCard()
+    {
+        enemyTensionController.UseTensionCard();
+    }
+    /// <summary>
+    /// テンションスペルの使用を対戦相手に送信する 1～12はフィールドのユニット 13は味方ヒーロー 14は敵ヒーローが対象　受信者目線のIDに変換済み
+    /// </summary>
+    /// <param name="attackerFieldID"></param>
+    public void SendUseTensionSpell(int targetFieldIDByReceiver)
+    {
+        photonView.RPC(nameof(RPCUseTensionSpell), RpcTarget.Others, targetFieldIDByReceiver);
+    }
+    [PunRPC]
+    void RPCUseTensionSpell(int targetFieldIDByReceiver)
+    {
+        if(1 <= targetFieldIDByReceiver && targetFieldIDByReceiver <= 12)
+        {
+            enemyTensionController.UseTensionSpell(FieldManager.instance.GetUnitByFieldID(targetFieldIDByReceiver));
+        }
+        if(targetFieldIDByReceiver == 13)
+        {
+            enemyTensionController.UseTensionSpell(playerHeroController);
+        }
+        else if(targetFieldIDByReceiver == 14)
+        {
+            enemyTensionController.UseTensionSpell(enemyHeroController);
+        }
+    }
     #endregion
     #region resultとメニューへの遷移
     /// <summary>

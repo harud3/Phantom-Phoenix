@@ -837,6 +837,8 @@ MonoBehaviour:
   soundcCardBuff: {fileID: 8300000, guid: 3661974ccfc7ba54baa913633378f262, type: 3}
   soundcCardDeBuff: {fileID: 8300000, guid: 9cb801c16477e1941b076672653d25ea, type: 3}
   soundcCardSeal: {fileID: 8300000, guid: f02ef7c07d42f2346aff426a25a02720, type: 3}
+  soundcUseTensionCard: {fileID: 8300000, guid: 400786197b05343438adefd2861688c9,
+    type: 3}
 --- !u!1 &418071552
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,6 +33,8 @@ public class AudioManager : MonoBehaviour
     private AudioClip soundcCardDeBuff;
     [SerializeField]
     private AudioClip soundcCardSeal;
+    [SerializeField]
+    private AudioClip soundcUseTensionCard;
 
     private AudioSource audioSource;
 
@@ -117,5 +119,10 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.Stop();
         audioSource.PlayOneShot(soundcCardSeal);
+    }
+    public void SoundcUseTensionCard()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundcUseTensionCard);
     }
 }

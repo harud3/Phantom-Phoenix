@@ -37,12 +37,22 @@ public class HeroController : Controller
         view.ReShowStackCards(deckNum);
     }
     /// <summary>
-    /// ダメージを受ける
+    /// ヒーローが攻撃によりダメージを受けた時の処理
     /// </summary>
-    /// <param name="enemyCard"></param>
-    public void Damage(int atk)
+    /// <param name="viewOpenSide"></param>
+    public void DamageFromAttack(int dmg)
     {
-        model.Damage(atk);
+        model.Damage(dmg);
+        ReShowHP();
+    }
+    /// <summary>
+    /// ヒーローがダメージを受けた時の処理 
+    /// </summary>
+    /// <param name="viewOpenSide"></param>
+    public void Damage(int dmg)
+    {
+        AudioManager.instance.SoundCardFire();
+        model.Damage(dmg);
         ReShowHP();
     }
     public void Heal(int hl)

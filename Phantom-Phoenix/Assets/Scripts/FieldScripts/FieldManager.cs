@@ -13,6 +13,7 @@ public class FieldManager : MonoBehaviour
     [SerializeField] private Transform playerHand, enemyHand;
     [SerializeField] private HeroController playerHeroController, enemyHeroController;
     [SerializeField] private GameObject[] playerSelectablePanel = new GameObject[6], enemySelectablePanel = new GameObject[6];
+    [SerializeField] private GameObject[] heroSelectablePanel = new GameObject[2];
     private GameObject[] selectablePanel = new GameObject[12];
     private int _playerFieldOnUnitCnt;
     public int playerFieldOnUnitCnt
@@ -334,6 +335,18 @@ public class FieldManager : MonoBehaviour
         foreach (var fieldID in fieldIDs)
         {
             selectablePanel[fieldID - 1].SetActive(isActive);
+        }
+    }
+    /// <summary>
+    /// 選択効果において、選択可能なヒーローの選択可能パネルを表示する 1番を指定するとplayerHero 2番を指定するとenemyHero
+    /// </summary>
+    /// <param name="fieldIDs"></param>
+    /// <param name="isActive"></param>
+    public void SetHeroSelectablePanel(int[] heros, bool isActive)
+    {
+        foreach (var hero in heros)
+        {
+            heroSelectablePanel[hero - 1].SetActive(isActive);
         }
     }
     /// <summary>

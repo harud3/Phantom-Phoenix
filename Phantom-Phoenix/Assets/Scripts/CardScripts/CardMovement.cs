@@ -31,8 +31,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
     {
         CardController cardController = GetComponent<CardController>();
 
-        //ƒ}ƒŠƒKƒ“ˆ—
-        if (cardController.model.isMulliganCard || cardController.model.isFieldCard)
+        if (!cardController.model.isPlayerCard || cardController.model.isMulliganCard || cardController.model.isFieldCard)
         {
             return;
         }
@@ -47,7 +46,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
         CardController cardController = GetComponent<CardController>();
 
         //ƒ}ƒŠƒKƒ“ˆ—
-        if (cardController.model.isMulliganCard || cardController.model.isFieldCard)
+        if (!cardController.model.isPlayerCard ||  cardController.model.isMulliganCard || cardController.model.isFieldCard)
         {
             return;
         }
