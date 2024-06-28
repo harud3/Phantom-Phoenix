@@ -238,15 +238,15 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit501
+    name: unit521
     cost: 5
-    atk: 0
+    atk: 2
     hp: 1
     skill1: 2
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n\u71C3\u713C\u3055\u305B\u308B"
+    text: "\u6311\u767A\\n\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n\u71C3\u713C\u3055\u305B\u308B"
   - ID: 19
     hero: 0
     category: 0

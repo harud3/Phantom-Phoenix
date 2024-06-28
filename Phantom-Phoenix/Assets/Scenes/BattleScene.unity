@@ -1388,8 +1388,6 @@ RectTransform:
   m_Children:
   - {fileID: 550862158}
   - {fileID: 1180896658}
-  - {fileID: 232050810}
-  - {fileID: 315854575}
   - {fileID: 1371586486}
   - {fileID: 1489626060}
   - {fileID: 305668703}
@@ -1398,6 +1396,8 @@ RectTransform:
   - {fileID: 852394397}
   - {fileID: 2059500943}
   - {fileID: 1611270179}
+  - {fileID: 232050810}
+  - {fileID: 315854575}
   - {fileID: 668667008}
   - {fileID: 1930949005}
   - {fileID: 866599087}

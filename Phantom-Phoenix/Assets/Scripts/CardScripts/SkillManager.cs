@@ -335,7 +335,11 @@ public class SkillManager : MonoBehaviour
                         if (x.Count != 0)
                         {
                             //対象ユニットのターン終了時特殊スキルを追加する
-                            x.ForEach(i => i.SpecialSkillEndTurn += (bool isPlayerTurn) => { i.Damage(1); });
+                            x.ForEach(i =>
+                            {
+                                i.SetIsBurning(true);
+                                i.SpecialSkillEndTurn += (bool isPlayerTurn) => { i.Damage(1); };
+                            });
                         }
                     };
                     break;

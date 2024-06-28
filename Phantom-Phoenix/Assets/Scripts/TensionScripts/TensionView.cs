@@ -9,7 +9,9 @@ public class TensionView : MonoBehaviour
     [SerializeField]
     private Image imageTensionCard;
     [SerializeField]
-    private Sprite tension0, tension1, tension2, tension3;
+    private Sprite tension0, tension1, tension2;
+    [SerializeField]    
+    private Sprite tensionElf,tensionWitch;
     [SerializeField] TextMeshProUGUI textCost;
     [SerializeField] TextMeshProUGUI textTension;
     [SerializeField] GameObject panelSelectable;
@@ -18,25 +20,24 @@ public class TensionView : MonoBehaviour
         switch (model.tension)
         {
             case 0:
-                imageTensionCard.sprite = tension0;
                 textCost.text = "1";
+                imageTensionCard.sprite = tension0;
                 textTension.text = "";
                 break;
             case 1:
-                imageTensionCard.sprite = tension1;
                 textCost.text = "1";
+                imageTensionCard.sprite = tension1;
                 textTension.text = "";
                 break;
             case 2:
-                imageTensionCard.sprite = tension2;
                 textCost.text = "1";
+                imageTensionCard.sprite = tension2;
                 textTension.text = "";
                 break;
             case 3:
-                imageTensionCard.sprite = tension3;
-                textCost.text = "0";
-                textTension.text = "1体を選択する\n味方なら3回復\n敵なら2ダメージ";
+                SetTensionSpell(model);
                 break;
+                
         }
     }
     /// <summary>
@@ -46,5 +47,22 @@ public class TensionView : MonoBehaviour
     public void SetActiveSelectablePanel(bool isActive)
     {
         panelSelectable.SetActive(isActive);
+    }
+    private void SetTensionSpell(TensionModel model)
+    {
+        textCost.text = "0";
+        switch (model.tensionID)
+        {
+            case 1: //elf
+                imageTensionCard.sprite = tensionElf;
+                textTension.text = "味方フィールドに\n2/2/2 即撃 を1体出す";
+                break;
+            case 2: //witch
+                imageTensionCard.sprite = tensionWitch;
+                textTension.text = "1体を選択する\n味方なら3回復\n敵なら2ダメージ";
+                break;
+        }
+
+        
     }
 }

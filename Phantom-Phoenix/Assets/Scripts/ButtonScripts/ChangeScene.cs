@@ -18,7 +18,7 @@ public class ChangeScene : MonoBehaviour
             AudioManager.instance.SoundButtonClick1();
         });
         buttonDeck.onClick.AddListener(() => {
-            Invoke("ChangeDeckScene", 0.5f);
+            Invoke("ChangeSelectHeroScene", 0.5f);
             AudioManager.instance.SoundButtonClick1();
         });
     }
@@ -26,8 +26,8 @@ public class ChangeScene : MonoBehaviour
     {
         SceneManager.LoadScene("BattleScene");
     }
-    private void ChangeDeckScene()
+    private void ChangeSelectHeroScene()
     {
-        SceneManager.LoadScene("DeckScene");
+        SceneManager.LoadScene("SelectHeroScene");
     }
 }

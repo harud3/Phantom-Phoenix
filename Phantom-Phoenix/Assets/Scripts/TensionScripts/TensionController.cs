@@ -11,32 +11,14 @@ public class TensionController : MonoBehaviour
     public TensionModel model;
     [SerializeField]
     private bool isPlayer; //playerかenemyか　事前にインスペクター上で指定しておく
-    private void Start()
+    [SerializeField] CardController cardPrefab;
+    public void Init(int useHeroID)
     {
         view = GetComponent<TensionView>();
-        model = new TensionModel(isPlayer);
+        model = new TensionModel(isPlayer, useHeroID);
         view.ReShow(model);
 
-        ccSpellContents = (CardController target) => {
-            if (target.model.isPlayerCard == model.isPlayer)
-            {
-                target.Heal(3);
-            }
-            else
-            {
-                target.Damage(2);
-            }
-        };
-        hcSpellContents = (HeroController target) => {
-            if (target.model.isPlayer == model.isPlayer)
-            {
-                target.Heal(3);
-            }
-            else
-            {
-                target.Damage(2);
-            }
-        };
+        SetTensionSpell(useHeroID);
     }
     public void SetCanUseTension(bool canUseTension)
     {
@@ -72,6 +54,10 @@ public class TensionController : MonoBehaviour
     /// ヒーロー単体を対象としたスペルの効果を設定
     /// </summary>
     public Action<HeroController> hcSpellContents = new Action<HeroController>((target) => { });
+    /// <summary>
+    /// 非選択効果のスペルの効果を設定
+    /// </summary>
+    public Action spellContents = new Action(() => { });
     public void UseTensionSpell<T>(T target) where T : Controller
     {
         CardController tc = target as CardController; //変換できたらいいですね
@@ -84,7 +70,56 @@ public class TensionController : MonoBehaviour
         {
             hcSpellContents?.Invoke(th);
         }
+        else {
+            spellContents?.Invoke();
+        }
         SetTension(0); model.PlusTensionSpellUsedCnt();
         GameManager.instance.SetCanUsetension(model.isPlayer);
+    }
+    private void SetTensionSpell(int useHeroID)
+    {
+        switch (useHeroID)
+        {
+            case 1: //elf
+                void Summon011()
+                {
+                    if (FieldManager.instance.GetEmptyFieldID(isPlayer) is var x && x.emptyField != null)
+                    {
+                        CardController cc = Instantiate(cardPrefab, x.emptyField);
+                        cc.Init(10001, isPlayer); // cardID10001 = token222;
+                        cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
+                    }
+                }
+                spellContents = () => 
+                { 
+                    Summon011();
+                };
+                break;
+            case 2: //witch
+                ccSpellContents = (CardController target) => {
+                    if (target.model.isPlayerCard == model.isPlayer)
+                    {
+                        target.Heal(3);
+                    }
+                    else
+                    {
+                        target.Damage(2);
+                    }
+                };
+                hcSpellContents = (HeroController target) => {
+                    if (target.model.isPlayer == model.isPlayer)
+                    {
+                        target.Heal(3);
+                    }
+                    else
+                    {
+                        target.Damage(2);
+                        GameManager.instance.CheckIsAlive(target.model.isPlayer);
+                    }
+                };
+                break;
+
+        }
+        
     }
 }

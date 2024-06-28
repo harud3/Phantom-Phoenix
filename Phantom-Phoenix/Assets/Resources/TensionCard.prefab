@@ -197,6 +197,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer: 0
+  cardPrefab: {fileID: -7060814915658875771, guid: 64e3b038805b8464890da531d00aedd7,
+    type: 3}
 --- !u!114 &-3807583733268490453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,7 +228,8 @@ MonoBehaviour:
   tension0: {fileID: 21300000, guid: 1f85dec1eb65c434d92df493dce5b092, type: 3}
   tension1: {fileID: 21300000, guid: 160f16b0a42fe1d4f87a1a9da75fc234, type: 3}
   tension2: {fileID: 21300000, guid: 26061dfed1eb4a845b7bbfbf0d4431fe, type: 3}
-  tension3: {fileID: 21300000, guid: 99cd5c4d494413c42b838b35d72c4cd2, type: 3}
+  tensionElf: {fileID: 21300000, guid: b42b07022d8feb84d91ae3744f1f937d, type: 3}
+  tensionWitch: {fileID: 21300000, guid: 99cd5c4d494413c42b838b35d72c4cd2, type: 3}
   textCost: {fileID: 7847827724233896354}
   textTension: {fileID: 1918496475515222403}
   panelSelectable: {fileID: 58156062978928197}

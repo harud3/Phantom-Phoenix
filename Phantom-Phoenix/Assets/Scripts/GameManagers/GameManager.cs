@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private Image resultImage;
 
     DeckModel playerDeck = null;
-    DeckModel enemyDeck = null;
+    DeckModel enemyDeck = null; int enemyUseHeroID = 0;
     #region 初期設定
     /// <summary>
     /// ゲームの状態 通信対戦において、最初に相互データ通信(デッキ、シード値)があるので管理必須
@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isBigin,
         isGotPlayerTurn,
+        isWaitEnemyHeroID,
         isWaitMulligan,
         isProcessMulligan,
         isWaitStart,
@@ -89,8 +90,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         else //オンライン対戦ではない→AI戦
         {
             enemyDeck = new DeckModel().Init();
+            enemyUseHeroID = enemyDeck.useHeroID;
             isPlayerTurn = UnityEngine.Random.Range(0, 2) == 0;
-            gameState = eGameState.isGotPlayerTurn;
+            gameState = eGameState.isWaitEnemyHeroID;
         }
     }
     /// <summary>
@@ -105,13 +107,23 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RPCSetIsPlayerTurn(bool isPlayerTurn)
     {
         this.isPlayerTurn = !isPlayerTurn;
-        gameState = eGameState.isGotPlayerTurn;
+        if(gameState == eGameState.isBigin)
+        {
+            gameState = eGameState.isGotPlayerTurn;
+        }
     }
     private void Update()
     {
+        if(gameState == eGameState.isGotPlayerTurn){ //Ai戦はこの状態を飛ばしているので、オンラインチェックなし
+            gameState = eGameState.isWaitEnemyHeroID;
+            SendUseHeroID(playerDeck.useHeroID);
+        }
         //オンライン対戦では、相手のデッキがなければ始められないので、ここで開始する それに伴い、AI戦もここで開始する
-        if (gameState == eGameState.isGotPlayerTurn)
+        else if (gameState == eGameState.isWaitEnemyHeroID &&  enemyUseHeroID != 0)
         {
+            SettingInitHero();
+            playerTensionController.Init(playerDeck.useHeroID);
+            enemyTensionController.Init(enemyUseHeroID);
             if (!isPlayerTurn)
             {
                 playerTensionController.SetTension(3);
@@ -134,10 +146,22 @@ public class GameManager : MonoBehaviourPunCallbacks
                 SendSetSeed(seed); //厳密にはシード値が正しく受信されたかチェックすべきな気もする
             }
             SetTime();
-            SettingInitHero();
             SettingInitHand();
             StartCoroutine(ChangeTurn(true));
         }
+    }
+    /// <summary>
+    /// どちらから開始するのかを対戦相手に送信する
+    /// </summary>
+    /// <param name="isPlayerTurn"></param>
+    public void SendUseHeroID(int useHeroID)
+    {
+        photonView.RPC(nameof(RPCEnemyUseHeroID), RpcTarget.Others, useHeroID);
+    }
+    [PunRPC]
+    void RPCEnemyUseHeroID(int enemyUseHeroID)
+    {
+        this.enemyUseHeroID = enemyUseHeroID;
     }
     public void FinishMulligan()
     {
@@ -233,7 +257,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     void SettingInitHero()
     {
         playerHeroController.Init(playerDeck.useHeroID);
-        enemyHeroController.Init(enemyDeck.useHeroID);
+        enemyHeroController.Init(enemyUseHeroID);
     }
     /// <summary>
     /// 初期手札の設定
@@ -504,6 +528,30 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(1f);
 
+        if (enemyTensionController.model.tension == 3)
+        {
+
+            switch (enemyTensionController.model.tensionID)
+            {
+                case 1: //elf
+                    yield return new WaitForSeconds(0.25f);
+                    if (FieldManager.instance.GetEmptyFieldID(false) is var x && x.emptyField != null)
+                    {
+                        enemyTensionController.UseTensionSpell<Controller>(null);
+                    }
+                    yield return new WaitForSeconds(0.5f);
+                    break;
+                case 2: //witch
+                    yield return new WaitForSeconds(0.25f);
+                    if (FieldManager.instance.GetRandomUnits(true) is CardController cc) { enemyTensionController.UseTensionSpell(cc); }
+                    else { enemyTensionController.UseTensionSpell(playerHeroController); }
+                    yield return new WaitForSeconds(0.5f);
+                    break;
+            }
+
+
+        }
+
         //enemyAIが動かす
         //手札から出せるカードを出す
         CardController[] handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
@@ -566,18 +614,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
         
-        if(enemyTensionController.model.tension == 3)
-        {
-            yield return 0.25f;
-            if (FieldManager.instance.GetRandomUnits(true) is CardController cc) { enemyTensionController.UseTensionSpell(cc);  }
-            else { enemyTensionController.UseTensionSpell(playerHeroController); }
-            yield return 0.5f;
-        }
         if(GetHeroMP(false) > 0)
         {
-            yield return 0.25f;
+            yield return new WaitForSeconds(0.25f);
             enemyTensionController.UseTensionCard();
-            yield return 0.5f;
+            yield return new WaitForSeconds(0.5f);
         }
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(ChangeTurn());
@@ -659,16 +700,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (attacker.model.isPlayerCard) {
             attacker.Attack(enemyHeroController, true);
             //勝利判定もしておく
-            if (!enemyHeroController.model.isAlive) { 
-                Invoke("ViewResultPanel",1f);
-            }
+            CheckIsAlive(false);
         }
         else {
             attacker.Attack(playerHeroController, true);
             //勝利判定もしておく
-            if (!playerHeroController.model.isAlive) {
-                Invoke("ViewResultPanel", 1f);
-            }
+            CheckIsAlive(true);
         }
     }
     /// <summary>
@@ -685,6 +722,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartCoroutine(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>().movement.MoveToTarget(playerHeroController.transform));
         yield return new WaitForSeconds(0.6f);
         AttackTohero(enemyFields[attackerFieldID - 1].GetChild(0).GetComponent<CardController>());
+    }
+    public void CheckIsAlive(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            if (!playerHeroController.model.isAlive)
+            {
+                Invoke("ViewResultPanel", 1f);
+            }
+        }
+        else
+        {
+            if (!enemyHeroController.model.isAlive)
+            {
+                Invoke("ViewResultPanel", 1f);
+            }
+        }
     }
     #endregion
     #region ヒーロー操作
@@ -749,7 +803,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         enemyTensionController.UseTensionCard();
     }
     /// <summary>
-    /// テンションスペルの使用を対戦相手に送信する 1～12はフィールドのユニット 13は味方ヒーロー 14は敵ヒーローが対象　受信者目線のIDに変換済み
+    /// テンションスペルの使用を対戦相手に送信する 0は効果選択なしのテンションスキル 1～12はフィールドのユニット 13は味方ヒーロー 14は敵ヒーローが対象　受信者目線のIDに変換済み
     /// </summary>
     /// <param name="attackerFieldID"></param>
     public void SendUseTensionSpell(int targetFieldIDByReceiver)
@@ -759,7 +813,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPCUseTensionSpell(int targetFieldIDByReceiver)
     {
-        if(1 <= targetFieldIDByReceiver && targetFieldIDByReceiver <= 12)
+        if(targetFieldIDByReceiver == 0)
+        {
+            enemyTensionController.UseTensionSpell<Controller>(null);
+        }
+        else if(1 <= targetFieldIDByReceiver && targetFieldIDByReceiver <= 12)
         {
             enemyTensionController.UseTensionSpell(FieldManager.instance.GetUnitByFieldID(targetFieldIDByReceiver));
         }

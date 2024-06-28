@@ -304,6 +304,10 @@ public class CardController : Controller
     {
         if (!model.isSeal) SpecialSkillBeforeDie?.Invoke();
     }
+    public void SetIsBurning(bool isBurning)
+    {
+        view.SetViewFrameBurning(isBurning);
+    }
     /// <summary>
     /// ••ˆóŒø‰Ê
     /// </summary>
@@ -313,6 +317,7 @@ public class CardController : Controller
         model.SetIsSeal(isSeal);
         view.SetViewFrameSeal(isSeal);
         view.SetViewFrameTaunt(!isSeal);
+        view.SetViewFrameBurning(!isSeal);
         if (model.isSummonThisTurn || SkillManager.instance.HasDoubleActionAndIsNotActiveDoubleAction(model))//‘¦Œ‚‘Îô ˜AŒ‚‘Îô
         {
             SetCanAttack(false);

@@ -20,10 +20,23 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
         {
             if (tensionController.model.tension == 3)
             {
-                if (IsExistTarget())
+                switch (tensionController.model.tensionID)
                 {
-                    StartCoroutine(waitPlayerClick(tensionController));
+                    case 1: //elf
+                        tensionController.UseTensionSpell<Controller>(null);
+                        if (GameDataManager.instance.isOnlineBattle) //‚±‚±‚É“ü‚Á‚Ä‚«‚Ä‚¢‚é“_‚Åcc‚©hc‚Ì‚Ç‚¿‚ç‚©‚Í‘ÎÛ‚Æ‚È‚Á‚Ä‚¢‚é
+                        {
+                            GameManager.instance.SendUseTensionSpell(0);
+                        }
+                        break;
+                    case 2: //witch
+                        if (IsExistTarget())
+                        {
+                            StartCoroutine(waitPlayerClick(tensionController));
+                        }
+                        break;
                 }
+                
             }
             else if (!tensionController.model.isTensionUsedThisTurn)
             {

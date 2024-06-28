@@ -20,6 +20,7 @@ public class CardView : MonoBehaviour
     [SerializeField] TextMeshProUGUI textCard;
     [SerializeField] GameObject panelSelectable;
     [SerializeField] GameObject frameTaunt;
+    [SerializeField] GameObject frameBurning;
     [SerializeField] GameObject frameSeal;
     /// <summary>
     /// カードの初期表示　基本的にCardControllerを通して呼ぶことになる
@@ -94,6 +95,14 @@ public class CardView : MonoBehaviour
     public void SetViewFrameTaunt(bool isView)
     {
         frameTaunt.SetActive(isView);
+    }
+    /// <summary>
+    /// 燃焼効果発動中のフレームを表示するか否か 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="isView"></param>
+    public void SetViewFrameBurning(bool isView)
+    {
+        frameBurning.SetActive(isView);
     }
     /// <summary>
     /// 封印中のフレームを表示するか否か 基本的にCardControllerを通して呼ぶことになる

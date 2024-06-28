@@ -5,12 +5,14 @@ using UnityEngine;
 public class TensionModel
 {
     public int tension {  get; private set; }
+    public int tensionID { get; private set; }
     public bool isTensionUsedThisTurn { get; private set; }
     public int tensionSpellUsedCnt { get; private set; }
     public bool isPlayer { get; private set; }
-    public TensionModel(bool isPlayer)
+    public TensionModel(bool isPlayer, int useHeroID)
     {
         tension = 0;
+        tensionID = useHeroID;
         isTensionUsedThisTurn = false;
         tensionSpellUsedCnt = 0;
         this.isPlayer = isPlayer;

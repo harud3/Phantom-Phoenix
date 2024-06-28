@@ -13,6 +13,8 @@ public class GameDataManager : MonoBehaviour
     public bool isMaster;
     public PhantomPhoenixCardList cardlist;
     public static GameDataManager instance {  get; private set; }
+    [NonSerialized]
+    public int editDeckHeroID = 1;
     private void Awake()
     {
 
@@ -27,6 +29,11 @@ public class GameDataManager : MonoBehaviour
             string json = JsonUtility.ToJson(data, true);
             PlayerPrefs.SetString("PlayerDeckData", json);
             PlayerPrefs.Save();
+        }
+        else
+        {
+            DeckModel deckmodel = new DeckModel().Init();
+            editDeckHeroID = deckmodel.useHeroID;
         }
             if (instance == null)
         {
