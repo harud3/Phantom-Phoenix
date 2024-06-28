@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// ゲームの状態 通信対戦において、最初に相互データ通信(デッキ、シード値)があるので管理必須
     /// </summary>
-    private enum eGameState
+    public enum eGameState
     {
         isBigin,
         isGotPlayerTurn,
@@ -67,9 +67,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         isWaitStart,
         isStarted,
     }
-    eGameState gameState = eGameState.isBigin;
+    public eGameState gameState { get; private set; }
     void Start()
     {
+        gameState = eGameState.isBigin;
         StartGame();
     }
     void StartGame()

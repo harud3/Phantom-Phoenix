@@ -56,6 +56,7 @@ public class TensionController : MonoBehaviour
             model.SetTension(tension);
             view.ReShow(model);
         }
+        if(GameManager.instance.gameState != GameManager.eGameState.isStarted) { return; }
         GameManager.instance.SetCanUsetension(model.isPlayer);
     }
     public void CanUsetensionCard(bool canUseTensionCard)

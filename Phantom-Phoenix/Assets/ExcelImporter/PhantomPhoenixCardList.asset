@@ -242,7 +242,7 @@ MonoBehaviour:
     cost: 5
     atk: 0
     hp: 1
-    skill1: 0
+    skill1: 2
     skill2: 0
     skill3: 0
     target: 0
@@ -351,3 +351,17 @@ MonoBehaviour:
     skill3: 0
     target: 0
     text: "\u3010\u524D\u5217\u6B7B\u4EA1\u6642\u3011\\n\u5F8C\u5217\u306B\u5FA9\u6D3B\u3059\u308B\\n\u3010\u5F8C\u5217\u6B7B\u4EA1\u6642\u3011\\n\u524D\u5217\u306B\u5FA9\u6D3B\u3059\u308B"
+  token:
+  - ID: 10001
+    hero: 0
+    category: 0
+    rarity: 1
+    name: token222
+    cost: 2
+    atk: 2
+    hp: 2
+    skill1: 1
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u5373\u6483"

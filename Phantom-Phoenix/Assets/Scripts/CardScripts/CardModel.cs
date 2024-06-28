@@ -48,8 +48,8 @@ public class CardModel
     public bool isSeal { get; private set; }
     public CardModel(int cardID, bool isPlayer)
     {
-        //cardIDを基に対象のカードデータを取得する
-        CardEntity cardEntity = GameDataManager.instance.cardlist.cl[cardID - 1];
+        //cardIDを基に対象のカードデータを取得する 10001からはトークンカードとする
+        CardEntity cardEntity = cardID <= 10000 ? GameDataManager.instance.cardlist.cl[cardID - 1] : GameDataManager.instance.cardlist.token[cardID - 10001];
 
         this.cardID = cardID;
         name = cardEntity.name;

@@ -7,4 +7,5 @@ using UnityEngine;
 public class PhantomPhoenixCardList : ScriptableObject
 {
 	public List<CardEntity> cl;
+	public List<CardEntity> token;
 }
