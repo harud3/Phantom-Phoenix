@@ -37,7 +37,7 @@ public class EditDeckbackmenu : MonoBehaviour
             }
             DeckData data = new DeckData()
             {
-                useHeroID = GameDataManager.instance.editDeckHeroID, deck = cardIDs //TODO:ƒq[ƒ[ID‚à‰Â•Ï‚É‚·‚é
+                useHeroID = GameDataManager.instance.editDeckHeroID, deck = cardIDs
             };
             string json = JsonUtility.ToJson(data, true);
             PlayerPrefs.SetString("PlayerDeckData", json);

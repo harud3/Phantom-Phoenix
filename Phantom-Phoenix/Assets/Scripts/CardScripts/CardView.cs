@@ -20,6 +20,9 @@ public class CardView : MonoBehaviour
     [SerializeField] TextMeshProUGUI textCard;
     [SerializeField] GameObject panelSelectable;
     [SerializeField] GameObject frameTaunt;
+    [SerializeField] GameObject frameSnipe;
+    [SerializeField] GameObject framePierce;
+    [SerializeField] GameObject frameDoubleAction;
     [SerializeField] GameObject frameBurning;
     [SerializeField] GameObject frameSeal;
     /// <summary>
@@ -95,6 +98,30 @@ public class CardView : MonoBehaviour
     public void SetViewFrameTaunt(bool isView)
     {
         frameTaunt.SetActive(isView);
+    }
+    /// <summary>
+    /// 狙撃効果発動中のフレームを表示するか否か 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="isView"></param>
+    public void SetViewFrameSnipe(bool isView)
+    {
+        frameSnipe.SetActive(isView);
+    }
+    /// <summary>
+    /// 貫通効果発動中のフレームを表示するか否か 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="isView"></param>
+    public void SetViewFramePierce(bool isView)
+    {
+        framePierce.SetActive(isView);
+    }
+    /// <summary>
+    /// 連撃効果発動中のフレームを表示するか否か 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="isView"></param>
+    public void SetViewFrameDoubleAction(bool isView)
+    {
+        frameDoubleAction.SetActive(isView);
     }
     /// <summary>
     /// 燃焼効果発動中のフレームを表示するか否か 基本的にCardControllerを通して呼ぶことになる

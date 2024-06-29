@@ -137,9 +137,18 @@ public class CardController : Controller
             model.SetIsTaunt(true);
             view.SetViewFrameTaunt(true);
         }
+        if (SkillManager.instance.IsSnipe(model)) //‘_Œ‚Œø‰Ê•t—^
+        {
+            view.SetViewFrameSnipe(true);
+        }
+        if (SkillManager.instance.IsPierce(model)) //ŠÑ’ÊŒø‰Ê•t—^
+        {
+            view.SetViewFramePierce(true);
+        }
         if (SkillManager.instance.IsDoubleAction(model))
-        { //“ñ‰ñUŒ‚Œø‰Ê•t—^
+        { //˜AŒ‚Œø‰ÊE˜AŒ‚Œ •t—^
             model.SetIsActiveDoubleAction(true);
+            view.SetViewFrameDoubleAction(true);
         }
     }
     /// <summary>
@@ -317,6 +326,9 @@ public class CardController : Controller
         model.SetIsSeal(isSeal);
         view.SetViewFrameSeal(isSeal);
         view.SetViewFrameTaunt(!isSeal);
+        view.SetViewFrameSnipe(!isSeal);
+        view.SetViewFrameDoubleAction(!isSeal);
+        view.SetViewFramePierce(!isSeal);
         view.SetViewFrameBurning(!isSeal);
         if (model.isSummonThisTurn || SkillManager.instance.HasDoubleActionAndIsNotActiveDoubleAction(model))//‘¦Œ‚‘Îô ˜AŒ‚‘Îô
         {
