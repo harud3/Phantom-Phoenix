@@ -26,6 +26,8 @@ public class CardModel
     public CardEntity.Skill skill1 { get; private set; }
     public CardEntity.Skill skill2 { get; private set; }
     public CardEntity.Skill skill3 { get; private set; }
+    public CardEntity.Skill skill4 { get; set; } //ŠO•”•t—^
+    public CardEntity.Skill skill5 { get; set; } //ŠO•”•t—^
     public string textCard { get; private set; }
     public CardEntity.Target target { get; private set; }
 
@@ -65,6 +67,8 @@ public class CardModel
         skill1 = cardEntity.skill1;
         skill2 = cardEntity.skill2;
         skill3 = cardEntity.skill3;
+        skill4 = CardEntity.Skill.none;
+        skill5 = CardEntity.Skill.none;
         textCard = cardEntity.text;
         target = cardEntity.target;
 
@@ -214,13 +218,14 @@ public class CardModel
         this.atk -= atk;
         maxHP -= hp;
         this.hp -= hp;
-        if (atk < 0)
+        if (this.atk < 0)
         {
-            atk = 0;
+            this.atk = 0;
         }
-        if (hp < 0)
+        if (this.hp < 0)
         {
-            hp = 0;
+            this.hp = 0;
+            isAlive = false;
         }
     }
     /// <summary>

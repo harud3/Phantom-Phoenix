@@ -29,7 +29,7 @@ MonoBehaviour:
   - ID: 2
     hero: 0
     category: 0
-    rarity: 0
+    rarity: 1
     name: unit122
     cost: 1
     atk: 2
@@ -351,6 +351,85 @@ MonoBehaviour:
     skill3: 0
     target: 0
     text: "\u3010\u524D\u5217\u6B7B\u4EA1\u6642\u3011\\n\u5F8C\u5217\u306B\u5FA9\u6D3B\u3059\u308B\\n\u3010\u5F8C\u5217\u6B7B\u4EA1\u6642\u3011\\n\u524D\u5217\u306B\u5FA9\u6D3B\u3059\u308B"
+  - ID: 27
+    hero: 0
+    category: 0
+    rarity: 0
+    name: unit877
+    cost: 8
+    atk: 7
+    hp: 7
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u6700\u5927HP\u306F1\uFF5E13\u306E\\n\u30E9\u30F3\u30C0\u30E0\u306A\u5024\u3068\u306A\u308B\\nATK\u306FHP-13\u3068\u306A\u308B"
+  - ID: 28
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit863
+    cost: 8
+    atk: 6
+    hp: 3
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092\\n\u6B7B\u4EA1\u3055\u305B\u3001\u305D\u3046\u3057\u305F\u5834\u5408\u3001\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n\u6B7B\u4EA1\u3055\u305B\u308B"
+  - ID: 29
+    hero: 0
+    category: 0
+    rarity: 2
+    name: gargoyle
+    cost: 8
+    atk: 5
+    hp: 5
+    skill1: 3
+    skill2: 5
+    skill3: 0
+    target: 0
+    text: "\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306B\\n\u72D9\u6483\u3092\u4ED8\u4E0E\u3059\u308B"
+  - ID: 30
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit925
+    cost: 9
+    atk: 2
+    hp: 5
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306B\\n4\u30C0\u30E1\u30FC\u30B8"
+  - ID: 31
+    hero: 0
+    category: 0
+    rarity: 1
+    name: unit945
+    cost: 9
+    atk: 4
+    hp: 5
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n1/0/2 \u6311\u767A\\n 2/2/2 \u6311\u767A\\n
+      1/2/1 \u72D9\u6483\\n 2/3/2 \u8CAB\u901A\\n\u3092\u51FA\u3059"
+  - ID: 32
+    hero: 0
+    category: 0
+    rarity: 2
+    name: 'hellhound '
+    cost: 10
+    atk: 6
+    hp: 6
+    skill1: 1
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u3092+2/+2\\n\u6575\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u3092-2/-2"
   token:
   - ID: 10001
     hero: 0

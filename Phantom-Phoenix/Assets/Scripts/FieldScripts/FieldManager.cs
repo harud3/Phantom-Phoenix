@@ -144,18 +144,18 @@ public class FieldManager : MonoBehaviour
     /// </summary>
     /// <param name="fieldID"></param>
     /// <returns></returns>
-    public CardController GetRandomUnits(bool isPlayerField)
+    public CardController GetRandomUnits(bool isPlayerField, CardController c = null)
     {
 
         if (isPlayerField)
         {
-            var x = playerFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).ToList();
+            var x = playerFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).Where(i => c != null ? i.model.thisFieldID != c.model.thisFieldID : true).ToList();
             if (!x.Any()) { return null; }
             return x?[UnityEngine.Random.Range(0, x.Count())];
         }
         else
         {
-            var x = enemyFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).ToList();
+            var x = enemyFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).Where(i => c != null ? i.model.thisFieldID != c.model.thisFieldID : true).ToList();
             if (!x.Any()) { return null; }
             return x?[UnityEngine.Random.Range(0, x.Count())];
         }

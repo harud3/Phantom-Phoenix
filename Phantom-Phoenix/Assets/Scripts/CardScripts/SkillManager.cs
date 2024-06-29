@@ -23,7 +23,7 @@ public class SkillManager : MonoBehaviour
     #region 5大スキル
     public bool IsFast(CardModel model) //即撃
     {
-        if (model.skill1 == CardEntity.Skill.fast || model.skill2 == CardEntity.Skill.fast || model.skill3 == CardEntity.Skill.fast)
+        if (model.skill1 == CardEntity.Skill.fast || model.skill2 == CardEntity.Skill.fast || model.skill3 == CardEntity.Skill.fast || model.skill4 == CardEntity.Skill.fast || model.skill5 == CardEntity.Skill.fast)
         {
             return true;
         }
@@ -31,7 +31,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool IsTaunt(CardModel model) //挑発
     {
-        if (model.skill1 == CardEntity.Skill.taunt || model.skill2 == CardEntity.Skill.taunt || model.skill3 == CardEntity.Skill.taunt)
+        if (model.skill1 == CardEntity.Skill.taunt || model.skill2 == CardEntity.Skill.taunt || model.skill3 == CardEntity.Skill.taunt || model.skill4 == CardEntity.Skill.taunt || model.skill5 == CardEntity.Skill.taunt)
         {
             //敵なら7,8,9が前列となり、味方なら1,2,3が前列となる
             if (!model.isPlayerCard && (model.thisFieldID == 7 || model.thisFieldID == 8 || model.thisFieldID == 9)
@@ -45,7 +45,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool IsSnipe(CardModel model) //狙撃
     {
-        if (!model.isSeal && (model.skill1 == CardEntity.Skill.snipe || model.skill2 == CardEntity.Skill.snipe || model.skill3 == CardEntity.Skill.snipe))
+        if (!model.isSeal && (model.skill1 == CardEntity.Skill.snipe || model.skill2 == CardEntity.Skill.snipe || model.skill3 == CardEntity.Skill.snipe) || model.skill4 == CardEntity.Skill.snipe || model.skill5 == CardEntity.Skill.snipe)
         {
             return true;
         }
@@ -53,7 +53,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool IsPierce(CardModel model) //貫通
     {
-        if (!model.isSeal &&  (model.skill1 == CardEntity.Skill.pierce || model.skill2 == CardEntity.Skill.pierce || model.skill3 == CardEntity.Skill.pierce))
+        if (!model.isSeal &&  (model.skill1 == CardEntity.Skill.pierce || model.skill2 == CardEntity.Skill.pierce || model.skill3 == CardEntity.Skill.pierce) || model.skill4 == CardEntity.Skill.pierce || model.skill5 == CardEntity.Skill.pierce)
         {
             return true;
         }
@@ -69,7 +69,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool IsDoubleAction(CardModel model) //連撃
     {
-        if (!model.isSeal && ( model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction ))
+        if (!model.isSeal && ( model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction || model.skill4 == CardEntity.Skill.doubleAction || model.skill5 == CardEntity.Skill.doubleAction))
         {
             return true;
         }
@@ -82,7 +82,7 @@ public class SkillManager : MonoBehaviour
     /// <returns></returns>
     public bool HasDoubleActionAndIsNotActiveDoubleAction(CardModel model)
     {
-        if (!model.isActiveDoubleAction && (model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction))
+        if (!model.isActiveDoubleAction && (model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction || model.skill4 == CardEntity.Skill.doubleAction || model.skill5 == CardEntity.Skill.doubleAction))
         {
             return true;
         }
@@ -262,7 +262,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //FireLord
-            case 13: //召喚時&死亡時:全てのユニットに2ダメージ
+            case 13: //召喚時&死亡時:全てのユニットに1ダメージ
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
                     if (x.Count != 0)
@@ -446,6 +446,104 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
+            //unit877
+            case 27: //ATKを1～13のランダムな値にして、HPをATK-13の値にする
+                {
+                    var i = Random.Range(1, 14);
+                    if(i > 7)
+                    {
+                        c.DeBuff(0, i - 7);
+                        c.Buff(i - 7, 0);
+                    }
+                    else
+                    {
+                        c.DeBuff(i - 7, 0);
+                        c.Buff(0, i - 7);
+                    }
+                    break;
+                }
+            //unit863
+            case 28: //ランダムな味方ユニット1体を死亡させたら、ランダムな敵ユニット1体を死亡させる
+                {
+                    if (FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c) is var x && x != null)
+                    {
+                        x.Damage(99);
+                        if (FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard) is var y && y != null)
+                        {
+                            y.Damage(99);
+                        }
+                    }
+
+                    break;
+                }
+            //gargoyle
+            case 29: //死亡時:全ての味方ユニットに狙撃を付与
+                {
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        var x = FieldManager.instance.GetUnitsByFieldID(
+                            c.model.isPlayerCard ? Enumerable.Range(1, 6).ToArray() : Enumerable.Range(7, 6).ToArray()
+                            ).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                        if (x.Count != 0)
+                        {
+                            //対象ユニットに狙撃を付与する
+                            x.ForEach(i =>
+                            {
+                                i.SetIsSnipe(true);
+                            });
+                        }
+                    };
+                    break;
+                }
+            //unit925
+            case 30: //召喚時:全てのユニットに4ダメージ
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                    if (x.Count != 0)
+                    {
+                        x.ForEach(i => i.Damage(4));
+                    }
+                    break;
+                }
+            //unit945
+            case 31: //召喚時:cardID3,4,7,8を出す
+                {
+                    bool SummonCard(int cardID)
+                    {
+                        if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
+                        {
+                            CardController cc = Instantiate(cardPrefab, x.emptyField);
+                            cc.Init(cardID, c.model.isPlayerCard); // cardID1 = unit011;
+                            cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    if (SummonCard(3)) { if (SummonCard(4)) { if (SummonCard(7)) { SummonCard(8); } } }
+                    break;
+                }
+            //hellhound 
+            case 32: //味方+2/+2 敵-2/-2
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                    if (x.Count != 0)
+                    {
+                        x.ForEach(i =>
+                        {
+                            if (i.model.isPlayerCard == c.model.isPlayerCard)
+                            {
+                                i.Buff(2, 2);
+                            }
+                            else
+                            {
+                                i.DeBuff(2, 2);
+                            }
+                        });
+                    }
+                    break;
+                }
+
         }
 
     }

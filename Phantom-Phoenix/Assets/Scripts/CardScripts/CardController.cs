@@ -317,6 +317,18 @@ public class CardController : Controller
     {
         view.SetViewFrameBurning(isBurning);
     }
+    public void SetIsSnipe(bool isSnipe)
+    {
+        if (model.skill4 == CardEntity.Skill.none)
+        {
+            model.skill4 = CardEntity.Skill.snipe;
+        }
+        else if(model.skill5 == CardEntity.Skill.none)
+        {
+            model.skill5 = CardEntity.Skill.snipe;
+        }
+        view.SetViewFrameSnipe(isSnipe);
+    }
     /// <summary>
     /// ••ˆóŒø‰Ê
     /// </summary>
@@ -351,5 +363,6 @@ public class CardController : Controller
         AudioManager.instance.SoundcCardDeBuff();
         model.DeBuff(atk, hp);
         view.ReShow(model);
+        StartCoroutine(CheckAlive());
     }
 }

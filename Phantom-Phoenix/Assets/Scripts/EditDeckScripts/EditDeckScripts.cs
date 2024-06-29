@@ -56,8 +56,9 @@ public class EditDeckManager : MonoBehaviour
 
         if (cardIDs.Count is int cc && cc < pages * 8)
         {
-            if (cc < (pages - 1) * 8) { pages--; } //表示するカードがないので、page--で対処
+            if (cc <= (pages - 1) * 8) { pages--; } //表示するカードがないので、page--で対処
             viewCount = cc % 8;
+            if(viewCount == 0) { viewCount = 8; } //8で割り切れるなら8枚表示する
         }
 
         //今、カード一覧に表示されているカードを消す
