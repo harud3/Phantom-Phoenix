@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -19,6 +20,10 @@ public class SkillManager : MonoBehaviour
         {
             instance = this;
         }
+    }
+    public void SkillCausedByTension(int[] fieldsID)
+    {
+        FieldManager.instance.GetUnitsByFieldID(fieldsID)?.ForEach(i => i.TensionSkill?.Invoke());
     }
     #region 5大スキル
     public bool IsFast(CardModel model) //即撃
@@ -373,7 +378,7 @@ public class SkillManager : MonoBehaviour
                 { break; }
             case 22: //召喚時&味方ターン終了時: 味方フィールドに、cardID1の0/1/1を1体出す
                 {
-                    void Summon011()
+                    void SummonUnit011()
                     {
                         if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
                         {
@@ -383,12 +388,12 @@ public class SkillManager : MonoBehaviour
                         }
                     }
 
-                    Summon011();
+                    SummonUnit011();
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
                         if (isPlayerTurn == c.model.isPlayerCard)
                         {
-                            Summon011();
+                            SummonUnit011();
                         }
                     };
                     break;
@@ -433,7 +438,8 @@ public class SkillManager : MonoBehaviour
                         cc.SummonOnField(z.fieldID, ExecuteReduceMP: false);
                     }
 
-                    c.SpecialSkillBeforeDie = () => {
+                    c.SpecialSkillBeforeDie = () =>
+                    {
                         bool isFront = FieldManager.instance.IsFront(c.model.thisFieldID);
                         if (isFront && FieldManager.instance.GetEmptyBackFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
                         {
@@ -450,7 +456,7 @@ public class SkillManager : MonoBehaviour
             case 27: //ATKを1～13のランダムな値にして、HPをATK-13の値にする
                 {
                     var i = Random.Range(1, 14);
-                    if(i > 7)
+                    if (i > 7)
                     {
                         c.DeBuff(0, i - 7);
                         c.Buff(i - 7, 0);
@@ -544,11 +550,43 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
 
+                void SummonTelf111()
+                {
+                    if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
+                    {
+                        CardController cc = Instantiate(cardPrefab, x.emptyField);
+                        cc.Init(10002, c.model.isPlayerCard); // cardID10002 = telf111;
+                        cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
+                    }
+                }
+            //uelf101 
+            case 33: //死亡時:telf111を出す
+                {
+
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        CardController cc = Instantiate(cardPrefab, c.transform.parent);
+                        cc.Init(10002, c.model.isPlayerCard);
+                        cc.SummonOnField(c.model.thisFieldID, ExecuteReduceMP: false);
+                    };
+                    break;
+                }
+            //uelf221 テンション上昇時:味方フィールドにtelf111を出す
+            case 34: //死亡時:telf111を出す
+                {
+
+                    c.TensionSkill = () =>
+                    {
+                        SummonTelf111();
+                    };
+                    break;
+                }
+
         }
 
     }
     /// <summary>
-    /// 外部要因によって発生する受動的なスキルの紐づけ
+    /// 手札にいる状態でも参照される、外部要因によって発生する受動的なスキルの紐づけ
     /// </summary>
     /// <param name="c"></param>
     public void UpdateSkills(CardController c)

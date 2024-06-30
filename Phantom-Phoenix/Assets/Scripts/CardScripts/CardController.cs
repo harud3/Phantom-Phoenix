@@ -25,6 +25,7 @@ public class CardController : Controller
         movement = GetComponent<CardMovement>();
     }
     public Action UpdateSkill = null;　//外部要因によって発生する受動的なスキル
+    public Action TensionSkill = null;　//テンションによって発生する受動的なスキル
 
     public void Init(int CardID, bool isPlayer = true)
     {

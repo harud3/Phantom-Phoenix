@@ -311,7 +311,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u5373\u6483\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\u30B3\u30B9\u30C8-1"
+    text: "\u5373\u6483\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\\n\u6570\u5206\u30B3\u30B9\u30C8-1"
   - ID: 24
     hero: 0
     category: 0
@@ -389,7 +389,7 @@ MonoBehaviour:
     skill2: 5
     skill3: 0
     target: 0
-    text: "\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306B\\n\u72D9\u6483\u3092\u4ED8\u4E0E\u3059\u308B"
+    text: "\u72D9\u6483\u3000\u9023\u6483\\n\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306B\\n\u72D9\u6483\u3092\u4ED8\u4E0E\u3059\u308B"
   - ID: 30
     hero: 0
     category: 0
@@ -429,14 +429,274 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u3092+2/+2\\n\u6575\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u3092-2/-2"
-  token:
-  - ID: 10001
-    hero: 0
+    text: "\u5373\u6483\\n\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u3092+2/+2\\n\u6575\u30D5\u30A3\u30FC\u30EB\u30C9\u306E\\n\u30E6\u30CB\u30C3\u30C8\u3092-2/-2"
+  - ID: 33
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf101
+    cost: 1
+    atk: 0
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u6B7B\u4EA1\u6642\u3011\\n\u3053\u306E\u5834\u6240\u306B\\n1/1/1\u30921\u4F53\u51FA\u3059"
+  - ID: 34
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf221
+    cost: 2
+    atk: 2
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u30C6\u30F3\u30B7\u30E7\u30F3\u4E0A\u6607\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306B\\n1/1/1\u30921\u4F53\u51FA\u3059"
+  - ID: 35
+    hero: 1
     category: 0
     rarity: 1
-    name: token222
+    name: uelf212
     cost: 2
+    atk: 1
+    hp: 2
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A\\n\u3010\u524D\u5217\u751F\u5B58\u6642\u3011\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\\nATK+1"
+  - ID: 36
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf222
+    cost: 2
+    atk: 2
+    hp: 2
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u653B\u6483\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306B\\n1/1/1\u30921\u4F53\u51FA\u3059"
+  - ID: 37
+    hero: 1
+    category: 1
+    rarity: 0
+    name: self2
+    cost: 2
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3+1\\n\u30AB\u30FC\u30C9\u30921\u679A\u5F15\u304F"
+  - ID: 38
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf312
+    cost: 3
+    atk: 1
+    hp: 2
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u3053\u306E\u30E6\u30CB\u30C3\u30C8\u306E\u4E0A\u4E0B\u306B\\n1/1/1\u3092\u51FA\u3059"
+  - ID: 39
+    hero: 1
+    category: 0
+    rarity: 1
+    name: uelf301
+    cost: 3
+    atk: 0
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092\\n\u6B7B\u4EA1\u3055\u305B\u308B\\n\u6B7B\u4EA1\u3055\u305B\u305F\u6570\u5206+1/+1"
+  - ID: 40
+    hero: 1
+    category: 1
+    rarity: 1
+    name: self3
+    cost: 3
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 2
+    text: "\u6575\u30E6\u30CB\u30C3\u30C81\u4F53\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\\n+1\u30C0\u30E1\u30FC\u30B8"
+  - ID: 41
+    hero: 1
+    category: 0
+    rarity: 2
+    name: guarda
+    cost: 3
+    atk: 1
+    hp: 2
+    skill1: 1
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u5373\u6483\\n\u3010\u53EC\u559A\u6642\u3011\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\\nATK+1"
+  - ID: 42
+    hero: 1
+    category: 0
+    rarity: 2
+    name: guardb
+    cost: 3
+    atk: 2
+    hp: 1
+    skill1: 2
+    skill2: 3
+    skill3: 4
+    target: 0
+    text: "\u6311\u767A\u3000\u72D9\u6483\u3000\u8CAB\u901A\\n\u3010\u53EC\u559A\u6642\u3011\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\\nHP+1"
+  - ID: 43
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf423
+    cost: 4
+    atk: 2
+    hp: 3
+    skill1: 4
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u8CAB\u901A\\n\u3010\u53EC\u559A\u6642\u3011\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\u3001\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306EHP\u3092\u56DE\u5FA9"
+  - ID: 44
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf416
+    cost: 4
+    atk: 1
+    hp: 6
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A\\n\u3010\u88AB\u653B\u6483\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306B\\n1/1/1\u30921\u4F53\u51FA\u3059"
+  - ID: 45
+    hero: 1
+    category: 0
+    rarity: 1
+    name: uelf433
+    cost: 4
+    atk: 3
+    hp: 3
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092\\n\u6B7B\u4EA1\u3055\u305B\u308B\\n\u6B7B\u4EA1\u3055\u305B\u305F\u6570\u5206\\n\u30AB\u30FC\u30C9\u3092\u5F15\u304F"
+  - ID: 46
+    hero: 1
+    category: 1
+    rarity: 0
+    name: self4
+    cost: 4
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 8
+    text: "\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n1/1/1\u30923\u4F53\u51FA\u3059"
+  - ID: 47
+    hero: 1
+    category: 0
+    rarity: 1
+    name: uelf542
+    cost: 5
+    atk: 4
+    hp: 2
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u3068\u6575\u306E\\n\u5168\u3066\u306E\u30D5\u30A3\u30FC\u30EB\u30C9\u306B\\n1/1/1\u3092\u51FA\u3057\\n\u5373\u6483\u3092\u4ED8\u4E0E\u3059\u308B"
+  - ID: 48
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf525
+    cost: 5
+    atk: 2
+    hp: 5
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u5473\u65B9\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\\n\u524D\u5217\u306B\u3044\u308B\u306A\u3089\u3001\\n1/1/1\u30922\u4F53\u51FA\u3059"
+  - ID: 49
+    hero: 1
+    category: 0
+    rarity: 1
+    name: uelf622
+    cost: 6
+    atk: 2
+    hp: 2
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u65751\u4F53\u306B1\u30C0\u30E1\u30FC\u30B8\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\\n+1\u30C0\u30E1\u30FC\u30B8"
+  - ID: 50
+    hero: 1
+    category: 0
+    rarity: 0
+    name: uelf633
+    cost: 6
+    atk: 3
+    hp: 3
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u30C6\u30F3\u30B7\u30E7\u30F3\u4E0A\u6607\u6642\u3011\\n\u5473\u65B9\u30D5\u30A3\u30FC\u30EB\u30C9\u306B\\n1/1/1\u30922\u4F53\u51FA\u3059"
+  - ID: 51
+    hero: 1
+    category: 0
+    rarity: 1
+    name: uelf711
+    cost: 7
+    atk: 1
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3053\u306E\u5BFE\u6226\u4E2D\u306B\u6B7B\u4EA1\u3057\u305F\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\\n\u6570\u5206+1/+1"
+  - ID: 52
+    hero: 1
+    category: 0
+    rarity: 1
+    name: uelf955
+    cost: 9
+    atk: 5
+    hp: 5
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\\n\u6570\u5206\u30B3\u30B9\u30C8-1"
+  token:
+  - ID: 10001
+    hero: 1
+    category: 0
+    rarity: 1
+    name: telf122
+    cost: 1
     atk: 2
     hp: 2
     skill1: 1
@@ -444,3 +704,16 @@ MonoBehaviour:
     skill3: 0
     target: 0
     text: "\u5373\u6483"
+  - ID: 10002
+    hero: 1
+    category: 0
+    rarity: 0
+    name: telf111
+    cost: 1
+    atk: 1
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: 

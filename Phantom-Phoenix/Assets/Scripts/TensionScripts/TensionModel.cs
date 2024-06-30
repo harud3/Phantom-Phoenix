@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 public class TensionModel
 {
@@ -19,6 +21,10 @@ public class TensionModel
     }
     public void SetTension(int tension)
     {
+        if(this.tension < tension)
+        {
+            SkillManager.instance.SkillCausedByTension((isPlayer ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray());
+        }
         this.tension = tension;
     }
     public void UseTensionCard()
@@ -28,6 +34,7 @@ public class TensionModel
             tension++;
             isTensionUsedThisTurn = true;
             GameManager.instance.ReduceMP(1, isPlayer);
+            SkillManager.instance.SkillCausedByTension((isPlayer ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray());
         }
     }
     public void CanUseTensionCard(bool canUseTensionCard)
