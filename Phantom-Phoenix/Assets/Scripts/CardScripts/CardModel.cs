@@ -9,6 +9,7 @@ using UnityEngine;
 public class CardModel
 {
     public int cardID { get; private set; }
+    public int cardSeed { get; private set; }
     public Sprite character { get; private set; }
     public string name { get; private set; }
 
@@ -54,6 +55,7 @@ public class CardModel
         CardEntity cardEntity = cardID <= 10000 ? GameDataManager.instance.cardlist.cl[cardID - 1] : GameDataManager.instance.cardlist.token[cardID - 10001];
 
         this.cardID = cardID;
+        cardSeed = int.Parse($"{DateTime.Now.ToString("mmss")}{cardID}");
         name = cardEntity.name;
         character = Resources.Load<Sprite>($"Units/{name}");
 

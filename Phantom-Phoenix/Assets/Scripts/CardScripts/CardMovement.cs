@@ -72,7 +72,6 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
 
         if (!GameManager.instance.isPlayerTurn) { isDraggable = false;  return; } //自分のターンではないのに動かそうとするのは見過ごせない
         siblingIndex = transform.GetSiblingIndex();
-
         CardController cardController = GetComponent<CardController>();
 
         //手札のカードかつ、ヒーローのMP > カードのコストなら動かせる
@@ -134,6 +133,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
         yield return new WaitForSeconds(0.25f);
         defaultParent = targetArea;
         transform.SetParent(defaultParent);
+        transform.SetSiblingIndex(siblingIndex-1);　//最大値の場合、自動レイアウトされないので、1度他の位置を経由する
         transform.SetSiblingIndex(siblingIndex);
     }
     /// <summary>

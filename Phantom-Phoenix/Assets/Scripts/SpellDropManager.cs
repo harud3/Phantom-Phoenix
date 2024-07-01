@@ -17,7 +17,7 @@ public class SpellDropManager : MonoBehaviour, IDropHandler
         if (eventData.pointerDrag.GetComponent<CardController>() is var spell)
         {
             
-            if (spell == null || spell.model.category != CardEntity.Category.spell) { return; } //スペル以外は通さない
+            if (spell == null || spell.model.cost > GameManager.instance.GetHeroMP(spell.model.isPlayerCard) || spell.model.category != CardEntity.Category.spell) { return; } //MP超過のスペルやスペル以外は通さない
             if (targetC != null)
             {
                 spell.ExecuteSpellContents(targetC); //とりあえず、CardControllerを渡しておく

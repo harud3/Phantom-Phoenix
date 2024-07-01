@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class FieldManager : MonoBehaviour
 {
@@ -75,6 +76,23 @@ public class FieldManager : MonoBehaviour
     //              6   3   |   9   12
     //となっている
     /// <summary>
+    /// 該当フィールドのCardControllerを全て取得する
+    /// </summary>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    public List<CardController> GetUnitsByIsPlayer(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            return GetUnitsByFieldID(Enumerable.Range(1, 6).ToArray());
+        }
+        else
+        {
+            return GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
+        }
+
+    }
+    /// <summary>
     /// fieldIDから該当フィールドにあるCardControllerを取得する ユニットがいないならnullを返す   fieldIDは1～12 1～6がplayer 7～12がenemy
     /// </summary>
     /// <param name="fieldID"></param>
@@ -138,6 +156,23 @@ public class FieldManager : MonoBehaviour
     public List<CardController> GetUnitsByIsPlayerAndFieldID((bool isPlayer, int fieldID)[] iPfID)
     {
         return iPfID.Select(i => GetUnitByIsPlayerAndFieldID(i.isPlayer, i.fieldID)).Where(i => i != null).ToList();
+    }
+    /// <summary>
+    /// 該当フィールドの前列にいるCardControllerを取得する ユニットがいないならnullを返す
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <param name="fieldID"></param>
+    /// <returns></returns>
+    public List<CardController> GetFrontUnitsByIsPlayer(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            return GetUnitsByFieldID(Enumerable.Range(1, 3).ToArray());
+        }
+        else
+        {
+            return GetUnitsByFieldID(Enumerable.Range(7, 3).ToArray());
+        }
     }
     /// <summary>
     /// 該当フィールド分類にいるランダムなCardControllerを取得する ユニットがいないならnullを返す

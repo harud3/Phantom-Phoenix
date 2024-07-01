@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.Cockpit;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ public class SkillManager : MonoBehaviour
     [SerializeField] CardController cardPrefab;
     public HeroController playerHeroController {  get { return _playerHeroController; } private set { _playerHeroController = value; } }
     public HeroController enemyHeroController { get { return _enemyHeroController; } private set { _enemyHeroController = value; } }
+    [SerializeField] TensionController playerTensionController, enemyTensionController;
     private void Awake()
     {
         if (instance == null)
@@ -199,6 +201,7 @@ public class SkillManager : MonoBehaviour
     public void SpecialSkills(CardController c, CardController[] targets = null)
     {
         HeroController h = c.model.isPlayerCard ? playerHeroController : enemyHeroController;
+        TensionController t = c.model.isPlayerCard ? playerTensionController : enemyTensionController;
         switch (c.model.cardID)
         {
             ///fire スペルの書き方
@@ -571,13 +574,44 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //uelf221 テンション上昇時:味方フィールドにtelf111を出す
-            case 34: //死亡時:telf111を出す
+            //uelf221
+            case 34: //テンション上昇時:味方フィールドにtelf111を出す
                 {
 
                     c.TensionSkill = () =>
                     {
                         SummonTelf111();
+                    };
+                    break;
+                }
+            //uelf212
+            case 35: //召喚時:1コスト以下の味方ユニットが居るなら+1/+1
+                {
+                    if(FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1)?.Count() != 0)
+                    {
+                        c.Buff(1, 1);
+                    }
+                    break;
+                }
+            //uelf222
+            case 36: //攻撃時:味方フィールドにtelf111を出す
+                {
+                    c.SpecialSkillBeforeAttack = (bool isAttacker) =>
+                    {
+                        if (isAttacker)
+                        {
+                            SummonTelf111();
+                        }
+                    };
+                    break;
+                }
+            //self2
+            case 37: //テンション+1 カードを1枚引く
+                {
+                    c.SpellContents = () =>
+                    {
+                        t.SetTension(t.model.tension + 1);
+                        GameManager.instance.GivesCard(c.model.isPlayerCard, 1);
                     };
                     break;
                 }
@@ -607,12 +641,13 @@ public class SkillManager : MonoBehaviour
                     }
 
                     ChangeCost();
-                    c.UpdateSkill = () =>
+                    c.UpdateSkill += () =>
                     {
                         ChangeCost();
                     };
                     break;
                 }
+
         }
     }
 }

@@ -564,10 +564,17 @@ public class GameManager : MonoBehaviourPunCallbacks
                 {
                     if (enemyField.childCount == 0)
                     {
+                        canPutCard.Show(true);
                         StartCoroutine(canPutCard.movement.MoveToArea(enemyField));
                         yield return new WaitForSeconds(0.25f);
-                        canPutCard.SummonOnField(enemyField.GetComponent<DropField>().fieldID);
-                        canPutCard.Show(true);
+                        if (canPutCard.model.category == CardEntity.Category.spell)
+                        {
+                            canPutCard.ExecuteSpellContents<Controller>(null);
+                        }
+                        else
+                        {
+                            canPutCard.SummonOnField(enemyField.GetComponent<DropField>().fieldID);
+                        }
                         yield return new WaitForSeconds(0.75f);
                         break;
                     }
@@ -614,7 +621,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
         
-        if(GetHeroMP(false) > 0)
+        if(GetHeroMP(false) > 0 && enemyTensionController.model.tension < 3)
         {
             yield return new WaitForSeconds(0.25f);
             enemyTensionController.UseTensionCard();

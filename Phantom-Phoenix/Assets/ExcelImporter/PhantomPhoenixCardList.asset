@@ -468,7 +468,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u6311\u767A\\n\u3010\u524D\u5217\u751F\u5B58\u6642\u3011\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\\nATK+1"
+    text: "\u6311\u767A\\n1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u304C\u3044\u308B\u306A\u3089\\n+1/+1"
   - ID: 36
     hero: 1
     category: 0
@@ -493,7 +493,7 @@ MonoBehaviour:
     skill1: 0
     skill2: 0
     skill3: 0
-    target: 0
+    target: 8
     text: "\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3+1\\n\u30AB\u30FC\u30C9\u30921\u679A\u5F15\u304F"
   - ID: 38
     hero: 1
