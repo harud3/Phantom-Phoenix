@@ -83,7 +83,7 @@ public class CardModel
         isTaunt = false;
         isActiveDoubleAction = true;
         //選択が必要な場合、このフラグをtrueにして管理する
-        if (target == CardEntity.Target.unit || target == CardEntity.Target.enemyUnit)
+        if (target == CardEntity.Target.unit || target == CardEntity.Target.enemyUnit || target == CardEntity.Target.enemy)
         {
             HasSelectSpeciallSkill = true;
         }
@@ -106,6 +106,15 @@ public class CardModel
     public void SetIsMulligan(bool isMulligan)
     {
         this.isMulligan = isMulligan;
+    }
+    /// <summary>
+    /// ATKとHPを指定された値にする 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="cnt"></param>
+    public void ChangeStats(int nextATK, int nextHP)
+    {
+        atk = nextATK;
+        hp = nextHP;
     }
     /// <summary>
     /// コストを指定された値にする 基本的にCardControllerを通して呼ぶことになる

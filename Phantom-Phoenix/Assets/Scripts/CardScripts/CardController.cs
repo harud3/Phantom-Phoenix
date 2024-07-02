@@ -52,11 +52,11 @@ public class CardController : Controller
         }
     }
     /// <summary>
-    /// ユニット単体を対象としたスペルの効果を設定
+    /// ユニット単体を対象としたスペルの効果を設定 CardController target
     /// </summary>
     public Action<CardController> ccSpellContents = new Action<CardController>((target) => { });
     /// <summary>
-    /// ヒーロー単体を対象としたスペルの効果を設定
+    /// ヒーロー単体を対象としたスペルの効果を設定 HeroController target
     /// </summary>
     public Action<HeroController> hcSpellContents = new Action<HeroController>((target) => { });
     /// <summary>
@@ -124,7 +124,7 @@ public class CardController : Controller
     /// フィールドに召喚する時の処理　　まれに、召喚時効果で対象選択を必要とする場合がある
     /// </summary>
     /// <param name="targets"></param>
-    public void SummonOnField(int fieldID, CardController[] targets = null, bool ExecuteReduceMP = true)
+    public void SummonOnField(int fieldID, CardController[] targets = null, HeroController hcTarget = null, bool ExecuteReduceMP = true)
     {
         AudioManager.instance.SoundCardMove();
 
@@ -135,7 +135,7 @@ public class CardController : Controller
         Show(true);
 
         FieldManager.instance.SetFieldOnUnitcnt(model.isPlayerCard); //ユニット配置数の再設定
-        SkillManager.instance.SpecialSkills(this, targets); //召喚時効果の発動　誘発効果の紐づけ
+        SkillManager.instance.SpecialSkills(this, targets, hcTarget); //召喚時効果の発動　誘発効果の紐づけ
 
         SetCanAttack(SkillManager.instance.IsFast(model)); //即撃付与 CanSummonの無効化も兼ねる
 
@@ -184,6 +184,15 @@ public class CardController : Controller
         view.SetActiveSelectablePanel(!isMulligan); //マリガンで返す→光らせない　マリガンで返さない→光らせる　なので否定する
     }
     /// <summary>
+    /// ATKとHPを指定された値にする
+    /// </summary>
+    /// <param name="nextCost"></param>
+    public void ChangeStats(int nextATK, int nextHP)
+    {
+        model.ChangeStats(nextATK, nextHP);
+        view.ReShow(model);
+    }
+    /// <summary>
     /// コストを指定された値にする
     /// </summary>
     /// <param name="nextCost"></param>
@@ -206,6 +215,7 @@ public class CardController : Controller
     /// <param name="viewOpenSide"></param>
     public void Damage(int dmg)
     {
+        if(dmg == 0) { return; }
         AudioManager.instance.SoundCardFire();
         model.Damage(dmg);
         view.ReShow(model);
@@ -241,6 +251,7 @@ public class CardController : Controller
                 ExecutedSSBD = true;
             }
             FieldManager.instance.Minus1FieldOnUnitCnt(model.isPlayerCard);
+            FieldManager.instance.AddCatacombe(model);
             Destroy(this.gameObject);
         }
     }
@@ -288,7 +299,7 @@ public class CardController : Controller
         view.SetActiveSelectablePanel(canSummon);
     }
     /// <summary>
-    /// 攻撃前効果　攻撃時効果
+    /// 攻撃前効果　攻撃時効果 bool isAttacker
     /// </summary>
     public Action<bool> SpecialSkillBeforeAttack = null;
     public void ExecuteSpecialSkillBeforeAttack(bool isAttacker)
@@ -296,7 +307,7 @@ public class CardController : Controller
         if(!model.isSeal)SpecialSkillBeforeAttack?.Invoke(isAttacker);
     }
     /// <summary>
-    /// 攻撃後効果 使うことあるんだろうか…
+    /// 攻撃後効果 使うことあるんだろうか… bool isAttacker
     /// </summary>
     public Action<bool> SpecialSkillAfterAttack = null;
     public void ExecuteSpecialSkillAfterAttack(bool isAttacker)
@@ -304,7 +315,7 @@ public class CardController : Controller
         if (!model.isSeal) SpecialSkillAfterAttack?.Invoke(isAttacker);
     }
     /// <summary>
-    /// ターン終了時効果
+    /// ターン終了時効果 bool isPlayerTurn
     /// </summary>
     public Action<bool> SpecialSkillEndTurn = null;
     public void ExecuteSpecialSkillEndTurn(bool isPlayerTurn)

@@ -200,7 +200,7 @@ public class SkillManager : MonoBehaviour
     /// </summary>
     /// <param name="c"></param>
     /// <param name="targets"></param>
-    public void SpecialSkills(CardController c, CardController[] targets = null)
+    public void SpecialSkills(CardController c, CardController[] targets = null, HeroController hctarget = null)
     {
         HeroController h = c.model.isPlayerCard ? playerHeroController : enemyHeroController;
         TensionController t = c.model.isPlayerCard ? playerTensionController : enemyTensionController;
@@ -564,10 +564,10 @@ public class SkillManager : MonoBehaviour
                         cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
                     }
                 }
-                void SummonTelf111ByFieldID(Transform field, int fieldID)
+                void SummonTelf111ByFieldID(Transform field, int fieldID, bool changePlayerCard = false)
                 {
                     CardController cc = Instantiate(cardPrefab, field);
-                    cc.Init(10002, c.model.isPlayerCard);
+                    cc.Init(10002, changePlayerCard ? !c.model.isPlayerCard : c.model.isPlayerCard);
                     cc.SummonOnField(fieldID, ExecuteReduceMP: false);
                 }
             //uelf101 
@@ -622,7 +622,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //uelf312
-            case 38: //このユニットの上下に1/1/1を出す
+            case 38: //このユニットの上下にtelf111を出す
                 {
                     FieldManager.instance.GetEmptyUpDownFieldID(c.model.thisFieldID)?.Where(i => i.emptyField != null).ToList().ForEach(i => SummonTelf111ByFieldID(i.emptyField, i.fieldID));
                     break;
@@ -641,7 +641,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //self3
-            case 40: //敵ユニット1体に1ダメージ　1コスト以下の味方ユニットの数分ダメージ+1
+            case 40: //敵ユニット1体に0ダメージ　1コスト以下の味方ユニットの数分ダメージ+1
                 {
                     c.ccSpellContents = (CardController cc) =>
                     {
@@ -650,10 +650,149 @@ public class SkillManager : MonoBehaviour
                         {
                             plusDamage = x.Where(i => i.model.cost <= 1).Count();
                         }
-                        cc.Damage(1 + plusDamage);
+                        cc.Damage(0 + plusDamage);
                     };
                     break;
                 }
+            //guarda
+            case 41: //1コスト以下の味方ユニットの数分ATK+1
+                {
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1).Count() is var cnt && cnt >= 1)
+                    {
+                        c.Buff(cnt, 0);
+                    }
+                    break;
+                }
+            //guardb
+            case 42: //1コスト以下の味方ユニットの数分HP+1
+                {
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1).Count() is var cnt && cnt >= 1)
+                    {
+                        c.Buff(0, cnt);
+                    }
+                    break;
+                }
+            //uelf423
+            case 43: //味方ヒーローのHPを1回復 1コスト以下の味方ユニットの数分、回復量+1
+                {
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1).Count() is var cnt && cnt >= 1)
+                    {
+                        h.Heal(1 + cnt);
+                    }
+                    else
+                    {
+                        h.Heal(1);
+                    }
+                    break;
+                }
+            //uelf416
+            case 44: //被攻撃時:telf111を出す
+                {
+                    c.SpecialSkillBeforeAttack = (bool isAttacker) =>
+                    {
+                        SummonTelf111(c.model.thisFieldID);
+                    };
+                    break;
+                }
+            //unit433
+            case 45: //1コスト以下の味方ユニットを死亡させ、その数分カードを引く
+                {
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
+                    {
+                        var y = x.Where(i => i.model.cost <= 1);
+                        y.ToList().ForEach(i =>
+                        {
+                            i.Damage(99);
+                        });
+                        if(y.Count() is var i && i > 0)GameManager.instance.GivesCard(c.model.isPlayerCard, i);
+                        
+                    }
+                    break;
+                }
+            //self4
+            case 46: //全ての敵ユニットに1ダメージ telf111を3体出す
+                {
+                    c.SpellContents = () =>
+                    {
+                        if (FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard) is var x && x != null)
+                        {
+                            x.ForEach(i => i.Damage(1));
+                        }
+                        SummonTelf111();
+                        SummonTelf111();
+                        SummonTelf111();
+                    };
+                    break;
+                }
+            //uelf542
+            case 47: //全てのフィールドにtelf111を出す
+                {
+                    FieldManager.instance.GetEmptyFieldIDs(c.model.isPlayerCard).ForEach(i => SummonTelf111ByFieldID(i.emptyField, i.fieldID)); //味方フィールド
+                    FieldManager.instance.GetEmptyFieldIDs(!c.model.isPlayerCard).ForEach(i => SummonTelf111ByFieldID(i.emptyField, i.fieldID, true)); //敵フィールド
+                    break;
+                }
+            //uelf525
+            case 48: //味方ターン終了時:前列にいるならtelf111を2体出す
+                {
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
+                    {
+                        if (isPlayerTurn == c.model.isPlayerCard)
+                        {
+                            if(c.model.thisFieldID % 6 == 1 || c.model.thisFieldID % 6 == 2 || c.model.thisFieldID % 6 == 3)
+                            {
+                                SummonTelf111();
+                                SummonTelf111();
+                            }
+                        }
+                    };
+                    break;
+                }
+            //uelf622
+            case 49: //敵1体に0ダメージ 1コスト以下の味方ユニットの数分ダメージ+1
+                {
+                    var plusDamage = 0;
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
+                    {
+                        plusDamage = x.Where(i => i.model.cost <= 1).Count();
+                    }
+
+                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
+                    {
+                        var y = FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard);
+                        if (y != null)
+                        {
+                            y.Damage(plusDamage);
+                        }
+                        else
+                        {
+                            playerHeroController.Damage(plusDamage);
+                        }
+                    }
+                    else if (targets != null)
+                    {
+                        targets.First().Damage(plusDamage);
+                    }
+                    else if(hctarget != null)
+                    {
+                        hctarget.Damage(plusDamage);
+                    }
+                    break;
+
+                }
+            //uelf633
+            case 50: //テンション上昇時:味方フィールドにtelf111を2体出す
+                {
+
+                    c.TensionSkill = () =>
+                    {
+                        SummonTelf111(); SummonTelf111();
+                    };
+                    break;
+                }
+            //uelf711
+            case 51: { break; } //この対戦中に死亡した1コスト以下の味方ユニットの数分+1/+1
+            //uelf955
+            case 52: { break; } //味方フィールドの\n1コスト以下の味方ユニットの数分、コスト-1
 
         }
 
@@ -686,7 +825,52 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
+            //uelf711
+            case 51: //この対戦中に死亡した1コスト以下の味方ユニットの数分+1/+1
+                {
+                    var recordDiedCnt1 = 0;
+                    StartCoroutine(ChangeStats());
 
+                    IEnumerator ChangeStats()
+                    {
+                        yield return null;
+                        var cnt =  (c.model.isPlayerCard ? FieldManager.instance.playerCatacombe : FieldManager.instance.enemyCatacombe).Where(x => x.cost <= 1).Count();
+                        if(recordDiedCnt1 != cnt)
+                        {
+                            c.ChangeStats(cnt - recordDiedCnt1 + c.model.atk, cnt - recordDiedCnt1 + c.model.hp);
+                            recordDiedCnt1 = cnt;
+                        }
+                        
+                    }
+
+                    c.UpdateSkill += () =>
+                    {
+                        StartCoroutine(ChangeStats());
+                    };
+                    break;
+                }
+            //uelf955 
+            case 52: //味方フィールドの\n1コスト以下の味方ユニットの数分、コスト-1
+                {
+                    var recordCost = 9;
+                    IEnumerator ChangeCost()
+                    {
+                        yield return null;
+                        var x = FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard).Where(i => i.model.cost <= 1).Count();
+                        if (recordCost != 9 - x)
+                        {
+                            c.ChangeCost(9 - x);
+                            recordCost = c.model.cost;
+                        }
+                    }
+
+                    StartCoroutine(ChangeCost());
+                    c.UpdateSkill += () =>
+                    {
+                        StartCoroutine(ChangeCost());
+                    };
+                    break;
+                }
         }
     }
 }

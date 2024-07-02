@@ -671,8 +671,17 @@ public class GameManager : MonoBehaviourPunCallbacks
         var cc = enemyHandTransform.GetChild(handIndex).GetComponent<CardController>();
         StartCoroutine(cc.movement.MoveToArea(enemyFields[fieldID - 1]));
         yield return new WaitForSeconds(0.25f);
-        //PlayerFieldとして入力されてきている　よって、+6してやればEnemyFieldになる
-        cc.SummonOnField(fieldID + 6, targetsByReceiver == null ? null : FieldManager.instance.GetUnitsByFieldID(targetsByReceiver).ToArray());
+
+        //ヒーローを対象にしているとき
+        if (targetsByReceiver != null && targetsByReceiver[0] is var i && (i == 13 || i == 14))
+        {
+            cc.SummonOnField(fieldID + 6, hcTarget : i == 13 ? playerHeroController : enemyHeroController);
+        }
+        else //ユニットを対象にしているか、対象を取っていない時
+        {
+            //PlayerFieldとして入力されてきている　よって、+6してやればEnemyFieldになる
+            cc.SummonOnField(fieldID + 6, targetsByReceiver == null ? null : FieldManager.instance.GetUnitsByFieldID(targetsByReceiver).ToArray());
+        }
         yield return new WaitForSeconds(0.75f);
     }
     /// <summary>
@@ -792,7 +801,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             enemyHeroController.ReduceMP(reduce);
         }
-        SetCanSummonHandCards();
+        if (isPlayerTurn)
+        {
+            SetCanSummonHandCards();
+        }
         SetCanUsetension(isPlayerCard);
     }
     /// <summary>

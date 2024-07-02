@@ -28,7 +28,11 @@ public class FieldManager : MonoBehaviour
             {
                 item.GetComponent<CardController>().UpdateSkill?.Invoke();
             }
-            GameManager.instance.SetCanSummonHandCards();
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
+            
         }
     }
     private int _enemyFieldOnUnitCnt;
@@ -43,7 +47,10 @@ public class FieldManager : MonoBehaviour
             {
                 item.GetComponent<CardController>().UpdateSkill?.Invoke();
             }
-            GameManager.instance.SetCanSummonHandCards();
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
         }
     }
     private void Awake()
@@ -220,13 +227,37 @@ public class FieldManager : MonoBehaviour
     public (Transform emptyField, int fieldID) GetEmptyFieldID(bool isPlayer, int avoidFieldID = 99)
     {
         avoidFieldID = avoidFieldID != 99 ? avoidFieldID % 6 : 99;
-        if (avoidFieldID != 1 && GetUnitByFieldID(isPlayer ? 1 : 7) == null) { return isPlayer ? (playerFields[0],1) : (enemyFields[0], 7); }
-        else if (avoidFieldID != 2 &&  GetUnitByFieldID(isPlayer ? 2 : 8) == null) { return isPlayer ? (playerFields[1], 2) : (enemyFields[1], 8); }
+        if (avoidFieldID != 1 && GetUnitByFieldID(isPlayer ? 1 : 7) == null) { return isPlayer ? (playerFields[0], 1) : (enemyFields[0], 7); }
+        else if (avoidFieldID != 2 && GetUnitByFieldID(isPlayer ? 2 : 8) == null) { return isPlayer ? (playerFields[1], 2) : (enemyFields[1], 8); }
         else if (avoidFieldID != 3 && GetUnitByFieldID(isPlayer ? 3 : 9) == null) { return isPlayer ? (playerFields[2], 3) : (enemyFields[2], 9); }
         else if (avoidFieldID != 4 && GetUnitByFieldID(isPlayer ? 4 : 10) == null) { return isPlayer ? (playerFields[3], 4) : (enemyFields[3], 10); }
         else if (avoidFieldID != 5 && GetUnitByFieldID(isPlayer ? 5 : 11) == null) { return isPlayer ? (playerFields[4], 5) : (enemyFields[4], 11); }
         else if (avoidFieldID != 0 && GetUnitByFieldID(isPlayer ? 6 : 12) == null) { return isPlayer ? (playerFields[5], 6) : (enemyFields[5], 12); }
-        return (null,0); //フィールドが全て埋まっている時
+        return (null, 0); //フィールドが全て埋まっている時
+    }
+    /// <summary>
+    /// 空きのあるフィールドを取得する
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <returns></returns>
+    public List<(Transform emptyField, int fieldID)> GetEmptyFieldIDs(bool isPlayer, int avoidFieldID = 99)
+    {
+        var x = new List<(Transform emptyField, int fieldID)>();
+        if (isPlayer)
+        {
+            foreach (var y in Enumerable.Range(1, 6))
+            {
+                if (avoidFieldID != y && GetUnitByFieldID(y) == null) { x.Add((playerFields[y - 1], y)); }
+            }
+        }
+        else
+        {
+            foreach (var y in Enumerable.Range(7, 6))
+            {
+                if (avoidFieldID != y && GetUnitByFieldID(y) == null) { x.Add((enemyFields[y - 7], y)); }
+            }
+        }
+        return x;
     }
     /// <summary>
     /// 指定されたフィールドが空いているなら取得する　そうでなければ(null,0)を返す
@@ -235,7 +266,7 @@ public class FieldManager : MonoBehaviour
     /// <returns></returns>
     public (Transform emptyField, int fieldID) GetEmptyFieldIDByFieldID(int fieldID)
     {
-        if(fieldID <= 6)
+        if (fieldID <= 6)
         {
             return GetUnitByFieldID(fieldID) == null ? (playerFields[fieldID - 1], fieldID) : (null, 0);
         }
@@ -289,7 +320,7 @@ public class FieldManager : MonoBehaviour
     /// <returns></returns>
     public List<(Transform emptyField, int fieldID)> GetEmptyUpDownFieldID(int fieldID)
     {
-        if(fieldID < 1 || 12 < fieldID) { return null; } //想定外の値対策
+        if (fieldID < 1 || 12 < fieldID) { return null; } //想定外の値対策
         else if (fieldID % 3 == 1) { return GetEmptyFieldIDsByFieldID(new int[] { fieldID + 1 }); } //fieldIDが上段
         else if (fieldID % 3 == 2) { return GetEmptyFieldIDsByFieldID(new int[] { fieldID - 1, fieldID + 1 }); } //fieldIDが中段
         else { return GetEmptyFieldIDsByFieldID(new int[] { fieldID - 1 }); } //fieldIDが下段
@@ -429,7 +460,52 @@ public class FieldManager : MonoBehaviour
     public void ChangeSelectablePanelColor(int fieldID, bool willSummon)
     {
         if (willSummon) { selectablePanel[fieldID - 1].GetComponent<Image>().color = new Color(0, 255, 0); }
-        else { selectablePanel[fieldID - 1].GetComponent<Image>().color = new Color(255, 0, 0);  }
+        else { selectablePanel[fieldID - 1].GetComponent<Image>().color = new Color(255, 0, 0); }
+    }
+    #endregion
+    #region 墓地取得
+    private List<(int cardID, int cost)> _playerCatacombe = new List<(int cardID, int cost)>();
+    private List<(int cardID, int cost)> _enemyCatacombe = new List<(int cardID, int cost)>();
+    public List<(int cardID, int cost)> playerCatacombe
+    {
+        get { return _playerCatacombe; }
+        private set
+        {
+            _playerCatacombe = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in playerHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
+        }
+    }
+    public List<(int cardID, int cost)> enemyCatacombe
+    {
+        get { return _enemyCatacombe; }
+        private set
+        {
+            _enemyCatacombe = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in enemyHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+        }
+    }
+    public void AddCatacombe(CardModel diedUnit)
+    {
+        if (diedUnit.isPlayerCard)
+        {
+            playerCatacombe.Add((diedUnit.cardID, diedUnit.cost));
+        }
+        else
+        {
+            enemyCatacombe.Add((diedUnit.cardID, diedUnit.cost));
+        }
     }
     #endregion
 }

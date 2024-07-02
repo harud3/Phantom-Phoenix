@@ -70,6 +70,7 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
 
         FieldManager.instance.ChangeSelectablePanelColor(fieldID, false);　//召喚予定フィールドのパネル色変更　緑→赤
         FieldManager.instance.SetSelectablePanel(Enumerable.Range(1, 12).ToArray(), false); //フィールドの選択可能パネルを非表示にする
+        FieldManager.instance.SetHeroSelectablePanel(Enumerable.Range(1, 2).ToArray(), false); //フィールドの選択可能パネルを非表示にする
         HintMessage.SetActive(false);
         cc.gameObject.SetActive(true); //効果を持つカードを有効化する
 
@@ -90,7 +91,7 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
         EventSystem.current.RaycastAll(pointData, RayResult);
         //↑コピペ
 
-        clickedGameObject = RayResult.Where(i => i.gameObject.tag == "Card").FirstOrDefault().gameObject; //tagで判断することにした　ユニットやヒーローが重なってることはない
+        clickedGameObject = RayResult.Where(i => i.gameObject.tag == "Card" || i.gameObject.tag == "Hero").FirstOrDefault().gameObject; //tagで判断することにした　ユニットやヒーローが重なってることはない
         if (TargetCheck(cc, clickedGameObject) is var x && x.passed)
         {
             //ユニットをフィールドに召喚する処理
@@ -98,7 +99,7 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
             cc.movement.SendMoveToField(fieldID, x.targetsByReceiver);
             cc.transform.SetParent(this.transform);
 
-            cc.SummonOnField(fieldID, x.cctargets);
+            cc.SummonOnField(fieldID, x.cctargets, x.hctarget);
             cc.movement.GetComponent<CanvasGroup>().blocksRaycasts = true; //OnEndDragでやる処理を代わりにやっておく
         }
         else
@@ -135,6 +136,16 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
                     }
                     break;
                 }
+            case CardEntity.Target.enemy:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
+                    if (x.Count != 0)
+                    {
+                        FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
+                    }
+                    FieldManager.instance.SetHeroSelectablePanel(new int[] { 2 }, true); //敵ヒーローは対象となる
+                    return true;
+                }
         }
 
         return false;
@@ -145,7 +156,7 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
     /// <param name="cc"></param>
     /// <param name="clickGameObject"></param>
     /// <returns></returns>
-    private (bool passed, CardController[] cctargets,int[] targetsByReceiver) TargetCheck(CardController cc, GameObject clickGameObject)
+    private (bool passed, CardController[] cctargets, HeroController hctarget, int[] targetsByReceiver) TargetCheck(CardController cc, GameObject clickGameObject)
     {
         HeroController hc = null;
         CardController c = null;
@@ -155,29 +166,45 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
             case CardEntity.Target.unit:
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray());
-                    if (x.Count == 0) { return (true, null, null); }//ここ通ることない気がするけど…
+                    if (x.Count == 0) { return (true, null, null, null); }//ここ通ることない気がするけど…
                     if (c != null)
                     {
                         var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
-                        if (y.Count() == 0) { return (false, null, null); }
-                        else { return (true, y.ToArray(), y.Select(i => FieldManager.instance.ChangeFieldID(i.model.thisFieldID)).ToArray()); }
+                        if (y.Count() == 0) { return (false, null, null, null); }
+                        else { return (true, y.ToArray(), null, y.Select(i => FieldManager.instance.ChangeFieldID(i.model.thisFieldID)).ToArray()); }
                     }
                     break;
                 }
             case CardEntity.Target.enemyUnit:
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
-                    if (x.Count == 0) { return (true, null, null); }//ここ通ることない気がするけど…
+                    if (x.Count == 0) { return (true, null, null, null); }//ここ通ることない気がするけど…
                     if (c != null)
                     {
                         var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
-                        if (y.Count() == 0) { return (false, null, null); }
-                        else { return (true, y.ToArray(), y.Select(i => i.model.thisFieldID - 6).ToArray()); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
+                        if (y.Count() == 0) { return (false, null, null, null); }
+                        else { return (true, y.ToArray(), null, y.Select(i => i.model.thisFieldID - 6).ToArray()); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
                                                                                                          //ex) targetsは選んだ対象であり、送信者目線で敵のfieldID7なら、受信者目線では味方のfieldID1となる
                     }
                     break;
                 }
+            case CardEntity.Target.enemy:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
+                    if (x.Count != 0 && c != null)
+                    {
+                        var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
+                        if (y.Count() == 0) { return (false, null, null, null); }
+                        else { return (true, y.ToArray(), null, y.Select(i => i.model.thisFieldID - 6).ToArray()); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
+                                                                                                              //ex) targetsは選んだ対象であり、送信者目線で敵のfieldID7なら、受信者目線では味方のfieldID1となる
+                    }
+                    else if(hc != null)
+                    {
+                        return (true, null, hc, new int[] { (hc.model.isPlayer ? 14 : 13) }); //13番は味方ヒーロー　14番は敵ヒーロー　受信者向けに値を入れ替えておく
+                    }
+                    break;
+                }
         }
-        return (false, null, null);
+        return (false, null, null, null);
     }
 }
