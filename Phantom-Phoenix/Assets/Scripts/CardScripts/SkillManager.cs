@@ -1,10 +1,12 @@
 using Photon.Pun.Demo.Cockpit;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering;
 
 public class SkillManager : MonoBehaviour
@@ -25,7 +27,7 @@ public class SkillManager : MonoBehaviour
     }
     public void SkillCausedByTension(int[] fieldsID)
     {
-        FieldManager.instance.GetUnitsByFieldID(fieldsID)?.ForEach(i => i.TensionSkill?.Invoke());
+        FieldManager.instance.GetUnitsByFieldID(fieldsID)?.ForEach(i => { i.ExecuteTensionSkill(); });
     }
     #region 5大スキル
     public bool IsFast(CardModel model) //即撃
@@ -553,14 +555,20 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
 
-                void SummonTelf111()
+                void SummonTelf111(int avoidFieldID = 99)
                 {
-                    if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
+                    if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard, avoidFieldID) is var x && x.emptyField != null)
                     {
                         CardController cc = Instantiate(cardPrefab, x.emptyField);
                         cc.Init(10002, c.model.isPlayerCard); // cardID10002 = telf111;
                         cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
                     }
+                }
+                void SummonTelf111ByFieldID(Transform field, int fieldID)
+                {
+                    CardController cc = Instantiate(cardPrefab, field);
+                    cc.Init(10002, c.model.isPlayerCard);
+                    cc.SummonOnField(fieldID, ExecuteReduceMP: false);
                 }
             //uelf101 
             case 33: //死亡時:telf111を出す
@@ -568,9 +576,7 @@ public class SkillManager : MonoBehaviour
 
                     c.SpecialSkillBeforeDie = () =>
                     {
-                        CardController cc = Instantiate(cardPrefab, c.transform.parent);
-                        cc.Init(10002, c.model.isPlayerCard);
-                        cc.SummonOnField(c.model.thisFieldID, ExecuteReduceMP: false);
+                        SummonTelf111ByFieldID(c.transform.parent, c.model.thisFieldID);
                     };
                     break;
                 }
@@ -600,7 +606,7 @@ public class SkillManager : MonoBehaviour
                     {
                         if (isAttacker)
                         {
-                            SummonTelf111();
+                            SummonTelf111(c.model.thisFieldID);
                         }
                     };
                     break;
@@ -612,6 +618,39 @@ public class SkillManager : MonoBehaviour
                     {
                         t.SetTension(t.model.tension + 1);
                         GameManager.instance.GivesCard(c.model.isPlayerCard, 1);
+                    };
+                    break;
+                }
+            //uelf312
+            case 38: //このユニットの上下に1/1/1を出す
+                {
+                    FieldManager.instance.GetEmptyUpDownFieldID(c.model.thisFieldID)?.Where(i => i.emptyField != null).ToList().ForEach(i => SummonTelf111ByFieldID(i.emptyField, i.fieldID));
+                    break;
+                }
+            //unit301
+            case 39: //1コスト以下の味方ユニットを死亡させ、その数分+1/+1
+                {
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
+                    {
+                        x.Where(i => i.model.cost <= 1).ToList().ForEach(i =>
+                        {
+                            i.Damage(99);
+                            c.Buff(1, 1);
+                        });
+                    }
+                    break;
+                }
+            //self3
+            case 40: //敵ユニット1体に1ダメージ　1コスト以下の味方ユニットの数分ダメージ+1
+                {
+                    c.ccSpellContents = (CardController cc) =>
+                    {
+                        var plusDamage = 0;
+                        if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
+                        {
+                            plusDamage = x.Where(i => i.model.cost <= 1).Count();
+                        }
+                        cc.Damage(1 + plusDamage);
                     };
                     break;
                 }

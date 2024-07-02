@@ -16,7 +16,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
 {
     public Transform defaultParent {  get; private set; } //オブジェクトの親
     public Transform recordDefaultParent { get; private set; } //オブジェクト移動前の親　
-    int siblingIndex; //手札から移動→他の位置に動かさなかった時→手札に戻った時に順番が入れ替わらないようにするため
+    public int siblingIndex { get; private set; } //手札から移動→他の位置に動かさなかった時→手札に戻った時に順番が入れ替わらないようにするため
 
     [NonSerialized]
     public bool isDraggable; //動かせるかどうか

@@ -26,6 +26,10 @@ public class CardController : Controller
     }
     public Action UpdateSkill = null;　//外部要因によって発生する受動的なスキル
     public Action TensionSkill = null;　//テンションによって発生する受動的なスキル
+    public void ExecuteTensionSkill()
+    {
+        if (!model.isSeal) TensionSkill?.Invoke();
+    }
 
     public void Init(int CardID, bool isPlayer = true)
     {
@@ -64,7 +68,7 @@ public class CardController : Controller
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="target"></param>
-    public void ExecuteSpellContents<T>(T target)where T : Controller
+    public bool ExecuteSpellContents<T>(T target)where T : Controller
     {
         CardController tc = target as CardController; //変換できたらいいですね
         HeroController th = target as HeroController; //変換できたらいいですね
@@ -81,37 +85,39 @@ public class CardController : Controller
         switch (model.target)
         {
             case CardEntity.Target.none: //何もしない
-                return;
+                return true;
             case CardEntity.Target.unit: //tcがあればヨシ
             case CardEntity.Target.selectionArea: //対象範囲に含まれたtcがないと、どの範囲なのか識別できない
-                if (tc != null) { Execute(() => ccSpellContents(tc)); }
-                return;
+                if (tc != null) { Execute(() => ccSpellContents(tc)); return true; }
+                return false;
             case CardEntity.Target.enemyUnit: //tcの敵対チェック
             case CardEntity.Target.selectionEnemyArea: //tcの敵対チェック 　対象範囲に含まれたtcがないと、どの範囲なのか識別できない
-                if (tc != null && tc.model.isPlayerCard != model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
-                return;
+                if (tc != null && tc.model.isPlayerCard != model.isPlayerCard) { Execute(() => ccSpellContents(tc)); return true; }
+                return false;
             case CardEntity.Target.playerUnit: //tcの友好チェック
             case CardEntity.Target.selectionPlayerArea:　//tcの友好チェック 　対象範囲に含まれたtcがないと、どの範囲なのか識別できない
-                if (tc != null && tc.model.isPlayerCard == model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
-                return;
+                if (tc != null && tc.model.isPlayerCard == model.isPlayerCard) { Execute(() => ccSpellContents(tc)); return true; }
+                return false;
             case CardEntity.Target.hero: //thがあればヨシ
-                if (th != null) { Execute(() => hcSpellContents(th)); }
-                return;
+                if (th != null) { Execute(() => hcSpellContents(th)); return true; }
+                return false;
             case CardEntity.Target.unitOrHero: //対象があればヨシ
-                if (tc != null) { Execute(() => ccSpellContents(tc)); }
-                else if (th != null) { Execute(() => hcSpellContents(th)); }
-                return;
+                if (tc != null) { Execute(() => ccSpellContents(tc)); return true; }
+                else if (th != null) { Execute(() => hcSpellContents(th)); return true; }
+                return false;
             case CardEntity.Target.enemy: //tcの存在 & 敵対　thの存在 & 敵対　が必要
-                if (tc != null && tc.model.isPlayerCard != model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
-                else if (th != null && th.model.isPlayer != model.isPlayerCard) { Execute(() => hcSpellContents(th)); }
-                return;
+                if (tc != null && tc.model.isPlayerCard != model.isPlayerCard) { Execute(() => ccSpellContents(tc)); return true; }
+                else if (th != null && th.model.isPlayer != model.isPlayerCard) { Execute(() => hcSpellContents(th)); return true; }
+                return false;
             case CardEntity.Target.player:　//tcの存在 & 友好　thの存在 & 友好　が必要
-                if (tc != null && tc.model.isPlayerCard == model.isPlayerCard) { Execute(() => ccSpellContents(tc)); }
-                else if (th != null && th.model.isPlayer == model.isPlayerCard) { Execute(() => hcSpellContents(th)); }
-                return;
+                if (tc != null && tc.model.isPlayerCard == model.isPlayerCard) { Execute(() => ccSpellContents(tc)); return true; }
+                else if (th != null && th.model.isPlayer == model.isPlayerCard) { Execute(() => hcSpellContents(th)); return true; }
+                return false;
             case CardEntity.Target.area: //効果範囲が決まってるスペル
                 Execute(() => SpellContents());
-                return;
+                return true;
+            default:
+                return false;
         }
     }
     /// <summary>

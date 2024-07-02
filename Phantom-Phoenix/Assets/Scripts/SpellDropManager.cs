@@ -1,5 +1,7 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -18,19 +20,39 @@ public class SpellDropManager : MonoBehaviour, IDropHandler
         {
             
             if (spell == null || spell.model.cost > GameManager.instance.GetHeroMP(spell.model.isPlayerCard) || spell.model.category != CardEntity.Category.spell) { return; } //MP超過のスペルやスペル以外は通さない
+            var handIndex = spell.GetComponent<CardMovement>().siblingIndex;
             if (targetC != null)
             {
-                spell.ExecuteSpellContents(targetC); //とりあえず、CardControllerを渡しておく
+                //とりあえず、CardControllerを渡しておく
+                if (spell.ExecuteSpellContents(targetC) && GameDataManager.instance.isOnlineBattle)
+                {
+                    SendExecuteSpellContents(handIndex, targetC.model.thisFieldID);
+                }
             }
             else if (targetH != null)
             {
-                spell.ExecuteSpellContents(targetH); //とりあえず、HeroControllerを渡しておく
+                //とりあえず、HeroControllerを渡しておく
+                if (spell.ExecuteSpellContents(targetH) && GameDataManager.instance.isOnlineBattle)
+                {
+                    SendExecuteSpellContents(handIndex, targetH.model.isPlayer ? 13 : 14);
+                }
             }
             else
             {
-                spell.ExecuteSpellContents<Controller>(null); //どうしようもないのでnullを渡しておく
+                //どうしようもないのでnullを渡しておく
+                if (spell.ExecuteSpellContents<Controller>(null) && GameDataManager.instance.isOnlineBattle)
+                {
+                    SendExecuteSpellContents(handIndex);
+                }
             }
 
         }
+    }
+
+    private void SendExecuteSpellContents(int handIndex, int targetID = 0)
+    {
+        if(1 <= targetID && targetID <= 12) { targetID = FieldManager.instance.ChangeFieldID(targetID); }
+        targetID = targetID == 13 ? 14 : targetID == 14 ? 13 : targetID; //13→14 14→13 他はそのまま
+        GameManager.instance.SendExecuteSpellContents(handIndex, targetID);
     }
 }

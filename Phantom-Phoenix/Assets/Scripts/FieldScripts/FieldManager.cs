@@ -217,15 +217,36 @@ public class FieldManager : MonoBehaviour
     /// </summary>
     /// <param name="isPlayer"></param>
     /// <returns></returns>
-    public (Transform emptyField, int fieldID) GetEmptyFieldID(bool isPlayer)
+    public (Transform emptyField, int fieldID) GetEmptyFieldID(bool isPlayer, int avoidFieldID = 99)
     {
-        if (GetUnitByFieldID(isPlayer ? 1 : 7) == null) { return isPlayer ? (playerFields[0],1) : (enemyFields[0], 7); }
-        else if (GetUnitByFieldID(isPlayer ? 2 : 8) == null) { return isPlayer ? (playerFields[1], 2) : (enemyFields[1], 8); }
-        else if (GetUnitByFieldID(isPlayer ? 3 : 9) == null) { return isPlayer ? (playerFields[2], 3) : (enemyFields[2], 9); }
-        else if (GetUnitByFieldID(isPlayer ? 4 : 10) == null) { return isPlayer ? (playerFields[3], 4) : (enemyFields[3], 10); }
-        else if (GetUnitByFieldID(isPlayer ? 5 : 11) == null) { return isPlayer ? (playerFields[4], 5) : (enemyFields[4], 11); }
-        else if (GetUnitByFieldID(isPlayer ? 6 : 12) == null) { return isPlayer ? (playerFields[5], 6) : (enemyFields[5], 12); }
+        avoidFieldID = avoidFieldID != 99 ? avoidFieldID % 6 : 99;
+        if (avoidFieldID != 1 && GetUnitByFieldID(isPlayer ? 1 : 7) == null) { return isPlayer ? (playerFields[0],1) : (enemyFields[0], 7); }
+        else if (avoidFieldID != 2 &&  GetUnitByFieldID(isPlayer ? 2 : 8) == null) { return isPlayer ? (playerFields[1], 2) : (enemyFields[1], 8); }
+        else if (avoidFieldID != 3 && GetUnitByFieldID(isPlayer ? 3 : 9) == null) { return isPlayer ? (playerFields[2], 3) : (enemyFields[2], 9); }
+        else if (avoidFieldID != 4 && GetUnitByFieldID(isPlayer ? 4 : 10) == null) { return isPlayer ? (playerFields[3], 4) : (enemyFields[3], 10); }
+        else if (avoidFieldID != 5 && GetUnitByFieldID(isPlayer ? 5 : 11) == null) { return isPlayer ? (playerFields[4], 5) : (enemyFields[4], 11); }
+        else if (avoidFieldID != 0 && GetUnitByFieldID(isPlayer ? 6 : 12) == null) { return isPlayer ? (playerFields[5], 6) : (enemyFields[5], 12); }
         return (null,0); //フィールドが全て埋まっている時
+    }
+    /// <summary>
+    /// 指定されたフィールドが空いているなら取得する　そうでなければ(null,0)を返す
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <returns></returns>
+    public (Transform emptyField, int fieldID) GetEmptyFieldIDByFieldID(int fieldID)
+    {
+        if(fieldID <= 6)
+        {
+            return GetUnitByFieldID(fieldID) == null ? (playerFields[fieldID - 1], fieldID) : (null, 0);
+        }
+        else
+        {
+            return GetUnitByFieldID(fieldID) == null ? (enemyFields[fieldID - 7], fieldID) : (null, 0);
+        }
+    }
+    public List<(Transform emptyField, int fieldID)> GetEmptyFieldIDsByFieldID(int[] fieldsID)
+    {
+        return fieldsID.ToList().Select(fieldID => GetEmptyFieldIDByFieldID(fieldID)).ToList();
     }
     public bool IsFront(int fieldID)
     {
@@ -262,6 +283,18 @@ public class FieldManager : MonoBehaviour
         return (null, 0); //フィールドが全て埋まっている時
     }
     /// <summary>
+    /// 空きのある上下のフィールドを取得する
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <returns></returns>
+    public List<(Transform emptyField, int fieldID)> GetEmptyUpDownFieldID(int fieldID)
+    {
+        if(fieldID < 1 || 12 < fieldID) { return null; } //想定外の値対策
+        else if (fieldID % 3 == 1) { return GetEmptyFieldIDsByFieldID(new int[] { fieldID + 1 }); } //fieldIDが上段
+        else if (fieldID % 3 == 2) { return GetEmptyFieldIDsByFieldID(new int[] { fieldID - 1, fieldID + 1 }); } //fieldIDが中段
+        else { return GetEmptyFieldIDsByFieldID(new int[] { fieldID - 1 }); } //fieldIDが下段
+    }
+    /// <summary>
     /// 各フィールドのユニット数を設定する
     /// </summary>
     public void SetFieldOnUnitcnt(bool isPlayerField)
@@ -275,6 +308,10 @@ public class FieldManager : MonoBehaviour
             enemyFieldOnUnitCnt = GetUnitsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 })?.Count ?? 0;
         }
     }
+    /// <summary>
+    /// フィールドにいるユニットの数を減らす
+    /// </summary>
+    /// <param name="isPlayerField"></param>
     public void Minus1FieldOnUnitCnt(bool isPlayerField)
     {
         if (isPlayerField)

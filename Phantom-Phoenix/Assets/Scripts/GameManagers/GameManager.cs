@@ -564,16 +564,36 @@ public class GameManager : MonoBehaviourPunCallbacks
                 {
                     if (enemyField.childCount == 0)
                     {
-                        canPutCard.Show(true);
-                        StartCoroutine(canPutCard.movement.MoveToArea(enemyField));
-                        yield return new WaitForSeconds(0.25f);
-                        if (canPutCard.model.category == CardEntity.Category.spell)
+                        void Movement(Transform targetTransform)
                         {
-                            canPutCard.ExecuteSpellContents<Controller>(null);
+                            canPutCard.Show(true);
+                            StartCoroutine(canPutCard.movement.MoveToArea(targetTransform));
+                        }
+
+                        if(canPutCard.model.category == CardEntity.Category.unit)
+                        {
+                            canPutCard.Show(true);
+                            StartCoroutine(canPutCard.movement.MoveToArea(enemyField));
+                            yield return new WaitForSeconds(0.25f);
+                            canPutCard.SummonOnField(enemyField.GetComponent<DropField>().fieldID);
                         }
                         else
                         {
-                            canPutCard.SummonOnField(enemyField.GetComponent<DropField>().fieldID);
+                            switch (canPutCard.model.target)
+                            {
+                                case CardEntity.Target.area:
+                                    Movement(enemyField);
+                                    yield return new WaitForSeconds(0.25f);
+                                    canPutCard.ExecuteSpellContents<Controller>(null); 
+                                    break;
+                                case CardEntity.Target.enemyUnit:
+                                    if(FieldManager.instance.GetRandomUnits(true) is var x && x != null) {
+                                        Movement(playerFields[x.model.thisFieldID - 1]);
+                                        yield return new WaitForSeconds(0.25f);
+                                        canPutCard.ExecuteSpellContents(x); 
+                                    }
+                                    break;
+                            }
                         }
                         yield return new WaitForSeconds(0.75f);
                         break;
@@ -835,6 +855,31 @@ public class GameManager : MonoBehaviourPunCallbacks
         else if(targetFieldIDByReceiver == 14)
         {
             enemyTensionController.UseTensionSpell(enemyHeroController);
+        }
+    }
+    public void SendExecuteSpellContents(int handIndex, int targetByReciever)
+    {
+        photonView.RPC(nameof(RPCExecuteSpellContents), RpcTarget.Others, handIndex, targetByReciever);
+    }
+    [PunRPC]
+    IEnumerator RPCExecuteSpellContents(int handIndex, int targetByReciever)
+    {
+        var spell = enemyHandTransform.GetChild(handIndex).GetComponent<CardController>();
+        spell.Show(true);
+        if (targetByReciever == 0) {
+            StartCoroutine(spell.movement.MoveToArea(canvas));
+            yield return new WaitForSeconds(0.25f);
+            spell.ExecuteSpellContents<Controller>(null); 
+        }
+        else if(1 <= targetByReciever && targetByReciever <= 12) {
+            var target = FieldManager.instance.GetUnitByFieldID(targetByReciever);
+            StartCoroutine(spell.movement.MoveToArea(targetByReciever <= 6 ? playerFields[targetByReciever - 1] : enemyFields[targetByReciever - 7]));
+            yield return new WaitForSeconds(0.25f);
+            spell.ExecuteSpellContents(target); 
+        }
+        else if(targetByReciever == 13 || targetByReciever == 14){
+            StartCoroutine(spell.movement.MoveToArea(targetByReciever == 13 ? playerHeroController.transform : enemyHeroController.transform));
+            spell.ExecuteSpellContents(targetByReciever == 13 ? playerHeroController : enemyHeroController); 
         }
     }
     #endregion
