@@ -18,10 +18,9 @@ public class HeroModel
     
     public bool isPlayer { get; private set; }
     public bool isAlive {  get; private set; }
-    public bool canAttack {  get; private set; }
-    public bool usedTensionCard {  get; private set; }
-    public int Tension { get; private set; }
-    
+    public int plusSpellDamage { get; private set; }
+    public int plusSpellCost { get; private set; }
+    public int minusSpellCost {  get; private set; }
 
     public HeroModel(int heroID, bool isPlayer)
     {
@@ -35,9 +34,10 @@ public class HeroModel
         mp =  maxMP = 0; //TODO 初期値0
         this.isPlayer = isPlayer;
         isAlive = true;
-        canAttack = false;
-        usedTensionCard = false;
-        Tension = 0;
+
+        plusSpellDamage = 0;
+        plusSpellCost = 0;
+        minusSpellCost = 0;
     }
     /// <summary>
     /// ヒーローがダメージを受けた時の処理 直接呼ばない
@@ -112,4 +112,23 @@ public class HeroModel
             mp = maxMP;
         }
     }
+    public void spellDamageBuff(int buff)
+    {
+        plusSpellDamage += buff;
+        if (plusSpellDamage < 0)
+        {
+            plusSpellDamage = 0;
+        }
+
+    }
+    public void SetMinusSpellCost(int minus)
+    {
+        minusSpellCost = minus;
+        if (plusSpellDamage < 0)
+        {
+            plusSpellDamage = 0;
+        }
+
+    }
+
 }

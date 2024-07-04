@@ -690,6 +690,266 @@ MonoBehaviour:
     skill3: 0
     target: 0
     text: "1\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u306E\\n\u6570\u5206\u30B3\u30B9\u30C8-1"
+  - ID: 53
+    hero: 2
+    category: 1
+    rarity: 0
+    name: switch0
+    cost: 0
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 5
+    text: "1\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B\\n\u56FA\u5B9A1\u30C0\u30E1\u30FC\u30B8"
+  - ID: 54
+    hero: 2
+    category: 1
+    rarity: 0
+    name: switch1
+    cost: 1
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 8
+    text: "\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B1\u30C0\u30E1\u30FC\u30B8"
+  - ID: 55
+    hero: 2
+    category: 0
+    rarity: 0
+    name: uwitch221
+    cost: 2
+    atk: 2
+    hp: 1
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u6B7B\u4EA1\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306F\\n\u30C7\u30C3\u30AD\u304B\u3089\\n\u30B9\u30DA\u30EB\u30921\u679A\u5F15\u304F"
+  - ID: 56
+    hero: 2
+    category: 0
+    rarity: 0
+    name: uwitch223
+    cost: 2
+    atk: 2
+    hp: 3
+    skill1: 3
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u72D9\u6483\\n\u3010\u30B9\u30DA\u30EB\u4F7F\u7528\u6642\u3011\\nATK+1"
+  - ID: 57
+    hero: 2
+    category: 1
+    rarity: 0
+    name: switch2d
+    cost: 2
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 5
+    text: "2\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B\\n\u56FA\u5B9A1\u30C0\u30E1\u30FC\u30B8"
+  - ID: 58
+    hero: 2
+    category: 1
+    rarity: 0
+    name: switch2h
+    cost: 2
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 5
+    text: "HP\u30923\u56DE\u5FA9\u3059\u308B\\n\u30AB\u30FC\u30C9\u30921\u679A\u5F15\u304F"
+  - ID: 59
+    hero: 2
+    category: 0
+    rarity: 0
+    name: uwitch315
+    cost: 3
+    atk: 1
+    hp: 5
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30B9\u30DA\u30EB\u30C0\u30E1\u30FC\u30B8+1"
+  - ID: 60
+    hero: 2
+    category: 0
+    rarity: 2
+    name: iceMaiden
+    cost: 3
+    atk: 1
+    hp: 2
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A\\n\u3010\u53EC\u559A\u6642&\u6B7B\u4EA1\u6642\u3011\\n\u5168\u3066\u306E\u5473\u65B9\u3092\\n1\u56DE\u5FA9\u3059\u308B"
+  - ID: 61
+    hero: 2
+    category: 0
+    rarity: 0
+    name: uwitch425
+    cost: 4
+    atk: 2
+    hp: 5
+    skill1: 4
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u8CAB\u901A\\n\u3010\u30B9\u30DA\u30EB\u4F7F\u7528\u6642\u3011\\nHP+1"
+  - ID: 62
+    hero: 2
+    category: 0
+    rarity: 1
+    name: uwitch433
+    cost: 4
+    atk: 3
+    hp: 3
+    skill1: 2
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6311\u767A\\n\u3010\u30B9\u30DA\u30EB\u4F7F\u7528\u6642\u3011\\n\u524D\u5217\u306B\u3044\u308B\u306A\u3089\u3001\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3+1"
+  - ID: 63
+    hero: 2
+    category: 1
+    rarity: 1
+    name: switch4d
+    cost: 4
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 5
+    text: "4\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B\\n\u56FA\u5B9A2\u30C0\u30E1\u30FC\u30B8"
+  - ID: 64
+    hero: 2
+    category: 1
+    rarity: 1
+    name: switch4h
+    cost: 4
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 5
+    text: "HP\u30926\u56DE\u5FA9\u3059\u308B\\n\u30AB\u30FC\u30C9\u30922\u679A\u5F15\u304F"
+  - ID: 65
+    hero: 2
+    category: 0
+    rarity: 1
+    name: uwitch545
+    cost: 5
+    atk: 4
+    hp: 5
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u5473\u65B9\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\nHP\u30922\u56DE\u5FA9\u3057\u3001\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8"
+  - ID: 66
+    hero: 2
+    category: 1
+    rarity: 0
+    name: switch5
+    cost: 5
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u30B3\u30B9\u30C83\u4EE5\u4E0B\u306E\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n\u6B7B\u4EA1\u3055\u305B\u308B"
+  - ID: 67
+    hero: 2
+    category: 0
+    rarity: 0
+    name: uwitch624
+    cost: 6
+    atk: 2
+    hp: 4
+    skill1: 1
+    skill2: 3
+    skill3: 0
+    target: 0
+    text: "\u5373\u6483\u3000\u72D9\u6483\\n\u3053\u306E\u5BFE\u6226\u4E2D\u306B\u4F7F\u7528\u3057\u305F\\n\u30B9\u30DA\u30EB\u306E\u6570\u5206\\n\u30B3\u30B9\u30C8-1"
+  - ID: 68
+    hero: 2
+    category: 0
+    rarity: 2
+    name: zodiac
+    cost: 6
+    atk: 2
+    hp: 2
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\u4E21\u30D2\u30FC\u30ED\u30FC\u306B\\n7\u30C0\u30E1\u30FC\u30B8"
+  - ID: 69
+    hero: 2
+    category: 0
+    rarity: 1
+    name: uwitch744
+    cost: 7
+    atk: 4
+    hp: 4
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u6B21\u306B\u4F7F\u3046\u30B9\u30DA\u30EB\u306E\\n\u30B3\u30B9\u30C8-3\\n\u3053\u306E\u52B9\u679C\u306F\u91CD\u8907\u3057\u306A\u3044"
+  - ID: 70
+    hero: 2
+    category: 1
+    rarity: 1
+    name: switch7
+    cost: 7
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306B\\n5\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B\\n\u56FA\u5B9A3\u30C0\u30E1\u30FC\u30B8"
+  - ID: 71
+    hero: 2
+    category: 1
+    rarity: 1
+    name: switch10
+    cost: 10
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 0
+    text: "\u6575\u5168\u4F53\u306B2\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3\u304C\u6700\u5927\u306A\u3089\\n\u30C0\u30E1\u30FC\u30B8+3\u3057\u3001\\n\u30C6\u30F3\u30B7\u30E7\u30F3-3"
+  - ID: 72
+    hero: 2
+    category: 1
+    rarity: 1
+    name: switch20
+    cost: 20
+    atk: 0
+    hp: 0
+    skill1: 0
+    skill2: 0
+    skill3: 0
+    target: 5
+    text: "6\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B\\n\u56FA\u5B9A3\u30C0\u30E1\u30FC\u30B8\\n\u3053\u306E\u5BFE\u6226\u4E2D\u306B\u4F7F\u7528\u3057\u305F\\n\u30B9\u30DA\u30EB\u306E\u6570\u5206\\n\u30B3\u30B9\u30C8-1"
   token:
   - ID: 10001
     hero: 1

@@ -83,7 +83,7 @@ public class CardModel
         isTaunt = false;
         isActiveDoubleAction = true;
         //選択が必要な場合、このフラグをtrueにして管理する
-        if (target == CardEntity.Target.unit || target == CardEntity.Target.enemyUnit || target == CardEntity.Target.enemy)
+        if (target == CardEntity.Target.unit || target == CardEntity.Target.enemyUnit || target == CardEntity.Target.enemy || target == CardEntity.Target.unitOrHero)
         {
             HasSelectSpeciallSkill = true;
         }

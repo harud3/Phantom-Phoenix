@@ -39,21 +39,30 @@ public class HeroController : Controller
     /// <summary>
     /// ヒーローが攻撃によりダメージを受けた時の処理
     /// </summary>
-    /// <param name="viewOpenSide"></param>
     public void DamageFromAttack(int dmg)
     {
         model.Damage(dmg);
         ReShowHP();
     }
     /// <summary>
+    /// ヒーローがスペルによりダメージを受けた時の処理 
+    /// </summary>
+    public void DamageFromSpell(int dmg)
+    {
+        AudioManager.instance.SoundCardFire();
+        model.Damage(dmg + model.plusSpellDamage);
+        ReShowHP();
+        GameManager.instance.CheckIsAlive(model.isPlayer);
+    }
+    /// <summary>
     /// ヒーローがダメージを受けた時の処理 
     /// </summary>
-    /// <param name="viewOpenSide"></param>
     public void Damage(int dmg)
     {
         AudioManager.instance.SoundCardFire();
         model.Damage(dmg);
         ReShowHP();
+        GameManager.instance.CheckIsAlive(model.isPlayer);
     }
     public void Heal(int hl)
     {
@@ -98,6 +107,15 @@ public class HeroController : Controller
         else { AudioManager.instance.SoundMPDeBuff(); }
         model.ChangeMaxMP(up);
         view.ReShowMP(model);
+    }
+    public void spellDamageBuff(int buff)
+    {
+        model.spellDamageBuff(buff);
+    }
+    public Action SpellUsedSkill = null;　//スペル使用によって発生する受動的なスキル
+    public void ExecuteSpellUsedSkill()
+    {
+        SpellUsedSkill?.Invoke();
     }
     public Action<CardController> ccExternalBuff = new Action<CardController>((unit) => { });
 }

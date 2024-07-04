@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
+using static CardEntity;
 
 public class SkillManager : MonoBehaviour
 {
@@ -28,6 +30,12 @@ public class SkillManager : MonoBehaviour
     public void SkillCausedByTension(int[] fieldsID)
     {
         FieldManager.instance.GetUnitsByFieldID(fieldsID)?.ForEach(i => { i.ExecuteTensionSkill(); });
+    }
+    public void SkillCausedBySpellUsed(bool isPlayer)
+    {
+        if (isPlayer) { playerHeroController.ExecuteSpellUsedSkill(); } else { enemyHeroController.ExecuteSpellUsedSkill(); }
+        int[] fieldsID = (isPlayer ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray();
+        FieldManager.instance.GetUnitsByFieldID(fieldsID)?.ForEach(i => { i.ExecuteSpellUsedSkill(); });
     }
     #region 5大スキル
     public bool IsFast(CardModel model) //即撃
@@ -203,17 +211,12 @@ public class SkillManager : MonoBehaviour
     public void SpecialSkills(CardController c, CardController[] targets = null, HeroController hctarget = null)
     {
         HeroController h = c.model.isPlayerCard ? playerHeroController : enemyHeroController;
+        HeroController eh = !c.model.isPlayerCard ? playerHeroController : enemyHeroController;
         TensionController t = c.model.isPlayerCard ? playerTensionController : enemyTensionController;
+        TensionController et = c.model.isPlayerCard ? playerTensionController : enemyTensionController;
+
         switch (c.model.cardID)
         {
-            ///fire スペルの書き方
-            //case 10:
-            //    {
-            //        c.hcSpellContents = (HeroController hc) => { hc.Damage(3); };
-            //        c.ccSpellContents = (CardController cc) => { cc.Damage(3); };
-            //        break;
-            //    }
-
             //011
             case 1: { break; } //なし
             //122
@@ -239,8 +242,8 @@ public class SkillManager : MonoBehaviour
             //321
             case 10: //両ヒーローはカードを2枚引く
                 {
-                    GameManager.instance.GivesCard(h.model.isPlayer, 2);
-                    GameManager.instance.GivesCard(!h.model.isPlayer, 2);
+                    GameManager.instance.GiveCards(h.model.isPlayer, 2);
+                    GameManager.instance.GiveCards(!h.model.isPlayer, 2);
                     break;
                 }
             //333 
@@ -256,7 +259,7 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //322
-            case 12: //味方ターン終了時:ランダムなユニット1体に1ダメージ
+            case 12: //味方ターン終了時:ランダムな敵ユニット1体に1ダメージ
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
@@ -359,7 +362,7 @@ public class SkillManager : MonoBehaviour
                 {
                     c.SpecialSkillBeforeAttack = (bool isAttacker) =>
                     {
-                        if (isAttacker) { GameManager.instance.GivesCard(h.model.isPlayer, 1); }
+                        if (isAttacker) { GameManager.instance.GiveCards(h.model.isPlayer, 1); }
                     };
                     break;
                 }
@@ -373,7 +376,7 @@ public class SkillManager : MonoBehaviour
                             c.model.isPlayerCard ? Enumerable.Range(1, 6).ToArray() : Enumerable.Range(7, 6).ToArray()
                             ).Where(i => i.model.defaultATK <= 2 && i.model.thisFieldID != c.model.thisFieldID).ToList()?.ForEach(i => i.Buff(1, 1));
                     //手札の対象カードを+1/+1
-                    FieldManager.instance.GetUnitsInHand(c.model.isPlayerCard)?.Where(i => i.model.defaultATK <= 2).ToList().ForEach(i => i.SilentBuff(1, 1));
+                    FieldManager.instance.GetCardsInHand(c.model.isPlayerCard)?.Where(i => i.model.defaultATK <= 2).ToList().ForEach(i => i.SilentBuff(1, 1));
                     //今後引くカードを+1/+1するように
                     h.ccExternalBuff += (CardController cc) => { if (cc.model.defaultATK <= 2) { cc.SilentBuff(1, 1); } };
                     break;
@@ -617,7 +620,7 @@ public class SkillManager : MonoBehaviour
                     c.SpellContents = () =>
                     {
                         t.SetTension(t.model.tension + 1);
-                        GameManager.instance.GivesCard(c.model.isPlayerCard, 1);
+                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
                     };
                     break;
                 }
@@ -650,7 +653,7 @@ public class SkillManager : MonoBehaviour
                         {
                             plusDamage = x.Where(i => i.model.cost <= 1).Count();
                         }
-                        cc.Damage(0 + plusDamage);
+                        cc.DamageFromSpell(0 + plusDamage, c.model.isPlayerCard); ;
                     };
                     break;
                 }
@@ -704,7 +707,7 @@ public class SkillManager : MonoBehaviour
                         {
                             i.Damage(99);
                         });
-                        if(y.Count() is var i && i > 0)GameManager.instance.GivesCard(c.model.isPlayerCard, i);
+                        if(y.Count() is var i && i > 0)GameManager.instance.GiveCards(c.model.isPlayerCard, i);
                         
                     }
                     break;
@@ -716,7 +719,7 @@ public class SkillManager : MonoBehaviour
                     {
                         if (FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard) is var x && x != null)
                         {
-                            x.ForEach(i => i.Damage(1));
+                            x.ForEach(i => i.DamageFromSpell(1, c.model.isPlayerCard));
                         }
                         SummonTelf111();
                         SummonTelf111();
@@ -793,7 +796,205 @@ public class SkillManager : MonoBehaviour
             case 51: { break; } //この対戦中に死亡した1コスト以下の味方ユニットの数分+1/+1
             //uelf955
             case 52: { break; } //味方フィールドの\n1コスト以下の味方ユニットの数分、コスト-1
+            //switch0
+            case 53: //1ダメージ　味方ヒーローに固定1ダメージ
+            {
+                c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(1); h.Damage(1); };
+                c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(1, c.model.isPlayerCard); h.Damage(1); };
+                break;
+            }
+            //switch1
+            case 54: //全ての敵ユニットに1ダメージ　味方ヒーローに固定1ダメージ
+                {
+                    c.SpellContents = () =>
+                    {
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DamageFromSpell(1, c.model.isPlayerCard));
+                        h.Damage(1);
+                    };
+                    break;
+                }
+            //uwitch221
+            case 55: //死亡時:デッキからスペルを1枚引く
+                {
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        GameManager.instance.GiveSearchCard(c.model.isPlayerCard, (i) => { return GameDataManager.instance.cardlist.cl[i - 1].category == Category.spell; });
+                        
+                    };
+                    break;
+                }
+            //uwitch223
+            case 56: //スペル使用時:ATK+1
+                {
+                    c.SpellUsedSkill = () =>
+                    {
+                        c.Buff(1, 0);
+                    };
+                    break;
+                }
+            //switch2d
+            case 57: //2ダメージ　味方ヒーローに固定1ダメージ
+                {
+                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(2); h.Damage(1); };
+                    c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(2, c.model.isPlayerCard); h.Damage(1); };
+                    break;
+                }
+            //switch2h
+            case 58: //3回復　カードを1枚引く
+                {
+                    c.hcSpellContents = (HeroController hc) => { hc.Heal(3); GameManager.instance.GiveCards(c.model.isPlayerCard, 1); };
+                    c.ccSpellContents = (CardController cc) => { cc.Heal(3); GameManager.instance.GiveCards(c.model.isPlayerCard, 1); };
+                    break;
+                }
+            //uwitch315
+            case 59: //スペルダメージ+1
+                {
+                    h.spellDamageBuff(1);
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        h.spellDamageBuff(-1);
+                    };
+                    break;
+                }
+            //iceMaiden
+            case 60: //挑発　召喚時&死亡時:全ての味方を1回復する
+                {
+                    if (c.model.isPlayerCard) { playerHeroController.model.Heal(1); }
+                    else { enemyHeroController.model.Heal(1); }
 
+                    var x = FieldManager.instance.GetUnitsByFieldID((c.model.isPlayerCard ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray())
+                        .Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                    if (x.Count != 0)
+                    {
+                        x.ForEach(i => i.Heal(1));
+                    }
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        if (c.model.isPlayerCard) { playerHeroController.model.Heal(1); }
+                        else { enemyHeroController.model.Heal(1); }
+
+                        var x = FieldManager.instance.GetUnitsByFieldID((c.model.isPlayerCard ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray())
+                        .Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                        if (x.Count != 0)
+                        {
+                            x.ForEach(i => i.Heal(1));
+                        }
+                    };
+                    break;
+                }
+            //uwitch425
+            case 61: //スペル使用時:HP+1
+                {
+                    c.SpellUsedSkill = () =>
+                    {
+                        c.Buff(0, 1);
+                    };
+                    break;
+                }
+            //uwitch433
+            case 62: //スペル使用時:前列にいるなら、テンション+1
+                {
+                    c.SpellUsedSkill = () =>
+                    {
+                        if (c.model.thisFieldID % 6 == 1 || c.model.thisFieldID % 6 == 2 || c.model.thisFieldID % 6 == 3)
+                        {
+                            t.SetTension(t.model.tension + 1);
+                        }
+                    };
+                    break;
+                }
+            //switch4d
+            case 63: //4ダメージ　味方ヒーローに固定2ダメージ
+                {
+                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(2); h.Damage(1); };
+                    c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(2, c.model.isPlayerCard); h.Damage(1); };
+                    break;
+                }
+            //switch4h
+            case 64: //6回復　カードを2枚引く
+                {
+                    c.hcSpellContents = (HeroController hc) => { hc.Heal(3); GameManager.instance.GiveCards(c.model.isPlayerCard, 1); };
+                    c.ccSpellContents = (CardController cc) => { cc.Heal(3); GameManager.instance.GiveCards(c.model.isPlayerCard, 1); };
+                    break;
+                }
+            //uwitch545
+            case 65: //味方ターン終了時 味方ヒーローのHPを2回復　ランダムな敵ユニットに1ダメージ
+                {
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
+                    {
+                        if (isPlayerTurn == c.model.isPlayerCard)
+                        {
+                            h.Heal(2);
+
+                            var x = FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard);
+                            if (x != null)
+                            {
+                                x.Damage(1);
+                            }
+                        }
+                    };
+                    break;
+                }
+            //switch5
+            case 66: //コスト3以下の全ての敵ユニットを死亡させる
+                {
+                    c.SpellContents = () =>
+                    {
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).Where(x => x.model.cost <= 3).ToList().ForEach(i => i.Damage(99));
+                    };
+                    break;
+                }
+            //uwitch624
+            case 67: //即撃 狙撃 この対戦中に使用したスペルの数分、コスト-1
+                {
+                    break;
+                }
+            //zodiac
+            case 68: //両ヒーローに7ダメージ
+                {
+                    h.Damage(7);
+                    eh.Damage(7);
+                    break;
+                }
+            //uwitch744
+            case 69: //召喚時:手札の全てのスペルのコスト-1
+                {
+                    FieldManager.instance.GetCardsInHand(c.model.isPlayerCard).Where(i => i.model.category == Category.spell).ToList().ForEach(i => i.ChangeCost(i.model.cost - 2));
+                    break;
+                }
+            //switch7
+            case 70: //全ての敵ユニットに5ダメージ　味方ヒーローに固定3ダメージ
+                {
+                    c.SpellContents = () =>
+                    {
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DamageFromSpell(5, c.model.isPlayerCard));
+                        h.Damage(3);
+                    };
+                    break;
+                }
+            //switch10
+            case 71: //全ての敵に2ダメージ　テンション3なら、ダメージ+3&テンション-3
+                {
+                    c.SpellContents = () =>
+                    {
+                        var plusDamage = 0;
+                        if(t.model.tension <= 2)
+                        {
+                            plusDamage = 3;
+                            t.SetTension(0);
+                        }
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DamageFromSpell(2 + plusDamage, c.model.isPlayerCard));
+                        h.Damage(2 + plusDamage);
+                    };
+                    break;
+                }
+            //switch20
+            case 72: //6ダメージ 味方ヒーローに固定3ダメージ この対戦中に使用したスペルの数分コスト-1
+                {
+                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(6); h.Damage(3); };
+                    c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(6, c.model.isPlayerCard); h.Damage(3); };
+                    break;
+                }
         }
 
     }
@@ -860,6 +1061,50 @@ public class SkillManager : MonoBehaviour
                         if (recordCost != 9 - x)
                         {
                             c.ChangeCost(9 - x);
+                            recordCost = c.model.cost;
+                        }
+                    }
+
+                    StartCoroutine(ChangeCost());
+                    c.UpdateSkill += () =>
+                    {
+                        StartCoroutine(ChangeCost());
+                    };
+                    break;
+                }
+            //uwitch624
+            case 67: //即撃 狙撃 この対戦中に使用したスペルの数分、コスト-1
+                {
+                    var recordCost = 6;
+                    IEnumerator ChangeCost()
+                    {
+                        yield return null;
+                        var x = (c.model.isPlayerCard ? FieldManager.instance.playerUsedSpellList : FieldManager.instance.enemyUsedSpellList).Count();
+                        if (recordCost != 6 - x)
+                        {
+                            c.ChangeCost(6 - x);
+                            recordCost = c.model.cost;
+                        }
+                    }
+
+                    StartCoroutine(ChangeCost());
+                    c.UpdateSkill += () =>
+                    {
+                        StartCoroutine(ChangeCost());
+                    };
+                    break;
+                }
+            //switch20
+            case 72: //6ダメージ 味方ヒーローに固定3ダメージ この対戦中に使用したスペルの数分コスト-1
+                {
+                    var recordCost = 20;
+                    IEnumerator ChangeCost()
+                    {
+                        yield return null;
+                        var x = (c.model.isPlayerCard ? FieldManager.instance.playerUsedSpellList : FieldManager.instance.enemyUsedSpellList).Count();
+                        if (recordCost != 20 - x)
+                        {
+                            c.ChangeCost(20 - x);
                             recordCost = c.model.cost;
                         }
                     }

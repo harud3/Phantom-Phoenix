@@ -70,7 +70,7 @@ public class FieldManager : MonoBehaviour
     /// </summary>
     /// <param name="fieldID"></param>
     /// <returns></returns>
-    public List<CardController> GetUnitsInHand(bool isPlayerHand)
+    public List<CardController> GetCardsInHand(bool isPlayerHand)
     {
         return (isPlayerHand ? playerHand : enemyHand).OfType<Transform>().Select(i => i.GetComponent<CardController>()).ToList();
     }
@@ -505,6 +505,40 @@ public class FieldManager : MonoBehaviour
         else
         {
             enemyCatacombe.Add((diedUnit.cardID, diedUnit.cost));
+        }
+    }
+    #endregion
+    #region スペル使用履歴
+    private List<(int cardID, int cost)> _playerUsedSpell = new List<(int cardID, int cost)>();
+    private List<(int cardID, int cost)> _enemyUsedSpell = new List<(int cardID, int cost)>();
+    public List<(int cardID, int cost)> playerUsedSpellList
+    {
+        get { return _playerUsedSpell; }
+        private set
+        {
+            _playerUsedSpell = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in playerHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
+        }
+    }
+    public List<(int cardID, int cost)> enemyUsedSpellList
+    {
+        get { return _enemyUsedSpell; }
+        private set
+        {
+            _enemyUsedSpell = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in enemyHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
         }
     }
     #endregion

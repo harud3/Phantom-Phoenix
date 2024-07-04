@@ -13,6 +13,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using DG.Tweening;
 using UnityEngine.XR;
+using static CardEntity;
 /// <summary>
 /// バトルを統括するスクリプト
 /// </summary>
@@ -264,8 +265,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     void SettingInitHand()
     {
-        GivesCard(true, 3);
-        GivesCard(false, 3);
+        GiveCards(true, 3);
+        GiveCards(false, 3);
     }
     #endregion
     #region　時間管理
@@ -295,7 +296,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="isPlayer"></param>
     /// <param name="drawCount"></param>
-    public void GivesCard(bool isPlayer, int drawCount)
+    public void GiveCards(bool isPlayer, int drawCount)
     {
         StartCoroutine(GivesCardIE(isPlayer, drawCount));
     }
@@ -359,6 +360,35 @@ public class GameManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.25f);
         cc.transform.SetParent(hand);
         if (isPlayer) { SetCanSummonHandCard(cc); }
+    }
+    #endregion
+    #region カード検索
+    /// <summary>
+    /// 検索したカードをデッキから手札に配る
+    /// </summary>
+    /// <param name="deck"></param>
+    /// <param name="hand"></param>
+    /// <param name="isPlayer"></param>
+    public void GiveSearchCard(bool isPlayer, Func<int, bool> target)
+    {
+
+        if ((isPlayer ? playerDeck.deck : enemyDeck.deck).Count == 0) //TODO:デッキがないなら戻る
+        {
+            return;
+        }
+
+        var sh = (isPlayer ? playerDeck.deck : enemyDeck.deck).Select((i, index) => new { Content = i, Index = index }).Where(i => target(i.Content)).OrderBy(_ => Guid.NewGuid()).ToList();
+        if (!sh.Any()) { return; } //対象がないなら戻る
+        //一番上のデッキを取得する
+        int cardID = (isPlayer ? playerDeck.deck : enemyDeck.deck)[sh.FirstOrDefault().Index];
+        (isPlayer ? playerDeck.deck : enemyDeck.deck).RemoveAt(sh.FirstOrDefault().Index);
+        //デッキ残り枚数の再表示
+        if (isPlayer) { playerHeroController.ReShowStackCards((isPlayer ? playerDeck.deck : enemyDeck.deck).Count()); }
+        else { enemyHeroController.ReShowStackCards((isPlayer ? playerDeck.deck : enemyDeck.deck).Count()); }
+
+        //手札の枚数は最大10枚
+        if ((isPlayer ? playerHandTransform : enemyHandTransform).childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました"); return; }
+        StartCoroutine(CreateCard(cardID, (isPlayer ? playerHandTransform : enemyHandTransform), isPlayer));
     }
     #endregion
     #region　ターン制御
@@ -430,11 +460,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         //ターン開始でのドロー処理　最初のターンはドローなしにするため
         if (isPlayerTurn && !isFirst)
         {
-            GivesCard(true, 1);
+            GiveCards(true, 1);
         }
         else if(!isFirst)
         {
-            GivesCard(false, 1);
+            GiveCards(false, 1);
         }
 
         //表示の変更
@@ -570,23 +600,24 @@ public class GameManager : MonoBehaviourPunCallbacks
                             StartCoroutine(canPutCard.movement.MoveToArea(targetTransform));
                         }
 
-                        if(canPutCard.model.category == CardEntity.Category.unit)
+                        if(canPutCard.model.category == Category.unit)
                         {
                             canPutCard.Show(true);
                             StartCoroutine(canPutCard.movement.MoveToArea(enemyField));
                             yield return new WaitForSeconds(0.25f);
                             canPutCard.SummonOnField(enemyField.GetComponent<DropField>().fieldID);
                         }
-                        else
+                        else //spellの時
                         {
                             switch (canPutCard.model.target)
                             {
-                                case CardEntity.Target.area:
+                                case Target.area:
                                     Movement(enemyField);
                                     yield return new WaitForSeconds(0.25f);
                                     canPutCard.ExecuteSpellContents<Controller>(null); 
                                     break;
-                                case CardEntity.Target.enemyUnit:
+                                case Target.enemyUnit:
+                                case Target.unitOrHero:
                                     if(FieldManager.instance.GetRandomUnits(true) is var x && x != null) {
                                         Movement(playerFields[x.model.thisFieldID - 1]);
                                         yield return new WaitForSeconds(0.25f);
@@ -806,6 +837,15 @@ public class GameManager : MonoBehaviourPunCallbacks
             SetCanSummonHandCards();
         }
         SetCanUsetension(isPlayerCard);
+    }
+    /// <summary>
+    /// ヒーローのスペルダメージバフを取得する
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <returns></returns>
+    public int GetPlusSpellDamage(bool isPlayer)
+    {
+        return isPlayer ? playerHeroController.model.plusSpellDamage : enemyHeroController.model.plusSpellDamage;
     }
     /// <summary>
     /// テンションカード及びテンションスペルが使用可能か判断し、表示を変更する
