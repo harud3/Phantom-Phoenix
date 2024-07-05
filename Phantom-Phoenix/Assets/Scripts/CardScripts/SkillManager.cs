@@ -204,6 +204,22 @@ public class SkillManager : MonoBehaviour
         }　//前列のfieldIDに+3したら、後列のfieldIDになる
     }
     /// <summary>
+    /// テンション貫通効果の発動
+    /// </summary>
+    /// <param name="attacker"></param>
+    /// <param name="target"></param>
+    public void ExecutePierce(int dmg,CardController target)
+    {
+        int targetFieldID = target.model.thisFieldID;
+        if(
+            (1 <= targetFieldID && targetFieldID <= 3)
+            || (7 <= targetFieldID && targetFieldID <= 9)
+           )
+        {
+            FieldManager.instance.GetUnitByFieldID(target.model.thisFieldID + 3)?.Damage(dmg);
+        }　//前列のfieldIDに+3したら、後列のfieldIDになる
+    }
+    /// <summary>
     /// 各種カードの特殊効果を羅列する
     /// </summary>
     /// <param name="c"></param>

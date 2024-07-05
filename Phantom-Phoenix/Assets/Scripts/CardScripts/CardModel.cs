@@ -243,7 +243,7 @@ public class CardModel
         {
             this.atk = 0;
         }
-        if (this.hp < 0)
+        if (this.hp <= 0)
         {
             this.hp = 0;
             isAlive = false;

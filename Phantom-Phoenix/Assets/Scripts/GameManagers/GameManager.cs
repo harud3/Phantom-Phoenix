@@ -596,17 +596,41 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 case 1: //elf
                     yield return new WaitForSeconds(0.25f);
-                    if (FieldManager.instance.GetEmptyFieldID(false) is var x && x.emptyField != null)
+                    if (FieldManager.instance.GetEmptyFieldID(false) is var ID1 && ID1.emptyField != null)
                     {
                         enemyTensionController.UseTensionSpell<Controller>(null);
+                        yield return new WaitForSeconds(0.5f);
                     }
-                    yield return new WaitForSeconds(0.5f);
                     break;
                 case 2: //witch
                     yield return new WaitForSeconds(0.25f);
-                    if (FieldManager.instance.GetRandomUnits(true) is CardController cc) { enemyTensionController.UseTensionSpell(cc); }
+                    if (FieldManager.instance.GetRandomUnits(true) is CardController ID2) { enemyTensionController.UseTensionSpell(ID2); }
                     else { enemyTensionController.UseTensionSpell(playerHeroController); }
                     yield return new WaitForSeconds(0.5f);
+                    break;
+                case 3: //king
+                    yield return new WaitForSeconds(0.25f);
+                    if (FieldManager.instance.GetRandomUnits(false) is CardController ID3 && ID3 != null)
+                    {
+                        enemyTensionController.UseTensionSpell<Controller>(null);
+                        yield return new WaitForSeconds(0.5f);
+                    }
+                    break;
+                case 4: //demon
+                    yield return new WaitForSeconds(0.25f);
+                    if (FieldManager.instance.GetRandomUnits(true) is CardController ID4 && ID4 != null)
+                    {
+                        enemyTensionController.UseTensionSpell<Controller>(null);
+                        yield return new WaitForSeconds(0.5f);
+                    }
+                    break;
+                case 5: //knight
+                    yield return new WaitForSeconds(0.25f);
+                    if (FieldManager.instance.GetRandomUnits(true) is CardController ID5)
+                    {
+                        enemyTensionController.UseTensionSpell(ID5);
+                        yield return new WaitForSeconds(0.5f);
+                    }
                     break;
             }
 
