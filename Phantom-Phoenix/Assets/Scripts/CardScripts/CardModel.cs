@@ -129,6 +129,18 @@ public class CardModel
         }
     }
     /// <summary>
+    /// コストを指定された値増減する 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="cnt"></param>
+    public void CreaseCost(int increase)
+    {
+        cost += increase;
+        if (cost < 0)
+        {
+            cost = 0;
+        }
+    }
+    /// <summary>
     /// ユニットがダメージを受けた時の処理 基本的にCardControllerを通して呼ぶことになる
     /// </summary>
     /// <param name="dmg"></param>

@@ -128,7 +128,7 @@ public class CardController : Controller
         if (returnBool == true) //returnBoolÇÃÇ›ÇæÇ∆ï™Ç©ÇËÇ…Ç≠Ç¢ÇÃÇ≈
         {
             SkillManager.instance.SkillCausedBySpellUsed(model.isPlayerCard);
-            (model.isPlayerCard ? FieldManager.instance.playerUsedSpellList : FieldManager.instance.enemyUsedSpellList).Add((model.cardID, model.cost));
+            FieldManager.instance.AddSpellList(model);
         }
         return returnBool;
     }
@@ -211,6 +211,15 @@ public class CardController : Controller
     public void ChangeCost(int nextCost)
     {
         model.ChangeCost(nextCost);
+        view.ReShow(model);
+    }
+    /// <summary>
+    /// ÉRÉXÉgÇëùå∏Ç∑ÇÈ
+    /// </summary>
+    /// <param name="nextCost"></param>
+    public void CreaseCost(int increase)
+    {
+        model.CreaseCost(increase);
         view.ReShow(model);
     }
     /// <summary>

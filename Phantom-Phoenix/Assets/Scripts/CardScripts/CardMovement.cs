@@ -125,16 +125,19 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
     /// </summary>
     /// <param name="targetArea"></param>
     /// <returns></returns>
-    public IEnumerator MoveToArea(Transform targetArea)
+    public IEnumerator MoveToArea(Transform targetArea, bool isUnit = true)
     {
         if(defaultParent is null) { defaultParent = transform.parent; } //nullエラー対策
         transform.SetParent(defaultParent);
         transform.DOMove(targetArea.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
-        defaultParent = targetArea;
-        transform.SetParent(defaultParent);
-        transform.SetSiblingIndex(siblingIndex-1);　//最大値の場合、自動レイアウトされないので、1度他の位置を経由する
-        transform.SetSiblingIndex(siblingIndex);
+        if (isUnit) //スペルは召喚させない
+        {
+            defaultParent = targetArea;
+            transform.SetParent(defaultParent);
+            transform.SetSiblingIndex(siblingIndex - 1); //最大値の場合、自動レイアウトされないので、1度他の位置を経由する
+            transform.SetSiblingIndex(siblingIndex);
+        }
     }
     /// <summary>
     /// 往復の移動演出 バトルで使うので途中でサウンドも再生

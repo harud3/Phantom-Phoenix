@@ -364,12 +364,41 @@ public class GameManager : MonoBehaviourPunCallbacks
     #endregion
     #region カード検索
     /// <summary>
+    /// 手札にカードを加える
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <param name="drawCount"></param>
+    public void GiveSearchCards(bool isPlayer, int drawCount, Func<int, bool> target)
+    {
+        StartCoroutine(GiveSearchCardsIE(isPlayer, drawCount, target));
+    }
+    private IEnumerator GiveSearchCardsIE(bool isPlayer, int drawCount, Func<int, bool> target)
+    {
+        if (isPlayer)
+        {
+            for (int i = 0; i < drawCount; i++)
+            {
+                GiveSearchCard(playerDeck.deck, playerHandTransform, playerHeroController.model.isPlayer, target);
+                yield return new WaitForSeconds(0.25f);
+            }
+        }
+
+        else
+        {
+            for (int i = 0; i < drawCount; i++)
+            {
+                GiveSearchCard(enemyDeck.deck, enemyHandTransform, enemyHeroController.model.isPlayer, target);
+                yield return new WaitForSeconds(0.25f);
+            }
+        }
+    }
+    /// <summary>
     /// 検索したカードをデッキから手札に配る
     /// </summary>
     /// <param name="deck"></param>
     /// <param name="hand"></param>
     /// <param name="isPlayer"></param>
-    public void GiveSearchCard(bool isPlayer, Func<int, bool> target)
+    public void GiveSearchCard(List<int> deck, Transform hand, bool isPlayer, Func<int, bool> target)
     {
 
         if ((isPlayer ? playerDeck.deck : enemyDeck.deck).Count == 0) //TODO:デッキがないなら戻る
@@ -377,18 +406,19 @@ public class GameManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        var sh = (isPlayer ? playerDeck.deck : enemyDeck.deck).Select((i, index) => new { Content = i, Index = index }).Where(i => target(i.Content)).OrderBy(_ => Guid.NewGuid()).ToList();
+        var sh = deck.Select((i, index) => new { Content = i, Index = index }).Where(i => target(i.Content)).OrderBy(_ => Guid.NewGuid()).ToList();
         if (!sh.Any()) { return; } //対象がないなら戻る
         //一番上のデッキを取得する
-        int cardID = (isPlayer ? playerDeck.deck : enemyDeck.deck)[sh.FirstOrDefault().Index];
-        (isPlayer ? playerDeck.deck : enemyDeck.deck).RemoveAt(sh.FirstOrDefault().Index);
+        int cardID = deck[sh.FirstOrDefault().Index];
+        Debug.Log(cardID);
+        deck.RemoveAt(sh.FirstOrDefault().Index);
         //デッキ残り枚数の再表示
-        if (isPlayer) { playerHeroController.ReShowStackCards((isPlayer ? playerDeck.deck : enemyDeck.deck).Count()); }
-        else { enemyHeroController.ReShowStackCards((isPlayer ? playerDeck.deck : enemyDeck.deck).Count()); }
+        if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); }
+        else { enemyHeroController.ReShowStackCards(deck.Count()); }
 
         //手札の枚数は最大10枚
-        if ((isPlayer ? playerHandTransform : enemyHandTransform).childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました"); return; }
-        StartCoroutine(CreateCard(cardID, (isPlayer ? playerHandTransform : enemyHandTransform), isPlayer));
+        if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました"); return; }
+        StartCoroutine(CreateCard(cardID, hand, isPlayer));
     }
     #endregion
     #region　ターン制御
@@ -920,17 +950,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         spell.Show(true);
         if (targetByReciever == 0) {
             StartCoroutine(spell.movement.MoveToArea(canvas));
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.26f);
             spell.ExecuteSpellContents<Controller>(null); 
         }
         else if(1 <= targetByReciever && targetByReciever <= 12) {
             var target = FieldManager.instance.GetUnitByFieldID(targetByReciever);
-            StartCoroutine(spell.movement.MoveToArea(targetByReciever <= 6 ? playerFields[targetByReciever - 1] : enemyFields[targetByReciever - 7]));
-            yield return new WaitForSeconds(0.25f);
+            StartCoroutine(spell.movement.MoveToArea(targetByReciever <= 6 ? playerFields[targetByReciever - 1] : enemyFields[targetByReciever - 7], false));
+            yield return new WaitForSeconds(0.26f);
             spell.ExecuteSpellContents(target); 
         }
         else if(targetByReciever == 13 || targetByReciever == 14){
-            StartCoroutine(spell.movement.MoveToArea(targetByReciever == 13 ? playerHeroController.transform : enemyHeroController.transform));
+            StartCoroutine(spell.movement.MoveToArea(targetByReciever == 13 ? playerHeroController.transform : enemyHeroController.transform, false));
+            yield return new WaitForSeconds(0.26f);
             spell.ExecuteSpellContents(targetByReciever == 13 ? playerHeroController : enemyHeroController); 
         }
     }

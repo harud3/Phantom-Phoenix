@@ -47,10 +47,10 @@ public class HeroController : Controller
     /// <summary>
     /// ヒーローがスペルによりダメージを受けた時の処理 
     /// </summary>
-    public void DamageFromSpell(int dmg)
+    public void DamageFromSpell(int dmg, bool isPlayer)
     {
         AudioManager.instance.SoundCardFire();
-        model.Damage(dmg + model.plusSpellDamage);
+        model.Damage(dmg + GameManager.instance.GetPlusSpellDamage(isPlayer));
         ReShowHP();
         GameManager.instance.CheckIsAlive(model.isPlayer);
     }

@@ -799,7 +799,7 @@ public class SkillManager : MonoBehaviour
             //switch0
             case 53: //1ダメージ　味方ヒーローに固定1ダメージ
             {
-                c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(1); h.Damage(1); };
+                c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(1, c.model.isPlayerCard); h.Damage(1); };
                 c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(1, c.model.isPlayerCard); h.Damage(1); };
                 break;
             }
@@ -818,7 +818,7 @@ public class SkillManager : MonoBehaviour
                 {
                     c.SpecialSkillBeforeDie = () =>
                     {
-                        GameManager.instance.GiveSearchCard(c.model.isPlayerCard, (i) => { return GameDataManager.instance.cardlist.cl[i - 1].category == Category.spell; });
+                        GameManager.instance.GiveSearchCards(c.model.isPlayerCard, 1, (i) => { return GameDataManager.instance.cardlist.cl[i - 1].category == Category.spell; });
                         
                     };
                     break;
@@ -835,7 +835,7 @@ public class SkillManager : MonoBehaviour
             //switch2d
             case 57: //2ダメージ　味方ヒーローに固定1ダメージ
                 {
-                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(2); h.Damage(1); };
+                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(2, c.model.isPlayerCard); h.Damage(1); };
                     c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(2, c.model.isPlayerCard); h.Damage(1); };
                     break;
                 }
@@ -906,15 +906,15 @@ public class SkillManager : MonoBehaviour
             //switch4d
             case 63: //4ダメージ　味方ヒーローに固定2ダメージ
                 {
-                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(2); h.Damage(1); };
-                    c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(2, c.model.isPlayerCard); h.Damage(1); };
+                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(4, c.model.isPlayerCard); h.Damage(1); };
+                    c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(4, c.model.isPlayerCard); h.Damage(1); };
                     break;
                 }
             //switch4h
             case 64: //6回復　カードを2枚引く
                 {
-                    c.hcSpellContents = (HeroController hc) => { hc.Heal(3); GameManager.instance.GiveCards(c.model.isPlayerCard, 1); };
-                    c.ccSpellContents = (CardController cc) => { cc.Heal(3); GameManager.instance.GiveCards(c.model.isPlayerCard, 1); };
+                    c.hcSpellContents = (HeroController hc) => { hc.Heal(6); GameManager.instance.GiveCards(c.model.isPlayerCard, 2); };
+                    c.ccSpellContents = (CardController cc) => { cc.Heal(6); GameManager.instance.GiveCards(c.model.isPlayerCard, 2); };
                     break;
                 }
             //uwitch545
@@ -978,7 +978,7 @@ public class SkillManager : MonoBehaviour
                     c.SpellContents = () =>
                     {
                         var plusDamage = 0;
-                        if(t.model.tension <= 2)
+                        if(t.model.tension == 3)
                         {
                             plusDamage = 3;
                             t.SetTension(0);
@@ -991,7 +991,7 @@ public class SkillManager : MonoBehaviour
             //switch20
             case 72: //6ダメージ 味方ヒーローに固定3ダメージ この対戦中に使用したスペルの数分コスト-1
                 {
-                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(6); h.Damage(3); };
+                    c.hcSpellContents = (HeroController hc) => { hc.DamageFromSpell(6, c.model.isPlayerCard); h.Damage(3); };
                     c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(6, c.model.isPlayerCard); h.Damage(3); };
                     break;
                 }
@@ -1097,22 +1097,22 @@ public class SkillManager : MonoBehaviour
             //switch20
             case 72: //6ダメージ 味方ヒーローに固定3ダメージ この対戦中に使用したスペルの数分コスト-1
                 {
-                    var recordCost = 20;
-                    IEnumerator ChangeCost()
+                    var recordSpellCount = 0;
+                    IEnumerator CreaseCost()
                     {
                         yield return null;
                         var x = (c.model.isPlayerCard ? FieldManager.instance.playerUsedSpellList : FieldManager.instance.enemyUsedSpellList).Count();
-                        if (recordCost != 20 - x)
+                        if (recordSpellCount != x)
                         {
-                            c.ChangeCost(20 - x);
-                            recordCost = c.model.cost;
+                            c.CreaseCost(recordSpellCount - x);
+                            recordSpellCount = x;
                         }
                     }
 
-                    StartCoroutine(ChangeCost());
+                    StartCoroutine(CreaseCost());
                     c.UpdateSkill += () =>
                     {
-                        StartCoroutine(ChangeCost());
+                        StartCoroutine(CreaseCost());
                     };
                     break;
                 }
