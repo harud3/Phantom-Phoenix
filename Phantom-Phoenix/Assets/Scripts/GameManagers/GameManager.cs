@@ -14,6 +14,7 @@ using Photon.Realtime;
 using DG.Tweening;
 using UnityEngine.XR;
 using static CardEntity;
+using Unity.Mathematics;
 /// <summary>
 /// バトルを統括するスクリプト
 /// </summary>
@@ -359,7 +360,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         cc.transform.DOMove(hand.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
         cc.transform.SetParent(hand);
-        if (isPlayer) { SetCanSummonHandCard(cc); }
+        if (isPlayer && isPlayerTurn) { SetCanSummonHandCard(cc); }
     }
     #endregion
     #region カード検索
@@ -406,12 +407,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        var sh = deck.Select((i, index) => new { Content = i, Index = index }).Where(i => target(i.Content)).OrderBy(_ => Guid.NewGuid()).ToList();
-        if (!sh.Any()) { return; } //対象がないなら戻る
+        var scs = deck.Select((i, index) => new { Content = i, Index = index }).Where(i => target(i.Content)).ToList();
+        if (!scs.Any()) { return; } //対象がないなら戻る
+        var sc = scs[UnityEngine.Random.Range(0, scs.Count())];
         //一番上のデッキを取得する
-        int cardID = deck[sh.FirstOrDefault().Index];
-        Debug.Log(cardID);
-        deck.RemoveAt(sh.FirstOrDefault().Index);
+        int cardID = deck[sc.Index];
+        deck.RemoveAt(sc.Index);
         //デッキ残り枚数の再表示
         if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); }
         else { enemyHeroController.ReShowStackCards(deck.Count()); }

@@ -596,7 +596,7 @@ public class SkillManager : MonoBehaviour
             //uelf212
             case 35: //召喚時:1コスト以下の味方ユニットが居るなら+1/+1
                 {
-                    if(FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1)?.Count() != 0)
+                    if(FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.defaultCost <= 1)?.Count() != 0)
                     {
                         c.Buff(1, 1);
                     }
@@ -635,7 +635,7 @@ public class SkillManager : MonoBehaviour
                 {
                     if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
                     {
-                        x.Where(i => i.model.cost <= 1).ToList().ForEach(i =>
+                        x.Where(i => i.model.defaultCost <= 1).ToList().ForEach(i =>
                         {
                             i.Damage(99);
                             c.Buff(1, 1);
@@ -651,7 +651,7 @@ public class SkillManager : MonoBehaviour
                         var plusDamage = 0;
                         if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
                         {
-                            plusDamage = x.Where(i => i.model.cost <= 1).Count();
+                            plusDamage = x.Where(i => i.model.defaultCost <= 1).Count();
                         }
                         cc.DamageFromSpell(0 + plusDamage, c.model.isPlayerCard); ;
                     };
@@ -660,7 +660,7 @@ public class SkillManager : MonoBehaviour
             //guarda
             case 41: //1コスト以下の味方ユニットの数分ATK+1
                 {
-                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1).Count() is var cnt && cnt >= 1)
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.defaultCost <= 1).Count() is var cnt && cnt >= 1)
                     {
                         c.Buff(cnt, 0);
                     }
@@ -669,7 +669,7 @@ public class SkillManager : MonoBehaviour
             //guardb
             case 42: //1コスト以下の味方ユニットの数分HP+1
                 {
-                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1).Count() is var cnt && cnt >= 1)
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.defaultCost <= 1).Count() is var cnt && cnt >= 1)
                     {
                         c.Buff(0, cnt);
                     }
@@ -678,7 +678,7 @@ public class SkillManager : MonoBehaviour
             //uelf423
             case 43: //味方ヒーローのHPを1回復 1コスト以下の味方ユニットの数分、回復量+1
                 {
-                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.cost <= 1).Count() is var cnt && cnt >= 1)
+                    if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x.Where(i => i.model.defaultCost <= 1).Count() is var cnt && cnt >= 1)
                     {
                         h.Heal(1 + cnt);
                     }
@@ -702,7 +702,7 @@ public class SkillManager : MonoBehaviour
                 {
                     if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
                     {
-                        var y = x.Where(i => i.model.cost <= 1);
+                        var y = x.Where(i => i.model.defaultCost <= 1);
                         y.ToList().ForEach(i =>
                         {
                             i.Damage(99);
@@ -756,7 +756,7 @@ public class SkillManager : MonoBehaviour
                     var plusDamage = 0;
                     if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
                     {
-                        plusDamage = x.Where(i => i.model.cost <= 1).Count();
+                        plusDamage = x.Where(i => i.model.defaultCost <= 1).Count();
                     }
 
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
@@ -940,7 +940,7 @@ public class SkillManager : MonoBehaviour
                 {
                     c.SpellContents = () =>
                     {
-                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).Where(x => x.model.cost <= 3).ToList().ForEach(i => i.Damage(99));
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).Where(x => x.model.defaultCost <= 3).ToList().ForEach(i => i.Damage(99));
                     };
                     break;
                 }
@@ -984,7 +984,7 @@ public class SkillManager : MonoBehaviour
                             t.SetTension(0);
                         }
                         FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DamageFromSpell(2 + plusDamage, c.model.isPlayerCard));
-                        h.Damage(2 + plusDamage);
+                        eh.Damage(2 + plusDamage);
                     };
                     break;
                 }

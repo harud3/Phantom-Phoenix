@@ -146,9 +146,9 @@ public class CardController : Controller
         view.HideCost(false);
         Show(true);
 
-        FieldManager.instance.SetFieldOnUnitcnt(model.isPlayerCard); //ユニット配置数の再設定
         SkillManager.instance.SpecialSkills(this, targets, hcTarget); //召喚時効果の発動　誘発効果の紐づけ
-
+        FieldManager.instance.SetFieldOnUnitcnt(model.isPlayerCard); //ユニット配置数の再設定
+        
         SetCanAttack(SkillManager.instance.IsFast(model)); //即撃付与 CanSummonの無効化も兼ねる
 
         if (SkillManager.instance.IsTaunt(model)) //挑発効果付与 前列に召喚された時だけ

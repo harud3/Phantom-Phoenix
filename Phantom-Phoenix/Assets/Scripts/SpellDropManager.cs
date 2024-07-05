@@ -12,6 +12,8 @@ public class SpellDropManager : MonoBehaviour, IDropHandler
 {
     public void OnDrop(PointerEventData eventData)
     {
+        if (!GameManager.instance.isPlayerTurn) { return; } //©•ª‚Ìƒ^[ƒ“‚Å‚Í‚È‚¢‚Ì‚É’u‚±‚¤‚Æ‚µ‚È‚¢‚Å
+
         var targetC = GetComponent<CardController>() ?? null; //‚ ‚é‚Æ‚¢‚¢‚Ë
         var targetH = GetComponent<HeroController>() ?? null; //‚ ‚é‚Æ‚¢‚¢‚Ë
 

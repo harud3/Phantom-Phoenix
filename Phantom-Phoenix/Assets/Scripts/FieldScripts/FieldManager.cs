@@ -347,11 +347,17 @@ public class FieldManager : MonoBehaviour
     {
         if (isPlayerField)
         {
-            playerFieldOnUnitCnt -= 1;
+            if(playerFieldOnUnitCnt > 0)
+            {
+                playerFieldOnUnitCnt -= 1;
+            }
         }
         else
         {
-            enemyFieldOnUnitCnt -= 1;
+            if (enemyFieldOnUnitCnt > 0)
+            {
+                enemyFieldOnUnitCnt -= 1;
+            }
         }
     }
     /// <summary>
