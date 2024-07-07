@@ -186,18 +186,18 @@ public class FieldManager : MonoBehaviour
     /// </summary>
     /// <param name="fieldID"></param>
     /// <returns></returns>
-    public CardController GetRandomUnits(bool isPlayerField, CardController c = null)
+    public CardController GetRandomUnits(bool isPlayerField, CardController avoidCC = null)
     {
 
         if (isPlayerField)
         {
-            var x = playerFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).Where(i => c != null ? i.model.thisFieldID != c.model.thisFieldID : true).ToList();
+            var x = playerFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).Where(i => avoidCC != null ? i.model.thisFieldID != avoidCC.model.thisFieldID : true).ToList();
             if (!x.Any()) { return null; }
             return x?[UnityEngine.Random.Range(0, x.Count())];
         }
         else
         {
-            var x = enemyFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).Where(i => c != null ? i.model.thisFieldID != c.model.thisFieldID : true).ToList();
+            var x = enemyFields.Where(i => i.childCount != 0)?.Select(i => i.GetComponentInChildren<CardController>()).Where(i => avoidCC != null ? i.model.thisFieldID != avoidCC.model.thisFieldID : true).ToList();
             if (!x.Any()) { return null; }
             return x?[UnityEngine.Random.Range(0, x.Count())];
         }
@@ -524,6 +524,41 @@ public class FieldManager : MonoBehaviour
         {
             enemyUsedSpellList.Add((usedSpell.cardID, usedSpell.defaultCost));
 
+        }
+    }
+    #endregion
+    #region アイテムカードによる強化回数　king用
+    private int _playerBuffedCntByItemCard = 0;
+    private int _enemyBuffedCntByItemCard = 0;
+    public int playerBuffedCntByItemCard { get { return _playerBuffedCntByItemCard; } private set { _playerBuffedCntByItemCard = value; } }
+    public int enemyBuffedCntByItemCard { get { return _enemyBuffedCntByItemCard; } private set { _enemyBuffedCntByItemCard = value; } }
+    public void AddBuffCntByItemCard(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            playerBuffedCntByItemCard++;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in playerHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
+        }
+        else
+        {
+            enemyBuffedCntByItemCard++;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in enemyHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
         }
     }
     #endregion

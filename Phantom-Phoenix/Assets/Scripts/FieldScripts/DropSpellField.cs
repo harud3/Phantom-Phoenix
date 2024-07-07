@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// スペルの発動前を管理する　CardプレハブとHeroブレハブとフィールドについてる
 /// </summary>
-public class SpellDropManager : MonoBehaviour, IDropHandler
+public class DropSpellField : MonoBehaviour, IDropHandler
 {
     public void OnDrop(PointerEventData eventData)
     {

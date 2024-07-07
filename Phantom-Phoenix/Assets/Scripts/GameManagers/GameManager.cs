@@ -340,8 +340,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); } 
         else { enemyHeroController.ReShowStackCards(deck.Count()); }
 
-        //手札の枚数は最大10枚
-        if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました"); return; }
         StartCoroutine(CreateCard(cardID, hand, isPlayer));
     }
     /// <summary>
@@ -360,15 +358,22 @@ public class GameManager : MonoBehaviourPunCallbacks
         cc.transform.DOMove(hand.position, 0.25f);
         yield return new WaitForSeconds(0.25f);
         cc.transform.SetParent(hand);
+
         if (isPlayer && isPlayerTurn) { SetCanSummonHandCard(cc); }
+
+        //手札の枚数は最大10枚
+        if (hand.childCount > 10) { 
+            Debug.Log($"カードID{cardID}のカードは燃えました");
+            //AudioManager.instance.SoundCardFire();
+            Destroy(cc.gameObject);
+        }
+        
     }
     #endregion
-    #region カード検索
+    #region 手札にカードを加える
     /// <summary>
-    /// 手札にカードを加える
+    /// 手札に特定の条件を満たすカードを加える
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <param name="drawCount"></param>
     public void GiveSearchCards(bool isPlayer, int drawCount, Func<int, bool> target)
     {
         StartCoroutine(GiveSearchCardsIE(isPlayer, drawCount, target));
@@ -396,9 +401,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// 検索したカードをデッキから手札に配る
     /// </summary>
-    /// <param name="deck"></param>
-    /// <param name="hand"></param>
-    /// <param name="isPlayer"></param>
     public void GiveSearchCard(List<int> deck, Transform hand, bool isPlayer, Func<int, bool> target)
     {
 
@@ -417,8 +419,40 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); }
         else { enemyHeroController.ReShowStackCards(deck.Count()); }
 
-        //手札の枚数は最大10枚
-        if (hand.childCount >= 10) { Debug.Log($"カードID{cardID}のカードは燃えました"); return; }
+        StartCoroutine(CreateCard(cardID, hand, isPlayer));
+    }
+    /// <summary>
+    /// 特定のIDのカードを手札に配る
+    /// </summary>
+    public void GiveSpecificCards(bool isPlayer, params int[] cardIDs)
+    {
+        StartCoroutine(GiveSpecificCardsIE(isPlayer, cardIDs));
+    }
+    private IEnumerator GiveSpecificCardsIE(bool isPlayer, params int[] cardIDs)
+    {
+        if (isPlayer)
+        {
+            for (int i = 0; i < cardIDs.Count(); i++)
+            {
+                GiveSpecificCard(playerHandTransform, playerHeroController.model.isPlayer, cardIDs[i]);
+                yield return new WaitForSeconds(0.25f);
+            }
+        }
+
+        else
+        {
+            for (int i = 0; i < cardIDs.Count(); i++)
+            {
+                GiveSpecificCard(enemyHandTransform, enemyHeroController.model.isPlayer, cardIDs[i]);
+                yield return new WaitForSeconds(0.25f);
+            }
+        }
+    }
+    /// <summary>
+    /// 特定のIDのカードを手札に配る
+    /// </summary>
+    public void GiveSpecificCard(Transform hand, bool isPlayer, int cardID)
+    {
         StartCoroutine(CreateCard(cardID, hand, isPlayer));
     }
     #endregion
@@ -660,7 +694,8 @@ public class GameManager : MonoBehaviourPunCallbacks
                             canPutCard.Show(true);
                             StartCoroutine(canPutCard.movement.MoveToArea(enemyField));
                             yield return new WaitForSeconds(0.25f);
-                            canPutCard.SummonOnField(enemyField.GetComponent<DropField>().fieldID);
+                            canPutCard.SummonOnField(enemyField.GetComponent<DropUnitField>().fieldID);
+                            yield return new WaitForSeconds(0.75f);
                         }
                         else //spellの時
                         {
@@ -669,19 +704,31 @@ public class GameManager : MonoBehaviourPunCallbacks
                                 case Target.area:
                                     Movement(enemyField);
                                     yield return new WaitForSeconds(0.25f);
-                                    canPutCard.ExecuteSpellContents<Controller>(null); 
+                                    canPutCard.ExecuteSpellContents<Controller>(null);
+                                    yield return new WaitForSeconds(0.75f);
+                                    break;
+                                case Target.playerUnit:
+                                case Target.unit:
+                                    if (FieldManager.instance.GetRandomUnits(false) is var x && x != null)
+                                    {
+                                        Movement(enemyFields[x.model.thisFieldID - 7]);
+                                        yield return new WaitForSeconds(0.25f);
+                                        canPutCard.ExecuteSpellContents(x);
+                                        yield return new WaitForSeconds(0.75f);
+                                    }
                                     break;
                                 case Target.enemyUnit:
                                 case Target.unitOrHero:
-                                    if(FieldManager.instance.GetRandomUnits(true) is var x && x != null) {
-                                        Movement(playerFields[x.model.thisFieldID - 1]);
+                                    if(FieldManager.instance.GetRandomUnits(true) is var xx && xx != null) {
+                                        Movement(playerFields[xx.model.thisFieldID - 1]);
                                         yield return new WaitForSeconds(0.25f);
-                                        canPutCard.ExecuteSpellContents(x); 
+                                        canPutCard.ExecuteSpellContents(xx);
+                                        yield return new WaitForSeconds(0.75f);
                                     }
                                     break;
                             }
                         }
-                        yield return new WaitForSeconds(0.75f);
+                        
                         break;
                     }
                 }

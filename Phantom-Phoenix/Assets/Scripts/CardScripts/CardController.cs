@@ -314,6 +314,7 @@ public class CardController : Controller
     /// <param name="ResetIsActiveDoubleAction"></param>
     public void SetCanAttack(bool canAttack, bool ResetIsActiveDoubleAction = false)
     {
+        if (model.hasCannotAttack) { return; }
         model.SetCanAttack(canAttack);
         view.SetActiveSelectablePanel(canAttack);
         if (ResetIsActiveDoubleAction && SkillManager.instance.IsDoubleAction(model))
@@ -362,21 +363,50 @@ public class CardController : Controller
     {
         if (!model.isSeal) SpecialSkillBeforeDie?.Invoke();
     }
-    public void SetIsBurning(bool isBurning)
+    public void SetIsTaunt(bool isTaunt)
     {
-        view.SetViewFrameBurning(isBurning);
+        if (SkillManager.instance.hasTaunt(model)) { return; }
+        if (model.skill4 == CardEntity.Skill.none)
+        {
+            model.skill4 = CardEntity.Skill.taunt;
+        }
+        else if (model.skill5 == CardEntity.Skill.none)
+        {
+            model.skill5 = CardEntity.Skill.taunt;
+        }
+        if (!SkillManager.instance.IsTaunt(model)) { return; }
+        model.SetIsTaunt(true);
+        view.SetViewFrameTaunt(isTaunt);
     }
     public void SetIsSnipe(bool isSnipe)
     {
+        if (SkillManager.instance.IsSnipe(model)) { return; }
         if (model.skill4 == CardEntity.Skill.none)
         {
             model.skill4 = CardEntity.Skill.snipe;
         }
-        else if(model.skill5 == CardEntity.Skill.none)
+        else if (model.skill5 == CardEntity.Skill.none)
         {
             model.skill5 = CardEntity.Skill.snipe;
         }
         view.SetViewFrameSnipe(isSnipe);
+    }
+    public void SetIsPierce(bool isPierce)
+    {
+        if (SkillManager.instance.IsPierce(model)) { return; }
+        if (model.skill4 == CardEntity.Skill.none)
+        {
+            model.skill4 = CardEntity.Skill.pierce;
+        }
+        else if (model.skill5 == CardEntity.Skill.none)
+        {
+            model.skill5 = CardEntity.Skill.pierce;
+        }
+        view.SetViewFramePierce(isPierce);
+    }
+    public void SetIsBurning(bool isBurning)
+    {
+        view.SetViewFrameBurning(isBurning);
     }
     /// <summary>
     /// ïïàÛå¯â 
@@ -397,14 +427,28 @@ public class CardController : Controller
         }
         view.ReShow(model);
     }
-    public void Buff(int atk, int hp)
+    /// <summary>
+    /// çsìÆÇ≈Ç´Ç»Ç¢å¯â ÇéùÇ¡ÇƒÇ¢ÇÈÇ©Çê›íËÇ∑ÇÈ
+    /// </summary>
+    public void SetHasCannotAttack(bool hasCannotAttack)
+    {
+        model.SetHasCannotAttack(hasCannotAttack);
+        view.SetActiveSelectablePanel(!hasCannotAttack);
+        SetCanAttack(!hasCannotAttack);
+    }
+    /// <summary>
+    /// ã≠âªéûå¯â 
+    /// </summary>
+    public Action SpecialSkillAfterBuff = null;
+    public void Buff(int atk, int hp, bool isExecuteSS = true)
     {
         AudioManager.instance.SoundcCardBuff();
-        SilentBuff(atk, hp);
+        SilentBuff(atk, hp, isExecuteSS);
     }
-    public void SilentBuff(int atk, int hp)
+    public void SilentBuff(int atk, int hp, bool isExecuteSS = true)
     {
         model.Buff(atk, hp);
+        if (isExecuteSS) { SpecialSkillAfterBuff?.Invoke(); }
         view.ReShow(model);
     }
     public void DeBuff(int atk, int hp)

@@ -46,9 +46,17 @@ public class SkillManager : MonoBehaviour
         }
         return false;
     }
-    public bool IsTaunt(CardModel model) //挑発
+    public bool hasTaunt(CardModel model)
     {
         if (model.skill1 == CardEntity.Skill.taunt || model.skill2 == CardEntity.Skill.taunt || model.skill3 == CardEntity.Skill.taunt || model.skill4 == CardEntity.Skill.taunt || model.skill5 == CardEntity.Skill.taunt)
+        {
+            return true;
+        }
+        return false;
+    }
+    public bool IsTaunt(CardModel model) //挑発
+    {
+        if (hasTaunt(model))
         {
             //敵なら7,8,9が前列となり、味方なら1,2,3が前列となる
             if (!model.isPlayerCard && (model.thisFieldID == 7 || model.thisFieldID == 8 || model.thisFieldID == 9)
@@ -1011,6 +1019,289 @@ public class SkillManager : MonoBehaviour
                     c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(6, c.model.isPlayerCard); h.Damage(3); };
                     break;
                 }
+            void GetItemCard(int cnt)
+            {
+                    if(cnt <= 0) {  return; }
+                    int[] cardIDs = Enumerable.Range(0, cnt).Select(i => Random.Range(10003, 10006)).ToArray();
+                    GameManager.instance.GiveSpecificCards(c.model.isPlayerCard, cardIDs);
+            }
+            //uking111
+            case 73: //召喚時:味方ユニットを+1/+1
+                {
+                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
+                    {
+                        FieldManager.instance.GetRandomUnits(false, c)?.Buff(1, 1);
+                    }
+                    targets?.First().Buff(1, 1);
+                    break;
+                }
+            //sking1
+            case 74: //アイテムカードを3枚加える
+                {
+                    c.SpellContents = () =>
+                    {
+                        GetItemCard(3);
+                    };
+                    break;
+                }
+            //uking222
+            case 75: //召喚時:アイテムカードを2枚加える
+                {
+                    GetItemCard(2);
+                    break;
+                }
+            //uking211
+            case 76: //召喚時:味方ユニットがいないなら2/1/1を2体出す
+                {
+                    void Summonk211()
+                    {
+                        if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
+                        {
+                            CardController cc = Instantiate(cardPrefab, x.emptyField);
+                            cc.Init(c.model.cardID, c.model.isPlayerCard);
+                            cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
+                        }
+                    }
+
+                    if (FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c) == null)
+                    {
+                        Summonk211();
+                        Summonk211();
+                    }
+                    break;
+                }
+            //sking2taunt
+            case 77: //挑発付与 HP+3
+                {
+                    c.ccSpellContents = (CardController cc) =>
+                    {
+                        cc.SetIsTaunt(true);
+                        cc.Buff(0, 3);
+                    };
+                    break;
+                }
+            //sking2pierce
+            case 78: //貫通付与 ATK+3
+                {
+                    c.ccSpellContents = (CardController cc) =>
+                    {
+                        cc.SetIsPierce(true);
+                        cc.Buff(3, 0);
+                    };
+                    break;
+                }
+            //uking314
+            case 79: //被強化時:ATK+1
+                {
+                    c.SpecialSkillAfterBuff = () =>
+                    {
+                        c.Buff(1, 0, false);
+                    };
+                    break;
+                }
+            //uking322
+            case 80: //召喚時:味方ユニット1体のHP+2 挑発付与
+                {
+                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
+                    {
+                        var x = FieldManager.instance.GetRandomUnits(c.model.isPlayerCard);
+                        if (x != null)
+                        {
+                            x.Buff(0,2);
+                            x.SetIsTaunt(true);
+                        }
+                    }
+                    else if (targets != null)
+                    {
+                        var x = targets.First();
+                        x.Buff(0, 2);
+                        x.SetIsTaunt(true);
+                    }
+                    break;
+                }
+            //itemer
+            case 81: //召喚時&死亡時&味方ターン終了時: アイテムカードを1枚加える
+                {
+                    GetItemCard(1);
+                    c.SpecialSkillBeforeDie = () =>
+                    {
+                        GetItemCard(1);
+                    };
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
+                    {
+                        if(isPlayerTurn == c.model.isPlayerCard)
+                        {
+                            GetItemCard(1);
+                        }
+                    };
+                    break;
+                }
+            //uking433
+            case 82: //テンション上昇時:自身以外のランダムな味方ユニットを+1/+1
+                {
+                    c.TensionSkill = () =>
+                    {
+                        var x = FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c);
+                        if (x != null)
+                        {
+                            x.Buff(1,1);
+                        }
+                    };
+                    break;
+                }
+            //uking443
+            case 83: //被強化時:ランダムな敵ユニットに2ダメージ
+                {
+                    c.SpecialSkillAfterBuff = () =>
+                    {
+                        var x = FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard);
+                        if (x != null)
+                        {
+                            x.Damage(2);
+                        }
+                    };
+                    break;
+                }
+            //uking456
+            case 84: //行動できない 味方ターン終了時:アイテムカードを1枚加える
+                {
+                    c.SetHasCannotAttack(true);
+                    c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
+                    {
+                        if (isPlayerTurn == c.model.isPlayerCard)
+                        {
+                            GetItemCard(1);
+                        }
+                    };
+                    break;
+                }
+            //uking523
+            case 85: //召喚時:全ての味方ユニットを+1/+1
+                {
+                    if(FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList() is var x && x != null){
+                        x.ForEach(i => i.Buff(1,1));
+                    }
+                    break;
+                }
+            //uking612
+            case 86: //召喚時:ランダムな敵ユニットに1ダメージ この対戦中にアイテムカードで強化を行った回数分繰り返す
+                {
+                    for (int i = 0; i < (c.model.isPlayerCard ? FieldManager.instance.playerBuffedCntByItemCard : FieldManager.instance.enemyBuffedCntByItemCard); i++)
+                    {
+                        FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard).Damage(1);
+                    }
+                    break;
+                }
+            //uking644
+            case 87: //召喚時:味方テンションの数分、味方ユニット1体をバフする
+                {
+                    var x = t.model.tension;
+                    targets?.First().Buff(x,x);
+                    break;
+                }
+            //uking723
+            case 88: //被強化時:7/2/3を出す
+                {
+                    void Summonk723()
+                    {
+                        if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard) is var x && x.emptyField != null)
+                        {
+                            CardController cc = Instantiate(cardPrefab, x.emptyField);
+                            cc.Init(c.model.cardID, c.model.isPlayerCard);
+                            cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
+                        }
+                    }
+
+                    c.SpecialSkillAfterBuff = () =>
+                    {
+                        Summonk723();
+                    };
+                    break;
+                }
+            //uking722
+            case 89: //後列の味方ユニットを全て死亡させ、HPとATKを吸収する
+                {
+                    int plusATK = 0;
+                    int plusHP = 0;
+                    var x = FieldManager.instance.GetUnitsByFieldID(c.model.isPlayerCard ? Enumerable.Range(4, 3).ToArray() : Enumerable.Range(10, 3).ToArray())
+                        .Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
+                    if(x != null){
+                        x.ForEach(i => {
+                            plusATK += i.model.atk;
+                            plusHP += i.model.hp;
+                            i.Damage(99);
+                        }); 
+                    }
+                    c.Buff(plusATK, plusHP);
+                    break;
+                }
+            //tamer
+            case 90: //味方ユニット1体のスタッツを2倍にする
+                {
+                    if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
+                    {
+                        var x = FieldManager.instance.GetRandomUnits(c.model.isPlayerCard);
+                        if (x != null)
+                        {
+                            x.Buff(x.model.atk, x.model.hp);
+                        }
+                    }
+                    else if (targets != null)
+                    {
+                        var x = targets.First();
+                        x.Buff(x.model.atk, x.model.hp);
+                    }
+                    break;
+                }
+            //uking834
+            case 91: { break; } //アイテムカードで強化を行った回数分コスト-1
+            //uking946
+            case 92: //召喚時:味方ユニットが居るなら全てのユニットを+2/+2 居ないなら+5/+3
+                {
+                    if (FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c) == null)
+                    {
+                        FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard)?.ForEach(i => i.Buff(2, 2));
+                    }
+                    else
+                    {
+                        c.Buff(5, 3);
+                    }
+                    break;
+                }
+            //telf122
+            case 10001: { break; } //即撃
+            //telf111
+            case 10002: { break; }
+            //tkingatk
+            case 10003:
+                {
+                    c.ccSpellContents = (CardController cc) =>
+                    {
+                        FieldManager.instance.AddBuffCntByItemCard(c.model.isPlayerCard);
+                        cc.Buff(1,0);
+                    };
+                    break;
+                }
+            //tkinghp
+            case 10004:
+                {
+                    c.ccSpellContents = (CardController cc) =>
+                    {
+                        FieldManager.instance.AddBuffCntByItemCard(c.model.isPlayerCard);
+                        cc.Buff(0, 1);
+                    };
+                    break;
+                }
+            //tkingatkhp
+            case 10005:
+                {
+                    c.ccSpellContents = (CardController cc) =>
+                    {
+                        FieldManager.instance.AddBuffCntByItemCard(c.model.isPlayerCard);
+                        cc.Buff(1, 1);
+                    };
+                    break;
+                }
         }
 
     }
@@ -1122,6 +1413,28 @@ public class SkillManager : MonoBehaviour
                         {
                             c.CreaseCost(recordSpellCount - x);
                             recordSpellCount = x;
+                        }
+                    }
+
+                    StartCoroutine(CreaseCost());
+                    c.UpdateSkill += () =>
+                    {
+                        StartCoroutine(CreaseCost());
+                    };
+                    break;
+                }
+            //uking834
+            case 91: //アイテムカードで強化を行った回数分コスト-1
+                {
+                    var recordBuffByItemCard = 0;
+                    IEnumerator CreaseCost()
+                    {
+                        yield return null;
+                        var x = (c.model.isPlayerCard ? FieldManager.instance.playerBuffedCntByItemCard : FieldManager.instance.enemyBuffedCntByItemCard);
+                        if (recordBuffByItemCard != x)
+                        {
+                            c.CreaseCost(recordBuffByItemCard - x);
+                            recordBuffByItemCard = x;
                         }
                     }
 

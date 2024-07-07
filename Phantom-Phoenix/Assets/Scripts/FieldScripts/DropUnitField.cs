@@ -9,7 +9,7 @@ using System.Linq;
 /// <summary>
 /// カードをフィールドにドロップした時の処理 各フィールドについている
 /// </summary>
-public class DropField : MonoBehaviourPunCallbacks, IDropHandler
+public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
 {
     [SerializeField]
     private bool isPlayerField; //playerかenemyか　事前にインスペクター上で設定　不変
@@ -126,6 +126,16 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
                     }
                     break;
                 }
+            case CardEntity.Target.playerUnit:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 6).ToArray());
+                    if (x.Count != 0)
+                    {
+                        FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
+                        return true;
+                    }
+                    break;
+                }
             case CardEntity.Target.enemyUnit:
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
@@ -172,6 +182,18 @@ public class DropField : MonoBehaviourPunCallbacks, IDropHandler
                         var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
                         if (y.Count() == 0) { return (false, null, null, null); }
                         else { return (true, y.ToArray(), null, y.Select(i => FieldManager.instance.ChangeFieldID(i.model.thisFieldID)).ToArray()); }
+                    }
+                    break;
+                }
+            case CardEntity.Target.playerUnit:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 6).ToArray());
+                    if (x.Count == 0) { return (true, null, null, null); }//ここ通ることない気がするけど…
+                    if (c != null)
+                    {
+                        var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
+                        if (y.Count() == 0) { return (false, null, null, null); }
+                        else { return (true, y.ToArray(), null, y.Select(i => FieldManager.instance.ChangeFieldID(i.model.thisFieldID)).ToArray()); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
                     }
                     break;
                 }

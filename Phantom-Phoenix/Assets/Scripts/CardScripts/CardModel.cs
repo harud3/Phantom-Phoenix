@@ -40,6 +40,7 @@ public class CardModel
     public bool isAlive { get; private set; }
     public bool isSummonThisTurn { get; private set; }
     public bool canAttack { get; private set; }
+    public bool hasCannotAttack { get; private set; } //行動できない　効果を持つ
     public bool isTaunt { get; private set; }
     /// <summary>
     /// 連撃権 これがtrueなら、攻撃時にcanAttackをfalseにせず、代わりにこれをfalseにする　攻撃時の行動消費を1回なかったことにする
@@ -83,7 +84,8 @@ public class CardModel
         isTaunt = false;
         isActiveDoubleAction = true;
         //選択が必要な場合、このフラグをtrueにして管理する
-        if (target == CardEntity.Target.unit || target == CardEntity.Target.enemyUnit || target == CardEntity.Target.enemy || target == CardEntity.Target.unitOrHero)
+        if (target == CardEntity.Target.unit || target == CardEntity.Target.playerUnit || target == CardEntity.Target.enemyUnit 
+            || target == CardEntity.Target.enemy || target == CardEntity.Target.unitOrHero)
         {
             HasSelectSpeciallSkill = true;
         }
@@ -227,6 +229,10 @@ public class CardModel
         this.isSeal = isSeal;
         SetDefaultStats();
         isTaunt = false;
+    }
+    public void SetHasCannotAttack(bool hasCannotAttack)
+    {
+        this.hasCannotAttack = hasCannotAttack;
     }
     public void Buff(int atk, int hp)
     {
