@@ -883,8 +883,8 @@ public class SkillManager : MonoBehaviour
             //iceMaiden
             case 60: //挑発　召喚時&死亡時:全ての味方を1回復する
                 {
-                    if (c.model.isPlayerCard) { playerHeroController.model.Heal(1); }
-                    else { enemyHeroController.model.Heal(1); }
+                    if (c.model.isPlayerCard) { playerHeroController.Heal(1); }
+                    else { enemyHeroController.Heal(1); }
 
                     var x = FieldManager.instance.GetUnitsByFieldID((c.model.isPlayerCard ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray())
                         .Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
@@ -894,8 +894,8 @@ public class SkillManager : MonoBehaviour
                     }
                     c.SpecialSkillBeforeDie = () =>
                     {
-                        if (c.model.isPlayerCard) { playerHeroController.model.Heal(1); }
-                        else { enemyHeroController.model.Heal(1); }
+                        if (c.model.isPlayerCard) { playerHeroController.Heal(1); }
+                        else { enemyHeroController.Heal(1); }
 
                         var x = FieldManager.instance.GetUnitsByFieldID((c.model.isPlayerCard ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray())
                         .Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
@@ -1036,18 +1036,18 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //sking1
-            case 74: //アイテムカードを3枚加える
+            case 74: //アイテムカードを2～3枚加える
                 {
                     c.SpellContents = () =>
                     {
-                        GetItemCard(3);
+                        GetItemCard(Random.Range(2,4));
                     };
                     break;
                 }
             //uking222
-            case 75: //召喚時:アイテムカードを2枚加える
+            case 75: //召喚時:アイテムカードを1～2枚加える
                 {
-                    GetItemCard(2);
+                    GetItemCard(Random.Range(1, 3));
                     break;
                 }
             //uking211
@@ -1071,26 +1071,26 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //sking2taunt
-            case 77: //挑発付与 HP+3
+            case 77: //挑発付与 HP+2
                 {
                     c.ccSpellContents = (CardController cc) =>
                     {
                         cc.SetIsTaunt(true);
-                        cc.Buff(0, 3);
+                        cc.Buff(0, 2);
                     };
                     break;
                 }
             //sking2pierce
-            case 78: //貫通付与 ATK+3
+            case 78: //貫通付与 ATK+2
                 {
                     c.ccSpellContents = (CardController cc) =>
                     {
                         cc.SetIsPierce(true);
-                        cc.Buff(3, 0);
+                        cc.Buff(2, 0);
                     };
                     break;
                 }
-            //uking314
+            //uking312
             case 79: //被強化時:ATK+1
                 {
                     c.SpecialSkillAfterBuff = () =>
@@ -1100,21 +1100,21 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //uking322
-            case 80: //召喚時:味方ユニット1体のHP+2 挑発付与
+            case 80: //召喚時:味方ユニット1体のHP+1 挑発付与
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
                     {
-                        var x = FieldManager.instance.GetRandomUnits(c.model.isPlayerCard);
+                        var x = FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c);
                         if (x != null)
                         {
-                            x.Buff(0,2);
+                            x.Buff(0,1);
                             x.SetIsTaunt(true);
                         }
                     }
                     else if (targets != null)
                     {
                         var x = targets.First();
-                        x.Buff(0, 2);
+                        x.Buff(0, 1);
                         x.SetIsTaunt(true);
                     }
                     break;
@@ -1136,7 +1136,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //uking433
+            //uking422
             case 82: //テンション上昇時:自身以外のランダムな味方ユニットを+1/+1
                 {
                     c.TensionSkill = () =>
@@ -1149,7 +1149,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //uking443
+            //uking431
             case 83: //被強化時:ランダムな敵ユニットに2ダメージ
                 {
                     c.SpecialSkillAfterBuff = () =>
@@ -1162,7 +1162,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //uking456
+            //uking445
             case 84: //行動できない 味方ターン終了時:アイテムカードを1枚加える
                 {
                     c.SetHasCannotAttack(true);
@@ -1240,7 +1240,7 @@ public class SkillManager : MonoBehaviour
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
                     {
-                        var x = FieldManager.instance.GetRandomUnits(c.model.isPlayerCard);
+                        var x = FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c);
                         if (x != null)
                         {
                             x.Buff(x.model.atk, x.model.hp);
@@ -1258,9 +1258,9 @@ public class SkillManager : MonoBehaviour
             //uking946
             case 92: //召喚時:味方ユニットが居るなら全てのユニットを+2/+2 居ないなら+5/+3
                 {
-                    if (FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c) == null)
+                    if (FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c) != null)
                     {
-                        FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard)?.ForEach(i => i.Buff(2, 2));
+                        FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard)?.Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList().ForEach(i => i.Buff(2, 2));
                     }
                     else
                     {

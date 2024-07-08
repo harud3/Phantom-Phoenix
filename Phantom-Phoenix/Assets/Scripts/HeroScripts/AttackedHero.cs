@@ -16,7 +16,8 @@ public class AttackedHero : MonoBehaviour, IDropHandler
         //UŒ‚‘¤‚ªUŒ‚‰Â”\‚ÅAplayer‚Æenemy‚ÌŠÖŒW‚È‚ç
         if (eventData.pointerDrag.GetComponent<CardController>() is var attacker
             && attacker.model.canAttack
-            && attacker.model.isPlayerCard != target.model.isPlayer)
+            && attacker.model.isPlayerCard != target.model.isPlayer
+            && GameManager.instance.isPlayerTurn)
         {
 
             if (FieldManager.instance.CheckCanAttackHero(attacker, target)){ //ƒEƒH[ƒ‹‚â’§”­‚ª‚ ‚é‚ÆUŒ‚•s‰Â

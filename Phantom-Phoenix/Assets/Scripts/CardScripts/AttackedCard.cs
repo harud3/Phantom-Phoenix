@@ -13,7 +13,8 @@ public class AttackedCard : MonoBehaviour, IDropHandler
         if(eventData.pointerDrag.GetComponent<CardController>() is var attacker
             && GetComponent<CardController>() is var target
             && attacker.model.canAttack
-            && attacker.model.isPlayerCard != target.model.isPlayerCard)
+            && attacker.model.isPlayerCard != target.model.isPlayerCard
+            && GameManager.instance.isPlayerTurn)
         {
             if (FieldManager.instance.CheckCanAttackUnit(attacker, target))
             {

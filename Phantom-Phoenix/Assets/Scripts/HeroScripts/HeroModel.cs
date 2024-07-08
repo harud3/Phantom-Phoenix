@@ -31,7 +31,7 @@ public class HeroModel
         name = heroEntity.name;
         atk = 0;
         maxHP = hp = heroEntity.hp;
-        mp =  maxMP = 5; //TODO ‰Šú’l0
+        mp =  maxMP = 0; //TODO ‰Šú’l0
         this.isPlayer = isPlayer;
         isAlive = true;
 

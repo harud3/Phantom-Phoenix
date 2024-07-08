@@ -975,7 +975,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 8
-    text: "\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3092\\n\u30E9\u30F3\u30C0\u30E0\u306B3\u679A\\n\u624B\u672D\u306B\u52A0\u3048\u308B"
+    text: "\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3092\\n\u30E9\u30F3\u30C0\u30E0\u306B2\u679A\\n\u624B\u672D\u306B\u52A0\u3048\u308B"
   - ID: 75
     hero: 3
     category: 0
@@ -988,7 +988,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3092\\n\u30E9\u30F3\u30C0\u30E0\u306B2\u679A\\n\u624B\u672D\u306B\u52A0\u3048\u308B"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3092\\n\u30E9\u30F3\u30C0\u30E0\u306B1\u679A\\n\u624B\u672D\u306B\u52A0\u3048\u308B"
   - ID: 76
     hero: 3
     category: 0
@@ -1014,7 +1014,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 3
-    text: "\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u306B\\n\u6311\u767A\u3092\u4ED8\u4E0E\u3059\u308B\\n\u3055\u3089\u306BHP+3"
+    text: "\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u306B\\n\u6311\u767A\u3092\u4ED8\u4E0E\u3059\u308B\\n\u3055\u3089\u306BHP+2"
   - ID: 78
     hero: 3
     category: 1
@@ -1027,15 +1027,15 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 3
-    text: "\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u306B\\n\u8CAB\u901A\u3092\u4ED8\u4E0E\u3059\u308B\\n\u3055\u3089\u306BATK+3"
+    text: "\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u306B\\n\u8CAB\u901A\u3092\u4ED8\u4E0E\u3059\u308B\\n\u3055\u3089\u306BATK+2"
   - ID: 79
     hero: 3
     category: 0
     rarity: 0
-    name: uking314
+    name: uking312
     cost: 3
     atk: 1
-    hp: 4
+    hp: 2
     skill1: 0
     skill2: 0
     skill3: 0
@@ -1053,15 +1053,15 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 3
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u3092\\nHP+2\\n\u3055\u3089\u306B\u6311\u767A\u3092\u4ED8\u4E0E\u3059\u308B\\n"
+    text: "\u6311\u767A\\n\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u3092\\nHP+1\\n\u3055\u3089\u306B\u6311\u767A\u3092\u4ED8\u4E0E\u3059\u308B\\n"
   - ID: 81
     hero: 3
     category: 0
     rarity: 2
     name: itemer
     cost: 3
-    atk: 3
-    hp: 3
+    atk: 2
+    hp: 1
     skill1: 0
     skill2: 0
     skill3: 0
@@ -1071,11 +1071,11 @@ MonoBehaviour:
     hero: 3
     category: 0
     rarity: 0
-    name: uking433
+    name: uking422
     cost: 4
-    atk: 3
-    hp: 3
-    skill1: 3
+    atk: 2
+    hp: 2
+    skill1: 0
     skill2: 0
     skill3: 0
     target: 0
@@ -1084,10 +1084,10 @@ MonoBehaviour:
     hero: 3
     category: 0
     rarity: 0
-    name: uking443
+    name: uking431
     cost: 4
-    atk: 4
-    hp: 3
+    atk: 3
+    hp: 1
     skill1: 0
     skill2: 0
     skill3: 0
@@ -1097,10 +1097,10 @@ MonoBehaviour:
     hero: 3
     category: 0
     rarity: 1
-    name: uking456
+    name: uking445
     cost: 4
-    atk: 5
-    hp: 6
+    atk: 4
+    hp: 5
     skill1: 0
     skill2: 0
     skill3: 0
@@ -1118,7 +1118,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u3053\u306E\u30E6\u30CB\u30C3\u30C8\u3092\u9664\u304F\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092\\n+1/+1"
+    text: "\u5373\u6483\\n\u3010\u53EC\u559A\u6642\u3011\\n\u3053\u306E\u30E6\u30CB\u30C3\u30C8\u3092\u9664\u304F\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092\\n+1/+1"
   - ID: 86
     hero: 3
     category: 0
@@ -1131,7 +1131,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n\u3053\u306E\u5BFE\u6226\u4E2D\u306B\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3067\\n\u5F37\u5316\u3092\u884C\u3063\u305F\u56DE\u6570\u5206\u7E70\u308A\u8FD4\u3059"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n\u3053\u306E\u5BFE\u6226\u4E2D\u306B\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\\\u3092\\n\u4F7F\u3063\u305F\u56DE\u6570\u5206\u7E70\u308A\u8FD4\u3059"
   - ID: 87
     hero: 3
     category: 0
@@ -1144,7 +1144,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 3
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3\u306E\u6570\u5206\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u306E\\nATK\u3068HP\u3092\u5F37\u5316\u3059\u308B"
+    text: "\u9023\u6483\\n\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3\u306E\u6570\u5206\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u306E\\nATK\u3068HP\u3092\u5F37\u5316\u3059\u308B"
   - ID: 88
     hero: 3
     category: 0
@@ -1196,7 +1196,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3053\u306E\u5BFE\u6226\u4E2D\u306B\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3067\\n\u5F37\u5316\u3092\u884C\u3063\u305F\u56DE\u6570\u5206\\n\u30B3\u30B9\u30C8-1"
+    text: "\u6311\u767A\\n\u3053\u306E\u5BFE\u6226\u4E2D\u306B\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3092\\n\u4F7F\u3063\u305F\u56DE\u6570\u5206\\n\u30B3\u30B9\u30C8-1"
   - ID: 92
     hero: 3
     category: 0
@@ -1205,7 +1205,7 @@ MonoBehaviour:
     cost: 9
     atk: 4
     hp: 6
-    skill1: 3
+    skill1: 0
     skill2: 0
     skill3: 0
     target: 0

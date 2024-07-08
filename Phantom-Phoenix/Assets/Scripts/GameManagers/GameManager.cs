@@ -285,6 +285,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             timeCount--;
             SetTime();
         }
+        StartCoroutine(ChangeTurn());
         if (GameDataManager.instance.isOnlineBattle)
         {
             SendChangeTurn();
