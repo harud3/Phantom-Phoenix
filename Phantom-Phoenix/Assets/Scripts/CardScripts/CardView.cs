@@ -50,7 +50,7 @@ public class CardView : MonoBehaviour
         //ステータス表示
         textATK.text = cardModel.atk.ToString();
         textHP.text = cardModel.hp.ToString();
-        textCost.text = cardModel.cost.ToString();
+        textCost.text = (cardModel.cost + cardModel.temporaryCost).ToString();
         textCard.text = cardModel.textCard.Replace(@"\n","\n");　//改行処理
     }
     /// <summary>
@@ -79,7 +79,7 @@ public class CardView : MonoBehaviour
     /// <param name="cardModel"></param>
     public void ReShow(CardModel cardModel)
     {
-        textCost.text = cardModel.cost.ToString();
+        textCost.text = (cardModel.cost + cardModel.temporaryCost).ToString();
         textATK.text = cardModel.atk.ToString();
         textHP.text = cardModel.hp.ToString();
     }

@@ -20,6 +20,7 @@ public class SkillManager : MonoBehaviour
     public HeroController playerHeroController {  get { return _playerHeroController; } private set { _playerHeroController = value; } }
     public HeroController enemyHeroController { get { return _enemyHeroController; } private set { _enemyHeroController = value; } }
     [SerializeField] TensionController playerTensionController, enemyTensionController;
+    [SerializeField] TensionController playerHand, enemyHand;
     private void Awake()
     {
         if (instance == null)
@@ -1266,6 +1267,111 @@ public class SkillManager : MonoBehaviour
                     {
                         c.Buff(5, 3);
                     }
+                    break;
+                }
+            //sdemon0
+            case 93: //味方ヒーローのMP+1
+                {
+                    h.IncreaseMP(1);
+                    break;
+                }
+            //udemon111
+            case 94: //召喚時:ユニット1体を-1/-1
+                {
+                    if(targets != null)
+                    {
+                        targets.First().DeBuff(1, 1);
+                    }
+                    break;
+                }
+            //sdemon1
+            case 95: //味方ユニットを死亡させて、最大MP+1して、カードを1枚引く
+                {
+                    if (targets != null)
+                    {
+                        targets.First().Damage(99);
+                        h.ChangeMaxMP(1);
+                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
+                    }
+                    break;
+                }
+            //udemon222
+            case 96: //召喚時:敵ヒーローのテンション-1
+                {
+                    et.SetTension(et.model.tension - 1);
+                    break;
+                }
+            //udemon223
+            case 97: //敵ユニットカードのコスト+1
+                {
+                    void enemyUnitCardsCostPlus1(CardController cc)
+                    {
+                        if (cc.model.category == Category.unit) { cc.TemporaryCreaseCost(1); }
+                    }
+                    h.ccExternalBuff += enemyUnitCardsCostPlus1; //今後手札に加わるカードに反映するように
+
+                    //既に手札にあるカードに反映
+                    FieldManager.instance.GetCardsInHand(!c.model.isPlayerCard).ForEach(i =>
+                    {
+                        if (i.model.category == Category.unit) { i.TemporaryCreaseCost(1); }
+                    });
+
+                    c.SpecialSkillBeforeDie += () =>
+                    {
+                        h.ccExternalBuff -= enemyUnitCardsCostPlus1; //今後手札に加わるカードに反映されないように
+                        FieldManager.instance.GetCardsInHand(!c.model.isPlayerCard).ForEach(i =>
+                        {
+                            if (i.model.category == Category.unit) { i.TemporaryCreaseCost(-1); } //既に手札にあるカードに反映されないように
+                        });
+                    };
+                    break;
+                }
+            //sdemon2
+            case 98: //味方ユニットを死亡させて、そのユニットのコスト分、HPとMPを回復する
+                {
+                    if (targets != null)
+                    {
+                        var x = targets.First();
+                        var xCost = x.model.cost;
+                        x.Damage(99);
+                        h.HealMP(xCost);
+                        h.Heal(xCost);
+                    }
+                    break;
+                }
+            //udemon321
+            case 99: //召喚時:前列のユニットを-2/-2
+                {
+                    if(FieldManager.instance.GetUnitsByFieldID(new int[] { 1,2,3, 7,8,9 }) is var x && x != null)
+                    {
+                        x.ForEach(i => i.DeBuff(2, 2));
+                    }
+                    break;
+                }
+            //udemon312
+            case 100: //召喚時:ユニット1体を-1/-1 敵ヒーローのMP-1 カードを1枚引く
+                {
+                    if(targets != null)
+                    {
+                        targets.First().DeBuff(1, 1);
+                        eh.ChangeMaxMP(eh.model.maxMP - 1);
+                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
+                    }
+                    break;
+                }
+            //sdemon3
+            case 101: //ユニット1体のATK-5
+                {
+                    if (targets != null)
+                    {
+                        targets.First().DeBuff(5, 0);
+                    }
+                    break;
+                }
+            //guardc
+            case 102: //召喚時:全ての敵ユニットを-2/-2
+                {
+                    FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard)?.ForEach(i => i.DeBuff(2, 2));
                     break;
                 }
             //telf122

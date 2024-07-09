@@ -64,6 +64,10 @@ public class HeroController : Controller
         ReShowHP();
         GameManager.instance.CheckIsAlive(model.isPlayer);
     }
+    /// <summary>
+    /// HPを回復する
+    /// </summary>
+    /// <param name="hl"></param>
     public void Heal(int hl)
     {
         if (model.hp == model.maxHP) { return; }
@@ -97,6 +101,24 @@ public class HeroController : Controller
         view.ReShowMP(model);
     }
     /// <summary>
+    /// MPを増やす
+    /// </summary>
+    /// <param name="reduce"></param>
+    public void IncreaseMP(int increase)
+    {
+        model.ReduceMP(-increase); //いかがなものか とは思う
+        view.ReShowMP(model);
+    }
+    /// <summary>
+    /// MPを回復する
+    /// </summary>
+    /// <param name="reduce"></param>
+    public void HealMP(int hl)
+    {
+        model.HealMP(hl); //いかがなものか とは思う
+        view.ReShowMP(model);
+    }
+    /// <summary>
     /// 何らかの効果によりMaxMPが増減するときの処理
     /// </summary>
     /// <param name="up"></param>
@@ -117,8 +139,16 @@ public class HeroController : Controller
     {
         SpellUsedSkill?.Invoke();
     }
-    public Action<CardController> ccExternalBuff = new Action<CardController>((unit) => { });
+    /// <summary>
+    /// 外部バフ
+    /// </summary>
+    public DelCCExTernal ccExternalBuff = null;
 }
+/// <summary>
+/// 外部バフを保持するためのデリゲート
+/// </summary>
+/// <param name="card"></param>
+public delegate void DelCCExTernal(CardController card);
 /// <summary>
 /// カードとヒーローを同時に処理できるようにするための基底クラス
 /// </summary>

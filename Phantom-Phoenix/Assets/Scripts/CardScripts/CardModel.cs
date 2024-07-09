@@ -13,6 +13,7 @@ public class CardModel
     public string name { get; private set; }
 
     public int defaultCost { get; private set; }
+    public int temporaryCost {  get; private set; }
     public int cost { get; private set; }
     public int defaultATK { get; private set; }
     public int atk { get; private set; }
@@ -59,6 +60,7 @@ public class CardModel
         character = Resources.Load<Sprite>($"Cards/{cardEntity.hero}/{name}");
 
         defaultCost = cost = cardEntity.cost;
+        temporaryCost = 0;
         defaultATK = atk = cardEntity.atk;
         defaultHP = maxHP = hp = cardEntity.hp;
 
@@ -141,6 +143,14 @@ public class CardModel
         {
             cost = 0;
         }
+    }
+    /// <summary>
+    /// 一時的にコストを指定された値増減する 基本的にCardControllerを通して呼ぶことになる
+    /// </summary>
+    /// <param name="cnt"></param>
+    public void TemporaryCreaseCost(int increase)
+    {
+        temporaryCost += increase;
     }
     /// <summary>
     /// ユニットがダメージを受けた時の処理 基本的にCardControllerを通して呼ぶことになる

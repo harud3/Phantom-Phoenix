@@ -103,10 +103,10 @@ public class HeroModel
     /// <summary>
     /// ‰½‚ç‚©‚ÌŠO•”—vˆö‚É‚æ‚èAMP‚ª‰ñ•œ‚·‚é ’¼ÚŒÄ‚Î‚È‚¢
     /// </summary>
-    /// <param name="heal"></param>
-    public void HealMP(int heal)
+    /// <param name="hl"></param>
+    public void HealMP(int hl)
     {
-        mp += heal;
+        mp += hl;
         if(mp > maxMP)
         {
             mp = maxMP;

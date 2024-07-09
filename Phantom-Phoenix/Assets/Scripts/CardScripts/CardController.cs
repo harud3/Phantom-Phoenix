@@ -41,11 +41,11 @@ public class CardController : Controller
         model = new CardModel(CardID, isPlayer);
         if (isPlayer)
         {
-            SkillManager.instance.playerHeroController.ccExternalBuff(this);
+            SkillManager.instance.playerHeroController.ccExternalBuff?.Invoke(this);
         }
         else
         {
-            SkillManager.instance.enemyHeroController.ccExternalBuff(this);
+            SkillManager.instance.enemyHeroController.ccExternalBuff?.Invoke(this);
         }
         view.SetCard(model);
         SkillManager.instance.UpdateSkills(this);
@@ -81,7 +81,7 @@ public class CardController : Controller
         void Execute(Action ac)
         {
             //発動するなら、自身を破壊する　スペルカードがフィールドに出たらおかしいので
-            GameManager.instance.ReduceMP(model.cost, model.isPlayerCard);
+            GameManager.instance.ReduceMP(model.cost + model.temporaryCost, model.isPlayerCard);
             ac();
             Destroy(this.gameObject); 
         }
@@ -140,7 +140,7 @@ public class CardController : Controller
     {
         AudioManager.instance.SoundCardMove();
 
-        if (ExecuteReduceMP) { GameManager.instance.ReduceMP(model.cost, model.isPlayerCard); } //ヒーローのMPを減らす
+        if (ExecuteReduceMP) { GameManager.instance.ReduceMP(model.cost + model.temporaryCost, model.isPlayerCard); } //ヒーローのMPを減らす
         model.SetIsFieldCard(true);
         model.SetThisFieldID(fieldID);
         view.HideCost(false);
@@ -216,8 +216,17 @@ public class CardController : Controller
     /// <summary>
     /// コストを増減する
     /// </summary>
-    /// <param name="nextCost"></param>
+    /// <param name="increase"></param>
     public void CreaseCost(int increase)
+    {
+        model.CreaseCost(increase);
+        view.ReShow(model);
+    }
+    /// <summary>
+    /// コストを一時的に増減する
+    /// </summary>
+    /// <param name="increase"></param>
+    public void TemporaryCreaseCost(int increase)
     {
         model.CreaseCost(increase);
         view.ReShow(model);
