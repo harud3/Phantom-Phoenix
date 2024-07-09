@@ -36,7 +36,7 @@ public class EditDeckManager : MonoBehaviour
         });
 
         DeckModel deckmodel = new DeckModel().Init();
-        if(deckmodel.useHeroID == GameDataManager.instance.editDeckHeroID)
+        if(deckmodel.useHeroID == heroID)
         {
             deckmodel.deck.OrderBy(i => i).ToList().ForEach(i =>
             {

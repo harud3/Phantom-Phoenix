@@ -18,7 +18,7 @@ public class CardEntity
     public Target target;
     public string text;
 
-    public enum Hero { common, elf, witch, king, knight, devil }
+    public enum Hero { common, elf, witch, king, demon, knight }
     public enum Category { unit, spell, item }
     public enum Rarity { R, SR, SSR }
 

@@ -56,7 +56,7 @@ public class CardModel
 
         this.cardID = cardID;
         name = cardEntity.name;
-        character = Resources.Load<Sprite>($"Cards/{name}");
+        character = Resources.Load<Sprite>($"Cards/{cardEntity.hero}/{name}");
 
         defaultCost = cost = cardEntity.cost;
         defaultATK = atk = cardEntity.atk;

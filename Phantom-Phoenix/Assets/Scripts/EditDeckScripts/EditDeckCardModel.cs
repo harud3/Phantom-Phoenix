@@ -29,7 +29,7 @@ public class EditDeckCardModel
         CardEntity cardEntity = GameDataManager.instance.cardlist.cl[cardID - 1];
         this.cardID = cardID;
         name = cardEntity.name;
-        character = Resources.Load<Sprite>($"Cards/{name}");
+        character = Resources.Load<Sprite>($"Cards/{cardEntity.hero}/{name}");
         cost = cardEntity.cost;
         atk = cardEntity.atk; 
         hp = cardEntity.hp;
