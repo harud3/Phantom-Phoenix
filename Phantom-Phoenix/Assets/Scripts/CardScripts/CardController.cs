@@ -214,6 +214,7 @@ public class CardController : Controller
         if (increase > 0 && hasSound) { AudioManager.instance.SoundMPDeBuff(); }
         else if (increase < 0 && hasSound) { AudioManager.instance.SoundMPBuff(); }
         model.CreaseCost(increase);
+        GameManager.instance.SetCanSummonHandCard(this);
         view.ReShow(model);
     }
     /// <summary>

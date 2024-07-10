@@ -1233,6 +1233,7 @@ public class SkillManager : MonoBehaviour
                             i.Damage(99);
                         }); 
                     }
+                    if(plusATK == 0 && plusHP == 00) { return; }
                     c.Buff(plusATK, plusHP);
                     break;
                 }
@@ -1283,11 +1284,11 @@ public class SkillManager : MonoBehaviour
                 {
                     if(!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
                     {
-                        FieldManager.instance.GetRandomUnits(true)?.DeBuff(1, 1);
+                        FieldManager.instance.GetRandomUnits(true, c)?.DeBuff(1, 1);
                     }
                     else if(targets != null)
                     {
-                        targets.First().DeBuff(1, 1);
+                        targets.First().DeBuff(1, 0);
                     }
                     break;
                 }
@@ -1296,18 +1297,9 @@ public class SkillManager : MonoBehaviour
                 {
                     c.ccSpellContents = (CardController target) =>
                     {
-                        if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
-                        {
-                            FieldManager.instance.GetRandomUnits(false)?.Damage(99);
-                            h.ChangeMaxMP(1);
-                            GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
-                        }
-                        else
-                        {
-                            target.Damage(99);
-                            h.ChangeMaxMP(1);
-                            GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
-                        }
+                        target.Damage(99);
+                        h.ChangeMaxMP(1);
+                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
                     };
                     break;
                 }
@@ -1347,39 +1339,28 @@ public class SkillManager : MonoBehaviour
                 {
                     c.ccSpellContents = (CardController target) =>
                     {
-                        if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
-                        {
-                            var x = FieldManager.instance.GetRandomUnits(false);
-                            var xCost = x.model.cost;
-                            x.Damage(99);
-                            h.HealMP(xCost);
-                            h.Heal(xCost);
-                        }
-                        else
-                        {
-                            var xCost = target.model.cost;
-                            target.Damage(99);
-                            h.HealMP(xCost);
-                            h.Heal(xCost);
-                        }
+                        var xCost = target.model.cost;
+                        target.Damage(99);
+                        h.HealMP(xCost);
+                        h.Heal(xCost);
                     };
                     break;
                 }
             //udemon321
-            case 99: //召喚時:前列のユニットを-2/-2
+            case 99: //召喚時:前列のユニットを-1/-1
                 {
                     if(FieldManager.instance.GetUnitsByFieldID(new int[] { 1,2,3, 7,8,9 }) is var x && x != null)
                     {
-                        x.Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList().ForEach(i => i.DeBuff(2, 2));
+                        x.Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList().ForEach(i => i.DeBuff(1, 1));
                     }
                     break;
                 }
             //udemon312
-            case 100: //召喚時:ユニット1体を-1/-1 敵ヒーローのMP-1
+            case 100: //召喚時:味方ユニット1体を-1/-1 そうした場合、敵ヒーローのMP-1
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
                     {
-                        FieldManager.instance.GetRandomUnits(true)?.DeBuff(1, 1);
+                        FieldManager.instance.GetRandomUnits(false, c)?.DeBuff(1, 1);
                         eh.ChangeMaxMP(-1);
                     }
                     else if (targets != null)
@@ -1394,21 +1375,14 @@ public class SkillManager : MonoBehaviour
                 {
                     c.ccSpellContents = (CardController target) =>
                     {
-                        if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
-                        {
-                            FieldManager.instance.GetRandomUnits(true)?.DeBuff(5, 0);
-                        }
-                        else
-                        {
-                            target.DeBuff(5, 0);
-                        }
+                        target.DeBuff(4, 0);
                     };
                     break;
                 }
             //guardc
-            case 102: //召喚時:全ての敵ユニットを-2/-2
+            case 102: //召喚時:全ての敵ユニットを-1/-1
                 {
-                    FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard)?.ForEach(i => i.DeBuff(2, 2));
+                    FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard)?.ForEach(i => i.DeBuff(1, 1));
                     break;
                 }
             //udemon413
@@ -1420,23 +1394,23 @@ public class SkillManager : MonoBehaviour
                         if(y > 0)
                         {
                             c.Buff(y, y);
-                            x.ForEach(i => i.DeBuff(1, 1));
+                            x.ForEach(i => i.DeBuff(1, 0));
                         }
                     }    
                     break;
                 }
             //udemon432
-            case 104: //召喚時:両ヒーローのテンションの数分、カードを引く
+            case 104: //召喚時:味方ヒーローのテンションの数分、カードを引く
                 {
-                    GameManager.instance.GiveCards(c.model.isPlayerCard, t.model.tension + et.model.tension); //0でも大丈夫なはず...
+                    GameManager.instance.GiveCards(c.model.isPlayerCard, t.model.tension); //0でも大丈夫なはず...
                     break;
                 }
             //udemon533
-            case 105: //敵ドロー時、敵ヒーローに2ダメージ 引いたカードが9コスト以下ならコスト+1
+            case 105: //敵ドロー時、敵ヒーローに1ダメージ 引いたカードが9コスト以下ならコスト+1
                 {
                     void enemyCardCostPlus1(CardController cc)
                     {
-                        eh.Damage(2);
+                        eh.Damage(1);
                         if (cc.model.cost <= 9) { cc.CreaseCost(1); }
                     }
                     eh.ccExternalDrawBuff += enemyCardCostPlus1; //今後手札に加わるカードに反映するように
@@ -1447,25 +1421,23 @@ public class SkillManager : MonoBehaviour
                     break;
                 }
             //udemon524
-            case 106: //敵手札の9コスト以下のカードのコスト+1 これを2回繰り返す
+            case 106: //敵手札の8コスト以下のカードのコスト+1 これを2回繰り返す
                 {
-                    var x = FieldManager.instance.GetCardsInHand(!c.model.isPlayerCard);
+                    var x = FieldManager.instance.GetCardsInHand(!c.model.isPlayerCard).Where(i => i.model.cost <= 8)?.ToList();
                     if(x != null)
                     {
-                        var y = x[UnityEngine.Random.Range(0, x.Count())];
-                        y.CreaseCost(y.model.cost <= 9 ? 1 : 0);
-                        var z = x[UnityEngine.Random.Range(0, x.Count())];
-                        z.CreaseCost(z.model.cost <= 9 ? 1 : 0);
+                        x[UnityEngine.Random.Range(0, x.Count())].CreaseCost(1);
+                        x[UnityEngine.Random.Range(0, x.Count())].CreaseCost(1);
                     }
                     break;
                 }
             //sdemon5
-            case 107: //全てのユニットのATK-3 全ての敵ユニットのHP-1
+            case 107: //全てのユニットのATK-2 全ての敵ユニットのHP-1
                 {
                     c.SpellContents = () =>
                     {
-                        FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard).ForEach(i => i.DeBuff(3, 0));
-                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DeBuff(3, 1));
+                        FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard).ForEach(i => i.DeBuff(2, 0));
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DeBuff(2, 1));
                     };
                     break;
                 }
@@ -1474,16 +1446,16 @@ public class SkillManager : MonoBehaviour
                 {
                     c.SpecialSkillAfterDeBuff += (int atk, int hp) =>
                     {
-                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DeBuff(atk, hp, false)); //minotaurVSminotaurすると死屍累々
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DeBuff(atk, hp, false)); //被弱化時効果を誘発しない　minotaurVSminotaurすると死屍累々になるので…
                     };
                     break;
                 }
             //udemon634
-            case 109: //召喚時:ユニット1体を-2/-2 死亡時:ランダムな敵ユニット1体を-2/-2
+            case 109: //召喚時:ユニット1体を-2/-2 死亡時:ランダムな敵ユニット1体を-1/-1
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
                     {
-                        FieldManager.instance.GetRandomUnits(true)?.DeBuff(2, 2);
+                        FieldManager.instance.GetRandomUnits(true, c)?.DeBuff(2, 2);
                     }
                     else
                     {
@@ -1491,25 +1463,25 @@ public class SkillManager : MonoBehaviour
                     }
                     c.SpecialSkillBeforeDie = () =>
                     {
-                        FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(2, 2);
+                        FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(1, 1);
                     };
                     break;
                 }
             //udemon756
-            case 110: //攻撃時:敵ヒーローのテンション-3　カードを2枚引く 
+            case 110: //攻撃時:敵ヒーローのテンション-2　カードを1枚引く 
                 {
                     c.SpecialSkillBeforeAttack = (bool isAttacker) =>
                     {
                         if (isAttacker)
                         {
-                            et.SetTension(0);
-                            GameManager.instance.GiveCards(c.model.isPlayerCard, 2);
+                            et.SetTension(et.model.tension - 2);
+                            GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
                         }
                     };
                     break;
                 }
             //udemon728
-            case 111: //ターン終了時:ランダムな敵ユニットのATKまたはHP-3 
+            case 111: //ターン終了時:ランダムな敵ユニットのATKまたはHP-2
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
@@ -1517,18 +1489,18 @@ public class SkillManager : MonoBehaviour
                         {
                             if(Random.Range(0, 2) == 0)
                             {
-                                FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(3, 0);
+                                FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(2, 0);
                             }
                             else
                             {
-                                FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(0, 3);
+                                FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(0, 2);
                             }
                         }
                     };
                     break;
                 }
             //udemon922
-            case 112: //召喚時:全てのユニットを死亡させ、死亡させた数分味方ヒーローのHPを回復する
+            case 112: //召喚時:全てのユニットを死亡させ、最大MP-3
                 {
                     var hl = 0;
                     if(FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
@@ -1541,7 +1513,7 @@ public class SkillManager : MonoBehaviour
                         hl += y.Count;
                         y.Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList().ForEach(i => i.Damage(99));
                     }
-                    h.Heal(hl);
+                    h.ChangeMaxMP(-3);
                     break;
                 }
             //telf122

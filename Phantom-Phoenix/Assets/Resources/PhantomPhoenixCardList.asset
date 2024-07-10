@@ -1235,7 +1235,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 1
-    text: "\u72D9\u6483\\n\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u3092\\n-1/-1"
+    text: "\u72D9\u6483\\n\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u306E\\nATK-1"
   - ID: 95
     hero: 4
     category: 1
@@ -1300,7 +1300,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u524D\u5217\u306E\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u3092\\n-2/-2"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u524D\u5217\u306E\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u3092\\n-1/-1"
   - ID: 100
     hero: 4
     category: 0
@@ -1312,8 +1312,8 @@ MonoBehaviour:
     skill1: 0
     skill2: 0
     skill3: 0
-    target: 1
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u3092-1/-1\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306E\\n\u6700\u5927MP-1"
+    target: 3
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u3092-1/-1\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306E\\n\u6700\u5927MP-1"
   - ID: 101
     hero: 4
     category: 1
@@ -1326,7 +1326,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 1
-    text: "\u30E6\u30CB\u30C3\u30C81\u4F53\u306E\\nATK-5"
+    text: "\u30E6\u30CB\u30C3\u30C81\u4F53\u306E\\nATK-4"
   - ID: 102
     hero: 4
     category: 0
@@ -1339,7 +1339,7 @@ MonoBehaviour:
     skill2: 4
     skill3: 0
     target: 0
-    text: "\u72D9\u6483\u3000\u8CAB\u901A\\n\u3010\u53EC\u559A\u6642\u3011\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n-2/-2"
+    text: "\u72D9\u6483\u3000\u8CAB\u901A\\n\u3010\u53EC\u559A\u6642\u3011\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n-1/-1"
   - ID: 103
     hero: 4
     category: 0
@@ -1352,7 +1352,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u6575\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\\n+1/+1\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n-1/-1"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u6575\u30E6\u30CB\u30C3\u30C8\u306E\u6570\u5206\\n+1/+1\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u306E\\nATK-1"
   - ID: 104
     hero: 4
     category: 0
@@ -1365,7 +1365,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u4E21\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3\u306E\u5408\u8A08\u5206\\n\u30AB\u30FC\u30C9\u3092\u5F15\u304F"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3\u306E\u6570\u5206\\n\u30AB\u30FC\u30C9\u3092\u5F15\u304F"
   - ID: 105
     hero: 4
     category: 0
@@ -1378,7 +1378,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u6575\u30C9\u30ED\u30FC\u6642\u3011\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306B2\u30C0\u30E1\u30FC\u30B8\\n\u5F15\u3044\u305F\u30AB\u30FC\u30C9\u306E\u30B3\u30B9\u30C8+1"
+    text: "\u3010\u6575\u30C9\u30ED\u30FC\u6642\u3011\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306B1\u30C0\u30E1\u30FC\u30B8\\n\u5F15\u3044\u305F\u30AB\u30FC\u30C9\u306E\u30B3\u30B9\u30C8+1"
   - ID: 106
     hero: 4
     category: 0
@@ -1404,7 +1404,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 8
-    text: "\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306E\\nATK-3\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u306E\\nHP-1"
+    text: "\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u306E\\nATK-2\\n\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u306E\\nHP-1"
   - ID: 108
     hero: 4
     category: 0
@@ -1417,7 +1417,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u6311\u767A\\n\u3010\u88AB\u5F31\u5316\u6642\u3011n\u6575\u30E6\u30CB\u30C3\u30C8\u5168\u4F53\u3092\\n\u540C\u3058\u52B9\u679C\u3067\u5F31\u5316\u3055\u305B\u308B\\n\u3053\u306E\u52B9\u679C\u3067\u88AB\u5F31\u5316\u52B9\u679C\u306F\\n\u767A\u52D5\u3057\u306A\u3044"
+    text: "\u6311\u767A\\n\u3010\u88AB\u5F31\u5316\u6642\u3011\\n\u6575\u30E6\u30CB\u30C3\u30C8\u5168\u4F53\u3092\\n\u540C\u3058\u52B9\u679C\u3067\u5F31\u5316\u3055\u305B\u308B\\n\u3053\u306E\u52B9\u679C\u3067\u88AB\u5F31\u5316\u52B9\u679C\u306F\\n\u767A\u52D5\u3057\u306A\u3044"
   - ID: 109
     hero: 4
     category: 0
@@ -1430,7 +1430,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 1
-    text: "\u6311\u767A\\n\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u3092-2/-2\\n\u3010\u6B7B\u4EA1\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n-2/-2"
+    text: "\u6311\u767A\\n\u3010\u53EC\u559A\u6642\u3011\\n\u30E6\u30CB\u30C3\u30C81\u4F53\u3092-2/-2\\n\u3010\u6B7B\u4EA1\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u3092\\n-1/-1"
   - ID: 110
     hero: 4
     category: 0
@@ -1443,7 +1443,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u72D9\u6483\\n\u3010\u653B\u6483\u6642\u3011\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3-3\\n\u30AB\u30FC\u30C9\u30922\u679A\u5F15\u304F"
+    text: "\u72D9\u6483\\n\u3010\u653B\u6483\u6642\u3011\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306E\\n\u30C6\u30F3\u30B7\u30E7\u30F3-2\\n\u30AB\u30FC\u30C9\u30921\u679A\u5F15\u304F"
   - ID: 111
     hero: 4
     category: 0
@@ -1456,7 +1456,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306E\\nATK\u307E\u305F\u306FHP\u3092-3"
+    text: "\u3010\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306E\\nATK\u307E\u305F\u306FHP\u3092-2"
   - ID: 112
     hero: 4
     category: 0
@@ -1469,7 +1469,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u3092\\n\u6B7B\u4EA1\u3055\u305B\u308B\\n\u6B7B\u4EA1\u3055\u305B\u305F\u6570\u5206\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\nHP\u3092\u56DE\u5FA9"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5168\u3066\u306E\u30E6\u30CB\u30C3\u30C8\u3092\\n\u6B7B\u4EA1\u3055\u305B\u308B\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306E\\n\u6700\u5927MP-3"
   token:
   - ID: 10001
     hero: 1

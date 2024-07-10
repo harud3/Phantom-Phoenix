@@ -111,6 +111,7 @@ public class HeroController : Controller
         }
         model.ReduceMP(-increase); //‚¢‚©‚ª‚È‚à‚Ì‚© ‚Æ‚ÍŽv‚¤
         view.ReShowMP(model);
+        GameManager.instance.SetCanUsetension(model.isPlayer);
     }
     /// <summary>
     /// MP‚ð‰ñ•œ‚·‚é

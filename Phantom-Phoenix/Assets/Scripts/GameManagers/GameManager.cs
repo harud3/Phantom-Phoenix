@@ -582,9 +582,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="cc"></param>
     /// <param name="setCanNotSummon"></param>
-    private void SetCanSummonHandCard(CardController cc, bool setCanNotSummon = false)
+    public void SetCanSummonHandCard(CardController cc, bool setCanNotSummon = false)
     {
-        if (cc.model.isPlayerCard && cc.model.cost <= GetHeroMP(true) && !setCanNotSummon) //Œë‚Á‚Ä“GŽèŽD‚ª’Ê‚ç‚È‚¢‚æ‚¤‚É setCanNotSummon‚ªtrue‚È‚çA¢Š«•s‰Â‚É‚·‚é
+        if (cc.model.isPlayerCard && cc.model.cost <= GetHeroMP(true) && !setCanNotSummon && isPlayerTurn) //Œë‚Á‚Ä“GŽèŽD‚ª’Ê‚ç‚È‚¢‚æ‚¤‚É setCanNotSummon‚ªtrue‚È‚çA¢Š«•s‰Â‚É‚·‚é
         {
             cc.SetCanSummon(true);
         }
