@@ -449,6 +449,9 @@ public class CardController : Controller
     /// 強化時効果
     /// </summary>
     public Action SpecialSkillAfterBuff = null;
+    /// <summary>
+    /// 強化を行う　誘発して発生するバフは、isExecuteSSをfalseにして呼ぶ(バフが無限ループするため)
+    /// </summary>
     public void Buff(int atk, int hp, bool isExecuteSS = true)
     {
         AudioManager.instance.SoundcCardBuff();
@@ -460,10 +463,18 @@ public class CardController : Controller
         if (isExecuteSS) { SpecialSkillAfterBuff?.Invoke(); }
         view.ReShow(model);
     }
-    public void DeBuff(int atk, int hp)
+    /// <summary>
+    /// 弱化時効果 int atk, int hp
+    /// </summary>
+    public Action<int, int> SpecialSkillAfterDeBuff = null;
+    /// <summary>
+    /// 弱化を行う　誘発して発生するデバフは、isExecuteSSをfalseにして呼ぶ(バフが無限ループするため) 
+    /// </summary>
+    public void DeBuff(int atk, int hp, bool isExecuteSS = true)
     {
         AudioManager.instance.SoundcCardDeBuff();
         model.DeBuff(atk, hp);
+        if (isExecuteSS) { SpecialSkillAfterDeBuff?.Invoke(atk, hp); }
         view.ReShow(model);
         StartCoroutine(CheckAlive());
     }

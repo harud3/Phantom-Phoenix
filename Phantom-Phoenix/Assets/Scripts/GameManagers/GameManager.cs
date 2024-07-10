@@ -341,7 +341,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); } 
         else { enemyHeroController.ReShowStackCards(deck.Count()); }
 
-        StartCoroutine(CreateCard(cardID, hand, isPlayer));
+        StartCoroutine(CreateCard(cardID, hand, isPlayer, true));
     }
     /// <summary>
     /// カードの生成と手札への移動
@@ -349,7 +349,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <param name="cardID"></param>
     /// <param name="hand"></param>
     /// <param name="isPlayer"></param>
-    IEnumerator CreateCard(int cardID, Transform hand, bool isPlayer)
+    IEnumerator CreateCard(int cardID, Transform hand, bool isPlayer, bool isDraw = false)
     {
         CardController cc = Instantiate(cardPrefab, canvas);
         cc.transform.Translate(new Vector3(isPlayer ? -550 : 550, 0, 0), Space.Self);
@@ -360,6 +360,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.25f);
         cc.transform.SetParent(hand);
 
+        //ドロー時に発生する効果
+        if (isDraw)
+        {
+            (isPlayer ? playerHeroController : enemyHeroController).ccExternalDrawBuff?.Invoke(cc);
+        }
+        
         if (isPlayer && isPlayerTurn) { SetCanSummonHandCard(cc); }
 
         //手札の枚数は最大10枚
@@ -420,7 +426,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (isPlayer) { playerHeroController.ReShowStackCards(deck.Count()); }
         else { enemyHeroController.ReShowStackCards(deck.Count()); }
 
-        StartCoroutine(CreateCard(cardID, hand, isPlayer));
+        StartCoroutine(CreateCard(cardID, hand, isPlayer, true));
     }
     /// <summary>
     /// 特定のIDのカードを手札に配る

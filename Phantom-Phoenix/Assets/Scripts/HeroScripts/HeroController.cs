@@ -143,6 +143,10 @@ public class HeroController : Controller
     /// 外部バフ
     /// </summary>
     public DelCCExTernal ccExternalBuff = null;
+    /// <summary>
+    /// 外部バフ
+    /// </summary>
+    public DelCCExTernal ccExternalDrawBuff = null;
 }
 /// <summary>
 /// 外部バフを保持するためのデリゲート
