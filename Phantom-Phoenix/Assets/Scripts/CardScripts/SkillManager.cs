@@ -20,7 +20,7 @@ public class SkillManager : MonoBehaviour
     public HeroController playerHeroController {  get { return _playerHeroController; } private set { _playerHeroController = value; } }
     public HeroController enemyHeroController { get { return _enemyHeroController; } private set { _enemyHeroController = value; } }
     [SerializeField] TensionController playerTensionController, enemyTensionController;
-    [SerializeField] TensionController playerHand, enemyHand;
+    [SerializeField] Transform playerHand, enemyHand;
     private void Awake()
     {
         if (instance == null)
@@ -238,7 +238,7 @@ public class SkillManager : MonoBehaviour
         HeroController h = c.model.isPlayerCard ? playerHeroController : enemyHeroController;
         HeroController eh = !c.model.isPlayerCard ? playerHeroController : enemyHeroController;
         TensionController t = c.model.isPlayerCard ? playerTensionController : enemyTensionController;
-        TensionController et = c.model.isPlayerCard ? playerTensionController : enemyTensionController;
+        TensionController et = !c.model.isPlayerCard ? playerTensionController : enemyTensionController;
 
         switch (c.model.cardID)
         {
@@ -984,7 +984,7 @@ public class SkillManager : MonoBehaviour
             //uwitch744
             case 69: //召喚時:手札の全てのスペルのコスト-1
                 {
-                    FieldManager.instance.GetCardsInHand(c.model.isPlayerCard).Where(i => i.model.category == Category.spell).ToList().ForEach(i => i.ChangeCost(i.model.cost - 2));
+                    FieldManager.instance.GetCardsInHand(c.model.isPlayerCard).Where(i => i.model.category == Category.spell).ToList().ForEach(i => i.CreaseCost(-2));
                     break;
                 }
             //switch7
@@ -1272,7 +1272,10 @@ public class SkillManager : MonoBehaviour
             //sdemon0
             case 93: //味方ヒーローのMP+1
                 {
-                    h.IncreaseMP(1);
+                    c.SpellContents = () =>
+                    {
+                        h.IncreaseMP(1);
+                    };
                     break;
                 }
             //udemon111
@@ -1291,18 +1294,21 @@ public class SkillManager : MonoBehaviour
             //sdemon1
             case 95: //味方ユニットを死亡させて、最大MP+1して、カードを1枚引く
                 {
-                    if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
+                    c.ccSpellContents = (CardController target) =>
                     {
-                        FieldManager.instance.GetRandomUnits(false)?.Damage(99);
-                        h.ChangeMaxMP(1);
-                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
-                    }
-                    else if (targets != null)
-                    {
-                        targets.First().Damage(99);
-                        h.ChangeMaxMP(1);
-                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
-                    }
+                        if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
+                        {
+                            FieldManager.instance.GetRandomUnits(false)?.Damage(99);
+                            h.ChangeMaxMP(1);
+                            GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
+                        }
+                        else
+                        {
+                            target.Damage(99);
+                            h.ChangeMaxMP(1);
+                            GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
+                        }
+                    };
                     break;
                 }
             //udemon222
@@ -1318,7 +1324,7 @@ public class SkillManager : MonoBehaviour
                     {
                         if (cc.model.category == Category.unit) { cc.TemporaryCreaseCost(1); }
                     }
-                    h.ccExternalBuff += enemyUnitCardsCostPlus1; //今後手札に加わるカードに反映するように
+                    eh.ccExternalBuff += enemyUnitCardsCostPlus1; //今後手札に加わるカードに反映するように
 
                     //既に手札にあるカードに反映
                     FieldManager.instance.GetCardsInHand(!c.model.isPlayerCard).ForEach(i =>
@@ -1328,7 +1334,7 @@ public class SkillManager : MonoBehaviour
 
                     c.SpecialSkillBeforeDie += () =>
                     {
-                        h.ccExternalBuff -= enemyUnitCardsCostPlus1; //今後手札に加わるカードに反映されないように
+                        eh.ccExternalBuff -= enemyUnitCardsCostPlus1; //今後手札に加わるカードに反映されないように
                         FieldManager.instance.GetCardsInHand(!c.model.isPlayerCard).ForEach(i =>
                         {
                             if (i.model.category == Category.unit) { i.TemporaryCreaseCost(-1); } //既に手札にあるカードに反映されないように
@@ -1339,22 +1345,24 @@ public class SkillManager : MonoBehaviour
             //sdemon2
             case 98: //味方ユニットを死亡させて、そのユニットのコスト分、HPとMPを回復する
                 {
-                    if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
+                    c.ccSpellContents = (CardController target) =>
                     {
-                        var x = FieldManager.instance.GetRandomUnits(false);
-                        var xCost = x.model.cost;
-                        x.Damage(99);
-                        h.HealMP(xCost);
-                        h.Heal(xCost);
-                    }
-                    else if (targets != null)
-                    {
-                        var x = targets.First();
-                        var xCost = x.model.cost;
-                        x.Damage(99);
-                        h.HealMP(xCost);
-                        h.Heal(xCost);
-                    }
+                        if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
+                        {
+                            var x = FieldManager.instance.GetRandomUnits(false);
+                            var xCost = x.model.cost;
+                            x.Damage(99);
+                            h.HealMP(xCost);
+                            h.Heal(xCost);
+                        }
+                        else
+                        {
+                            var xCost = target.model.cost;
+                            target.Damage(99);
+                            h.HealMP(xCost);
+                            h.Heal(xCost);
+                        }
+                    };
                     break;
                 }
             //udemon321
@@ -1362,38 +1370,39 @@ public class SkillManager : MonoBehaviour
                 {
                     if(FieldManager.instance.GetUnitsByFieldID(new int[] { 1,2,3, 7,8,9 }) is var x && x != null)
                     {
-                        x.ForEach(i => i.DeBuff(2, 2));
+                        x.Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList().ForEach(i => i.DeBuff(2, 2));
                     }
                     break;
                 }
             //udemon312
-            case 100: //召喚時:ユニット1体を-1/-1 敵ヒーローのMP-1 カードを1枚引く
+            case 100: //召喚時:ユニット1体を-1/-1 敵ヒーローのMP-1
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
                     {
                         FieldManager.instance.GetRandomUnits(true)?.DeBuff(1, 1);
-                        eh.ChangeMaxMP(eh.model.maxMP - 1);
-                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
+                        eh.ChangeMaxMP(-1);
                     }
                     else if (targets != null)
                     {
                         targets.First().DeBuff(1, 1);
-                        eh.ChangeMaxMP(eh.model.maxMP - 1);
-                        GameManager.instance.GiveCards(c.model.isPlayerCard, 1);
+                        eh.ChangeMaxMP(-1);
                     }
                     break;
                 }
             //sdemon3
             case 101: //ユニット1体のATK-5
                 {
-                    if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
+                    c.ccSpellContents = (CardController target) =>
                     {
-                        FieldManager.instance.GetRandomUnits(true)?.DeBuff(5, 0);
-                    }
-                    else if (targets != null)
-                    {
-                        targets.First().DeBuff(5, 0);
-                    }
+                        if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
+                        {
+                            FieldManager.instance.GetRandomUnits(true)?.DeBuff(5, 0);
+                        }
+                        else
+                        {
+                            target.DeBuff(5, 0);
+                        }
+                    };
                     break;
                 }
             //guardc
@@ -1408,8 +1417,11 @@ public class SkillManager : MonoBehaviour
                     if(FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard) is var x && x != null)
                     {
                         var y = x.Count;
-                        c.DeBuff(y, y);
-                        x.ForEach(i => i.DeBuff(1, 1));
+                        if(y > 0)
+                        {
+                            c.Buff(y, y);
+                            x.ForEach(i => i.DeBuff(1, 1));
+                        }
                     }    
                     break;
                 }
@@ -1425,33 +1437,36 @@ public class SkillManager : MonoBehaviour
                     void enemyCardCostPlus1(CardController cc)
                     {
                         eh.Damage(2);
-                        if (cc.model.cost <= 9) { cc.ChangeCost(cc.model.cost + 1); }
+                        if (cc.model.cost <= 9) { cc.CreaseCost(1); }
                     }
-                    h.ccExternalDrawBuff += enemyCardCostPlus1; //今後手札に加わるカードに反映するように
+                    eh.ccExternalDrawBuff += enemyCardCostPlus1; //今後手札に加わるカードに反映するように
                     c.SpecialSkillBeforeDie += () =>
                     {
-                        h.ccExternalDrawBuff -= enemyCardCostPlus1; //今後手札に加わるカードに反映されないように
+                        eh.ccExternalDrawBuff -= enemyCardCostPlus1; //今後手札に加わるカードに反映されないように
                     };
                     break;
                 }
             //udemon524
-            case 106: //敵手札の9コスト以下のカード2枚のコスト-2
+            case 106: //敵手札の9コスト以下のカードのコスト+1 これを2回繰り返す
                 {
                     var x = FieldManager.instance.GetCardsInHand(!c.model.isPlayerCard);
                     if(x != null)
                     {
                         var y = x[UnityEngine.Random.Range(0, x.Count())];
-                        y.ChangeCost(y.model.cost <= 9 ? y.model.cost + 1 : y.model.cost);
+                        y.CreaseCost(y.model.cost <= 9 ? 1 : 0);
                         var z = x[UnityEngine.Random.Range(0, x.Count())];
-                        z.ChangeCost(z.model.cost <= 9 ? z.model.cost + 1 : z.model.cost);
+                        z.CreaseCost(z.model.cost <= 9 ? 1 : 0);
                     }
                     break;
                 }
             //sdemon5
             case 107: //全てのユニットのATK-3 全ての敵ユニットのHP-1
                 {
-                    FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard).ForEach(i => i.DeBuff(3, 0));
-                    FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DeBuff(3, 1));
+                    c.SpellContents = () =>
+                    {
+                        FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard).ForEach(i => i.DeBuff(3, 0));
+                        FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard).ForEach(i => i.DeBuff(3, 1));
+                    };
                     break;
                 }
             //minotaur
@@ -1466,7 +1481,14 @@ public class SkillManager : MonoBehaviour
             //udemon634
             case 109: //召喚時:ユニット1体を-2/-2 死亡時:ランダムな敵ユニット1体を-2/-2
                 {
-                    targets?.First().DeBuff(2, 2);
+                    if (!GameDataManager.instance.isOnlineBattle && !GameManager.instance.isPlayerTurn)
+                    {
+                        FieldManager.instance.GetRandomUnits(true)?.DeBuff(2, 2);
+                    }
+                    else
+                    {
+                        targets?.First().DeBuff(2, 2);
+                    }
                     c.SpecialSkillBeforeDie = () =>
                     {
                         FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(2, 2);
@@ -1491,7 +1513,7 @@ public class SkillManager : MonoBehaviour
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
                     {
-                        if (isPlayerTurn)
+                        if (isPlayerTurn == c.model.isPlayerCard)
                         {
                             if(Random.Range(0, 2) == 0)
                             {
@@ -1512,12 +1534,12 @@ public class SkillManager : MonoBehaviour
                     if(FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
                     {
                         hl += x.Count;
-                        x.ForEach(i => i.Damage(99));
+                        x.Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList().ForEach(i => i.Damage(99));
                     }
                     if(FieldManager.instance.GetUnitsByIsPlayer(!c.model.isPlayerCard) is var y && y != null)
                     {
                         hl += y.Count;
-                        y.ForEach(i => i.Damage(99));
+                        y.Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList().ForEach(i => i.Damage(99));
                     }
                     h.Heal(hl);
                     break;
@@ -1570,20 +1592,22 @@ public class SkillManager : MonoBehaviour
             //633 //即撃 味方フィールドの\nユニットの数分、コスト-1
             case 23:
                 {
-                    var recordCost = 6;
-                    void ChangeCost()
+                    var recordFieldCnt = 0;
+                    IEnumerator CreaseCost()
                     {
-                        if (recordCost != 6 - (c.model.isPlayerCard ? FieldManager.instance.playerFieldOnUnitCnt : FieldManager.instance.enemyFieldOnUnitCnt))
+                        yield return null;
+                        var x = c.model.isPlayerCard ? FieldManager.instance.playerFieldOnUnitCnt : FieldManager.instance.enemyFieldOnUnitCnt;
+                        if (recordFieldCnt != x)
                         {
-                            c.ChangeCost(6 - (c.model.isPlayerCard ? FieldManager.instance.playerFieldOnUnitCnt : FieldManager.instance.enemyFieldOnUnitCnt));
-                            recordCost = c.model.cost;
+                            c.CreaseCost(recordFieldCnt - x, false);
+                            recordFieldCnt = x;
                         }
                     }
 
-                    ChangeCost();
+                    StartCoroutine(CreaseCost());
                     c.UpdateSkill += () =>
                     {
-                        ChangeCost();
+                        StartCoroutine(CreaseCost());
                     };
                     break;
                 }
@@ -1614,44 +1638,44 @@ public class SkillManager : MonoBehaviour
             //uelf955 
             case 52: //味方フィールドの\n1コスト以下の味方ユニットの数分、コスト-1
                 {
-                    var recordCost = 9;
-                    IEnumerator ChangeCost()
+                    var recordDiedCnt1 = 0;
+                    IEnumerator CreaseCost()
                     {
                         yield return null;
                         var x = FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard).Where(i => i.model.cost <= 1).Count();
-                        if (recordCost != 9 - x)
+                        if (recordDiedCnt1 != x)
                         {
-                            c.ChangeCost(9 - x);
-                            recordCost = c.model.cost;
+                            c.CreaseCost(recordDiedCnt1 - x, false);
+                            recordDiedCnt1 = x;
                         }
                     }
 
-                    StartCoroutine(ChangeCost());
+                    StartCoroutine(CreaseCost());
                     c.UpdateSkill += () =>
                     {
-                        StartCoroutine(ChangeCost());
+                        StartCoroutine(CreaseCost());
                     };
                     break;
                 }
             //uwitch624
             case 67: //即撃 狙撃 この対戦中に使用したスペルの数分、コスト-1
                 {
-                    var recordCost = 6;
-                    IEnumerator ChangeCost()
+                    var recordSpellCount = 0;
+                    IEnumerator CreaseCost()
                     {
                         yield return null;
                         var x = (c.model.isPlayerCard ? FieldManager.instance.playerUsedSpellList : FieldManager.instance.enemyUsedSpellList).Count();
-                        if (recordCost != 6 - x)
+                        if (recordSpellCount != x)
                         {
-                            c.ChangeCost(6 - x);
-                            recordCost = c.model.cost;
+                            c.CreaseCost(recordSpellCount - x, false);
+                            recordSpellCount = x;
                         }
                     }
 
-                    StartCoroutine(ChangeCost());
+                    StartCoroutine(CreaseCost());
                     c.UpdateSkill += () =>
                     {
-                        StartCoroutine(ChangeCost());
+                        StartCoroutine(CreaseCost());
                     };
                     break;
                 }
@@ -1665,7 +1689,7 @@ public class SkillManager : MonoBehaviour
                         var x = (c.model.isPlayerCard ? FieldManager.instance.playerUsedSpellList : FieldManager.instance.enemyUsedSpellList).Count();
                         if (recordSpellCount != x)
                         {
-                            c.CreaseCost(recordSpellCount - x);
+                            c.CreaseCost(recordSpellCount - x, false);
                             recordSpellCount = x;
                         }
                     }
@@ -1687,7 +1711,7 @@ public class SkillManager : MonoBehaviour
                         var x = (c.model.isPlayerCard ? FieldManager.instance.playerBuffedCntByItemCard : FieldManager.instance.enemyBuffedCntByItemCard);
                         if (recordBuffByItemCard != x)
                         {
-                            c.CreaseCost(recordBuffByItemCard - x);
+                            c.CreaseCost(recordBuffByItemCard - x, false);
                             recordBuffByItemCard = x;
                         }
                     }

@@ -832,13 +832,15 @@ MonoBehaviour:
   soundWin: {fileID: 8300000, guid: 70ea2d0078274fc438ec4e0b957c6ca8, type: 3}
   soundLose: {fileID: 8300000, guid: 6104023b1e5fc104a9090190279be703, type: 3}
   soundCardFire: {fileID: 8300000, guid: e77a89e56d019894fa4d1fadd27e1624, type: 3}
+  soundMPHeal: {fileID: 8300000, guid: 3546853a5a8a0204cac1fdbf6c1bcca5, type: 3}
+  soundMPBuff: {fileID: 8300000, guid: ac6a5c53f48ebb4429b95f8cfb917b6a, type: 3}
   soundMPDeBuff: {fileID: 8300000, guid: 24c5aef8bf6b4c44f9a58b0e4c0cf4a4, type: 3}
   soundcCardHeal: {fileID: 8300000, guid: 3d5847db9b6e49649a55c3baf3f568bc, type: 3}
   soundcCardBuff: {fileID: 8300000, guid: 3661974ccfc7ba54baa913633378f262, type: 3}
   soundcCardDeBuff: {fileID: 8300000, guid: 9cb801c16477e1941b076672653d25ea, type: 3}
   soundcCardSeal: {fileID: 8300000, guid: f02ef7c07d42f2346aff426a25a02720, type: 3}
-  soundcUseTensionCard: {fileID: 8300000, guid: 400786197b05343438adefd2861688c9,
-    type: 3}
+  soundTensionUp: {fileID: 8300000, guid: 400786197b05343438adefd2861688c9, type: 3}
+  soundTensionDown: {fileID: 8300000, guid: f5917df58c15a8e43a40f083df4c9ca3, type: 3}
 --- !u!1 &418071552
 GameObject:
   m_ObjectHideFlags: 0
@@ -1495,7 +1497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6ea4714947d6043b6ff29e3ced3f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardlist: {fileID: 11400000, guid: d67dc7f24ec2c7842a92077d50d1d965, type: 2}
+  cardlist: {fileID: 11400000, guid: 07e271dab109c184ca83389133738ae6, type: 2}
 --- !u!4 &1450366124
 Transform:
   m_ObjectHideFlags: 0

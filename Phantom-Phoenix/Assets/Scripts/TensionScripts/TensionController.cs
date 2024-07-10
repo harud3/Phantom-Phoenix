@@ -29,14 +29,22 @@ public class TensionController : MonoBehaviour
     public void UseTensionCard()
     {
         if (GameManager.instance.GetHeroMP(isPlayer) <= 0) { return; }
-        AudioManager.instance.SoundcUseTensionCard();
+        AudioManager.instance.SoundcTensionUp();
         model.UseTensionCard();
         view.ReShow(model);
     }
-    public void SetTension(int tension)
+    public void SetTension(int tension, bool hasSound = true)
     {
         if(0 <= tension && tension <= 3)
         {
+            if(tension > model.tension && hasSound)
+            {
+                AudioManager.instance.SoundcTensionUp();
+            }
+            else if(tension < model.tension && hasSound)
+            {
+                 AudioManager.instance.SoundcTensionDown();
+            }
             model.SetTension(tension);
             view.ReShow(model);
         }
@@ -75,7 +83,7 @@ public class TensionController : MonoBehaviour
         else {
             spellContents?.Invoke();
         }
-        SetTension(0); model.PlusTensionSpellUsedCnt();
+        SetTension(0, false); model.PlusTensionSpellUsedCnt();
         GameManager.instance.SetCanUsetension(model.isPlayer);
     }
     private void SetTensionSpell(int useHeroID)

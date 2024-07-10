@@ -6873,6 +6873,8 @@ MonoBehaviour:
     type: 3}
   playerTensionController: {fileID: 58193745}
   enemyTensionController: {fileID: 1944335832}
+  playerHand: {fileID: 1489626060}
+  enemyHand: {fileID: 1371586486}
 --- !u!4 &1753854763
 Transform:
   m_ObjectHideFlags: 0

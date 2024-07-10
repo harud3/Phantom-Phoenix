@@ -128,10 +128,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             enemyTensionController.Init(enemyUseHeroID);
             if (!isPlayerTurn)
             {
-                playerTensionController.SetTension(3);
+                playerTensionController.SetTension(3, false);
 
             }
-            else { enemyTensionController.SetTension(3); }
+            else { enemyTensionController.SetTension(3, false); }
             gameState = eGameState.isWaitMulligan;
             StartCoroutine(WaitMulligan());
         }

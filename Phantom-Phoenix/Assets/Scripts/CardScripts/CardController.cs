@@ -205,20 +205,14 @@ public class CardController : Controller
         view.ReShow(model);
     }
     /// <summary>
-    /// コストを指定された値にする
-    /// </summary>
-    /// <param name="nextCost"></param>
-    public void ChangeCost(int nextCost)
-    {
-        model.ChangeCost(nextCost);
-        view.ReShow(model);
-    }
-    /// <summary>
     /// コストを増減する
     /// </summary>
     /// <param name="increase"></param>
-    public void CreaseCost(int increase)
+    public void CreaseCost(int increase, bool hasSound = true)
     {
+        //ターン開始時の最大MP増加は、model.ResetMP()の中で行っているので、効果音は鳴らない
+        if (increase > 0 && hasSound) { AudioManager.instance.SoundMPDeBuff(); }
+        else if (increase < 0 && hasSound) { AudioManager.instance.SoundMPBuff(); }
         model.CreaseCost(increase);
         view.ReShow(model);
     }

@@ -24,6 +24,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioClip soundCardFire;
     [SerializeField]
+    private AudioClip soundMPHeal;
+    [SerializeField]
+    private AudioClip soundMPBuff;
+    [SerializeField]
     private AudioClip soundMPDeBuff;
     [SerializeField]
     private AudioClip soundcCardHeal;
@@ -34,7 +38,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioClip soundcCardSeal;
     [SerializeField]
-    private AudioClip soundcUseTensionCard;
+    private AudioClip soundTensionUp;
+    [SerializeField]
+    private AudioClip soundTensionDown;
 
     private AudioSource audioSource;
 
@@ -95,6 +101,16 @@ public class AudioManager : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(soundCardFire);
     }
+    public void SoundMPHeal()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundMPHeal);
+    }
+    public void SoundMPBuff()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundMPBuff);
+    }
     public void SoundMPDeBuff()
     {
         audioSource.Stop();
@@ -120,9 +136,14 @@ public class AudioManager : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(soundcCardSeal);
     }
-    public void SoundcUseTensionCard()
+    public void SoundcTensionUp()
     {
         audioSource.Stop();
-        audioSource.PlayOneShot(soundcUseTensionCard);
+        audioSource.PlayOneShot(soundTensionUp);
+    }
+    public void SoundcTensionDown()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(soundTensionDown);
     }
 }

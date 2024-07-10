@@ -103,19 +103,25 @@ public class HeroController : Controller
     /// <summary>
     /// MPを増やす
     /// </summary>
-    /// <param name="reduce"></param>
     public void IncreaseMP(int increase)
     {
+        if(increase > 0)
+        {
+            AudioManager.instance.SoundMPHeal();
+        }
         model.ReduceMP(-increase); //いかがなものか とは思う
         view.ReShowMP(model);
     }
     /// <summary>
     /// MPを回復する
     /// </summary>
-    /// <param name="reduce"></param>
     public void HealMP(int hl)
     {
-        model.HealMP(hl); //いかがなものか とは思う
+        if(hl > 0)
+        {
+            AudioManager.instance.SoundMPHeal();
+        }
+        model.HealMP(hl);
         view.ReShowMP(model);
     }
     /// <summary>
@@ -125,8 +131,8 @@ public class HeroController : Controller
     public void ChangeMaxMP(int up)
     {
         //ターン開始時の最大MP増加は、model.ResetMP()の中で行っているので、効果音は鳴らない
-        if (up > 0) { } 
-        else { AudioManager.instance.SoundMPDeBuff(); }
+        if (up > 0) { AudioManager.instance.SoundMPBuff(); } 
+        else if (up < 0) { AudioManager.instance.SoundMPDeBuff(); }
         model.ChangeMaxMP(up);
         view.ReShowMP(model);
     }
