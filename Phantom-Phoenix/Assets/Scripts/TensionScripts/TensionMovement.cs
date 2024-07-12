@@ -49,12 +49,6 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
                             GameManager.instance.SendUseTensionSpell(0);
                         }
                         break;
-                    case 5: //knight
-                        if (IsExistTarget(5))
-                        {
-                            StartCoroutine(waitPlayerClick(tensionController));
-                        }
-                        break;
                 }
 
             }
@@ -138,16 +132,6 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
                     }
                     FieldManager.instance.SetHeroSelectablePanel(Enumerable.Range(1, 2).ToArray(), true);
                     return true;
-                }
-            case 5: //knight
-                {
-                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 12).ToArray());
-                    if (x.Count != 0)
-                    {
-                        FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true);
-                        return true;
-                    }
-                    break;
                 }
         }
         return false;

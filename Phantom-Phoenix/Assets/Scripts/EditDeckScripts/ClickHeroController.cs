@@ -8,8 +8,8 @@ using static CardEntity;
 
 public class ClickHeroController : MonoBehaviour
 {
-    [SerializeField] private List<Button> heros = new List<Button>(5); //各種ヒーローボタンごとに事前設定
-    [SerializeField] private List<GameObject> selectPanel = new List<GameObject>(5); //各種ヒーロー画像ごとに事前設定
+    [SerializeField] private List<Button> heros = new List<Button>(4); //各種ヒーローボタンごとに事前設定
+    [SerializeField] private List<GameObject> selectPanel = new List<GameObject>(4); //各種ヒーロー画像ごとに事前設定
     private void Start()
     {
         setSelectPanel(GameDataManager.instance.editDeckHeroID);

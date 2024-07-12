@@ -665,14 +665,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                         yield return new WaitForSeconds(0.5f);
                     }
                     break;
-                case 5: //knight
-                    yield return new WaitForSeconds(0.25f);
-                    if (FieldManager.instance.GetRandomUnits(true) is CardController ID5)
-                    {
-                        enemyTensionController.UseTensionSpell(ID5);
-                        yield return new WaitForSeconds(0.5f);
-                    }
-                    break;
             }
 
 

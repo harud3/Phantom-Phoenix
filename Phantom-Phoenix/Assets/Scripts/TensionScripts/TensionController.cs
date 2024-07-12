@@ -155,14 +155,6 @@ public class TensionController : MonoBehaviour
                     }
                 };
                 break;
-            case 5: //knight
-                var x = model.isPlayer ? playerHeroController : enemyHeroController;
-                ccSpellContents = (CardController target) =>
-                {
-                    target.Damage(1 + ((x.model.maxHP - x.model.hp) / 5));
-                    SkillManager.instance.ExecutePierce(1 + ((x.model.maxHP - x.model.hp) / 5), target);
-                };
-                break;
         }
         
     }
