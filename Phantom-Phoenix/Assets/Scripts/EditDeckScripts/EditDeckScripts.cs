@@ -20,7 +20,7 @@ public class EditDeckManager : MonoBehaviour
     private int pages = 1;
     private void Start()
     {
-        var heroID = GameDataManager.instance.editDeckHeroID;
+        var heroID = GameDataManager.instance.DeckHeroID;
         stockCards = GameDataManager.instance.cardlist.cl.Where(c => c.hero == CardEntity.Hero.common || (int)c.hero == heroID).OrderByDescending(c => c.hero).ThenBy(c => c.ID).ToList();
         cardIDs = stockCards.Select(c => c.ID).ToList();
 

@@ -13,17 +13,17 @@ public class DeckModel
     public List<int> deck;
     public DeckModel Init()
     {
-        if (PlayerPrefs.HasKey("PlayerDeckData"))
+        string DeckHeroID = GameDataManager.instance.DeckHeroID.ToString();
+        if ( PlayerPrefs.HasKey($"PlayerDeckData{DeckHeroID}"))
         {
-            string json = PlayerPrefs.GetString("PlayerDeckData");
+            string json = PlayerPrefs.GetString($"PlayerDeckData{DeckHeroID}");
             DeckData data = JsonUtility.FromJson<DeckData>(json);
-
             useHeroID = data.useHeroID;
             deck = data.deck.OrderBy(i => Guid.NewGuid()).ToList();
         }
         else
         {
-            Debug.Log("PlayerDeckDataが存在しません");
+            Debug.Log("デッキデータが存在しません");
         }
 
         return this;

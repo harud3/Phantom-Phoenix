@@ -21,37 +21,27 @@ public class EditDeckbackmenu : MonoBehaviour
     {
         button.onClick.AddListener(() =>
         {
-            if (Deck.childCount < 30) //デッキが30枚未満なら逃がさない
+            StopAllCoroutines();
+            if (Deck.childCount == 30) //デッキが30枚ならセーブする
             {
-                StopAllCoroutines();
-                StartCoroutine(ChangeText());
-                return;
+                //jsonファイルに記録
+                List<int> cardIDs = new List<int>();
+                foreach (Transform card in Deck)
+                {
+                    cardIDs.Add(card.GetComponent<EditDeckCardController>().model.cardID);
+                }
+                DeckData data = new DeckData()
+                {
+                    useHeroID = GameDataManager.instance.DeckHeroID,
+                    deck = cardIDs
+                };
+                string json = JsonUtility.ToJson(data, true);
+                PlayerPrefs.SetString($"PlayerDeckData{data.useHeroID}", json);
+                PlayerPrefs.Save();
             }
-            StopAllCoroutines(); 
-            
-            //jsonファイルに記録
-            List<int> cardIDs = new List<int>();
-            foreach (Transform card in Deck)
-            {
-                cardIDs.Add(card.GetComponent<EditDeckCardController>().model.cardID);
-            }
-            DeckData data = new DeckData()
-            {
-                useHeroID = GameDataManager.instance.editDeckHeroID, deck = cardIDs
-            };
-            string json = JsonUtility.ToJson(data, true);
-            PlayerPrefs.SetString("PlayerDeckData", json);
-            PlayerPrefs.Save();
             StartCoroutine(ChangeMenuScene());
         });
 
-    }
-    IEnumerator ChangeText()
-    {
-        textHint.text = "デッキが30枚未満です";
-        yield return new WaitForSeconds(2f);
-        textHint.text = "カードをデッキにドラッグ&ドロップ";
-        StopAllCoroutines();
     }
     IEnumerator ChangeMenuScene()
     {

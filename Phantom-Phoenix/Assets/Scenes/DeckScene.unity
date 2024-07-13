@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 25883226}
   - component: {fileID: 25883229}
   m_Layer: 5
-  m_Name: ButtonBackMenu
+  m_Name: ButtonOK
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d47abdb13a4fcfb4cb8e118ca6879cdc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0719f06616590e94b9ce13a788a9ca59, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -5,16 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class OnlineManager : MonoBehaviourPunCallbacks
 {
-    bool inRoom;
+    bool inRoom = false;
     bool isMatching = false;
-    public void OnMatchingButton()
+    public void Start()
     {
         if (!PlayerPrefs.HasKey("PlayerDeckData"))
         {
             Debug.Log("PlayerDeckDataが存在しません");
             return;
         }
-        GameDataManager.instance.isOnlineBattle = true;
         //PhotonServerSettingsの設定内容を使ってマスタサーバへ接続
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -30,10 +29,8 @@ public class OnlineManager : MonoBehaviourPunCallbacks
     }
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default); //TODO:人数直す
+        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default);
         GameDataManager.instance.isMaster = true;
-        SceneManager.LoadScene("OnlineScene");
-        AudioManager.instance.SoundButtonClick1();
     }
 
     //部屋が2人ならシーンを変える
@@ -43,7 +40,6 @@ public class OnlineManager : MonoBehaviourPunCallbacks
         {
             isMatching = true;
             SceneManager.LoadScene("BattleScene");
-            AudioManager.instance.SoundButtonClick1();
         }
     }
 }

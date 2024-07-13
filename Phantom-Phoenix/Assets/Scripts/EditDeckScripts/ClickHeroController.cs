@@ -12,17 +12,17 @@ public class ClickHeroController : MonoBehaviour
     [SerializeField] private List<GameObject> selectPanel = new List<GameObject>(4); //各種ヒーロー画像ごとに事前設定
     private void Start()
     {
-        setSelectPanel(GameDataManager.instance.editDeckHeroID);
+        setSelectPanel(GameDataManager.instance.DeckHeroID);
 
         var heroID = 1;
         foreach ((Button ButtonHero, int heroID) hero in heros.Select((h, i) => (h, heroID++)))
         {
             hero.ButtonHero.onClick.AddListener(() =>
             {
-                if(GameDataManager.instance.editDeckHeroID != hero.heroID)
+                if(GameDataManager.instance.DeckHeroID != hero.heroID)
                 {
                     AudioManager.instance.SoundButtonClick3();
-                    GameDataManager.instance.editDeckHeroID = hero.heroID;
+                    GameDataManager.instance.DeckHeroID = hero.heroID;
                     setSelectPanel(hero.heroID);
                 }
                 

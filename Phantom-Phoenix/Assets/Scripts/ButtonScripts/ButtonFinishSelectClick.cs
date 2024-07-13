@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
-/// バトル画面　ButtonTurnを押したときの処理
+/// バトル画面　ButtonFinishSelectを押したときの処理
 /// </summary>
 public class ButtonFinishSelectClick : MonoBehaviour
 {

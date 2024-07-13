@@ -8,7 +8,7 @@ using Photon.Realtime;
 /// <summary>
 /// バトル画面　ButtonConcedeの処理　コンシしたことにしてシーン遷移を起こす
 /// </summary>
-public class ToMenuScene : MonoBehaviour
+public class ChangeSceneFromBattleScene : MonoBehaviour
 {
     [SerializeField]
     Button button;
