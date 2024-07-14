@@ -18,8 +18,8 @@ public class CardEntity
     public Target target;
     public string text;
 
-    public enum Hero { common, elf, witch, king, demon}
-    public enum Category { unit, spell, item }
+    public enum Hero { common, elf, witch, king, demon} //共通、エルフ、ウィッチ、キング、デーモン
+    public enum Category { unit, spell, item } //ユニット、スペル、アイテム
     public enum Rarity { R, SR, SSR }
 
     public enum Skill { none, fast, taunt, snipe, pierce, doubleAction } //なし、即撃、挑発、狙撃、貫通、連撃　これらは効果持ちカードが多くなりがちな効果群なので特別枠

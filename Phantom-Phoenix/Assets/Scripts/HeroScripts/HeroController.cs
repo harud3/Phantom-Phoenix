@@ -137,6 +137,9 @@ public class HeroController : Controller
         model.ChangeMaxMP(up);
         view.ReShowMP(model);
     }
+    /// <summary>
+    /// スペルダメージのバフ
+    /// </summary>
     public void spellDamageBuff(int buff)
     {
         model.spellDamageBuff(buff);
@@ -147,11 +150,11 @@ public class HeroController : Controller
         SpellUsedSkill?.Invoke();
     }
     /// <summary>
-    /// 外部バフ
+    /// カードに対する外部バフ
     /// </summary>
     public DelCCExTernal ccExternalBuff = null;
     /// <summary>
-    /// 外部バフ
+    /// カードを引いた時に発生する外部バフ
     /// </summary>
     public DelCCExTernal ccExternalDrawBuff = null;
 }

@@ -19,6 +19,9 @@ public class TensionModel
         tensionSpellUsedCnt = 0;
         this.isPlayer = isPlayer;
     }
+    /// <summary>
+    /// テンションの値を設定する
+    /// </summary>
     public void SetTension(int tension)
     {
         if(this.tension < tension)
@@ -27,6 +30,9 @@ public class TensionModel
         }
         this.tension = tension;
     }
+    /// <summary>
+    /// テンションカードを使う
+    /// </summary>
     public void UseTensionCard()
     {
         if (tension < 3)
@@ -37,10 +43,16 @@ public class TensionModel
             SkillManager.instance.SkillCausedByTension((isPlayer ? Enumerable.Range(1, 6) : Enumerable.Range(7, 6)).ToArray());
         }
     }
+    /// <summary>
+    /// このターンにテンションカードを使ったかどうかを設定する == 使用済みならこのターン中はテンションカードを使用できない
+    /// </summary>
     public void CanUseTensionCard(bool canUseTensionCard)
     {
         isTensionUsedThisTurn = !canUseTensionCard;
     }
+    /// <summary>
+    /// テンションスペル使用回数++
+    /// </summary>
     public void PlusTensionSpellUsedCnt()
     {
         tensionSpellUsedCnt++;

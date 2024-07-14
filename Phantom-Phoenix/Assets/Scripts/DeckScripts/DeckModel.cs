@@ -13,6 +13,7 @@ public class DeckModel
     public List<int> deck;
     public DeckModel Init()
     {
+        //jsonファイルから記録したデッキを取得する　SelectHeroSceneで選択したヒーローのデッキを対象とする
         string DeckHeroID = GameDataManager.instance.DeckHeroID.ToString();
         if ( PlayerPrefs.HasKey($"PlayerDeckData{DeckHeroID}"))
         {

@@ -20,6 +20,7 @@ public class EditDeckManager : MonoBehaviour
     private int pages = 1;
     private void Start()
     {
+        //対象ヒーローが使えるカードのみ抽出　共通カードと各ヒーロー専用カード
         var heroID = GameDataManager.instance.DeckHeroID;
         stockCards = GameDataManager.instance.cardlist.cl.Where(c => c.hero == CardEntity.Hero.common || (int)c.hero == heroID).OrderByDescending(c => c.hero).ThenBy(c => c.ID).ToList();
         cardIDs = stockCards.Select(c => c.ID).ToList();
@@ -45,9 +46,7 @@ public class EditDeckManager : MonoBehaviour
         }
 
         //最初のページを表示
-        GetNewStock();
-
-        
+        GetNewStock();  
     }
     private void GetNewStock()
     {

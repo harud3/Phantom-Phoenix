@@ -30,11 +30,7 @@ public class EditDeckbackmenu : MonoBehaviour
                 {
                     cardIDs.Add(card.GetComponent<EditDeckCardController>().model.cardID);
                 }
-                DeckData data = new DeckData()
-                {
-                    useHeroID = GameDataManager.instance.DeckHeroID,
-                    deck = cardIDs
-                };
+                DeckData data = new DeckData(){ useHeroID = GameDataManager.instance.DeckHeroID, deck = cardIDs };
                 string json = JsonUtility.ToJson(data, true);
                 PlayerPrefs.SetString($"PlayerDeckData{data.useHeroID}", json);
                 PlayerPrefs.Save();

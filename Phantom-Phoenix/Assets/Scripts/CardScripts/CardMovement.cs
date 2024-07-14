@@ -20,14 +20,13 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
 
     [NonSerialized]
     public bool isDraggable; //動かせるかどうか
-
     
     void Start()
     {
         //nullケア
         recordDefaultParent =  defaultParent = transform.parent;
     }
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerEnter(PointerEventData eventData) //手札のカードを拡大する
     {
         CardController cardController = GetComponent<CardController>();
 
@@ -41,7 +40,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
 
         }
     }
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnPointerExit(PointerEventData eventData) //手札のカードのサイズを戻す
     {
         CardController cardController = GetComponent<CardController>();
 
@@ -67,7 +66,7 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
             cardController.SetIsMulligan(!cardController.model.isMulligan);
         }
     }
-    public void OnBeginDrag(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData) //カード移動開始
     {
 
         if (!GameManager.instance.isPlayerTurn) { isDraggable = false;  return; } //自分のターンではないのに動かそうとするのは見過ごせない
@@ -99,14 +98,14 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
         GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData) //カード移動中
     {
         if (!isDraggable) { return; }
         //ドラッグに追従する
         transform.position = eventData.position;
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    public void OnEndDrag(PointerEventData eventData) //カード移動終了
     {
         if (!isDraggable) { return; }
         //親を変更 DropPlace.csからdefaultParentが変更されている場合、移動前とは別の親となる　手札→フィールド
@@ -123,8 +122,6 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
     /// <summary>
     /// 一方通行の移動演出
     /// </summary>
-    /// <param name="targetArea"></param>
-    /// <returns></returns>
     public IEnumerator MoveToArea(Transform targetArea, bool isUnit = true)
     {
         if(defaultParent is null) { defaultParent = transform.parent; } //nullエラー対策
@@ -142,8 +139,6 @@ public class CardMovement : MonoBehaviourPunCallbacks, IPointerEnterHandler, IPo
     /// <summary>
     /// 往復の移動演出 バトルで使うので途中でサウンドも再生
     /// </summary>
-    /// <param name="target"></param>
-    /// <returns></returns>
     public IEnumerator MoveToTarget(Transform target)
     {
         var currentPosition = transform.position;

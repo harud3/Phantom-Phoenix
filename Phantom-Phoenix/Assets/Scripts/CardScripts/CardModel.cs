@@ -13,7 +13,7 @@ public class CardModel
     public string name { get; private set; }
 
     public int defaultCost { get; private set; }
-    public int temporaryCost {  get; private set; }
+    public int temporaryCost {  get; private set; } //一時的なコスト増減
     public int cost { get; private set; }
     public int defaultATK { get; private set; }
     public int atk { get; private set; }
@@ -27,8 +27,7 @@ public class CardModel
     public CardEntity.Skill skill1 { get; private set; }
     public CardEntity.Skill skill2 { get; private set; }
     public CardEntity.Skill skill3 { get; private set; }
-    public CardEntity.Skill skill4 { get; set; } //外部付与
-    public CardEntity.Skill skill5 { get; set; } //外部付与
+    public List<CardEntity.Skill> addSkills { get; private set; }
     public string textCard { get; private set; }
     public CardEntity.Target target { get; private set; }
 
@@ -70,8 +69,7 @@ public class CardModel
         skill1 = cardEntity.skill1;
         skill2 = cardEntity.skill2;
         skill3 = cardEntity.skill3;
-        skill4 = CardEntity.Skill.none;
-        skill5 = CardEntity.Skill.none;
+        addSkills = new List<CardEntity.Skill>();
         textCard = cardEntity.text;
         target = cardEntity.target;
 
@@ -86,8 +84,8 @@ public class CardModel
         isTaunt = false;
         isActiveDoubleAction = true;
         //選択が必要な場合、このフラグをtrueにして管理する
-        if (target == CardEntity.Target.unit || target == CardEntity.Target.playerUnit || target == CardEntity.Target.enemyUnit 
-            || target == CardEntity.Target.enemy || target == CardEntity.Target.unitOrHero)
+        if (target == CardEntity.Target.unit || target == CardEntity.Target.playerUnit || target == CardEntity.Target.enemyUnit
+            || target == CardEntity.Target.player || target == CardEntity.Target.enemy || target == CardEntity.Target.unitOrHero)
         {
             HasSelectSpeciallSkill = true;
         }
@@ -119,18 +117,6 @@ public class CardModel
     {
         atk = nextATK;
         hp = nextHP;
-    }
-    /// <summary>
-    /// コストを指定された値にする 基本的にCardControllerを通して呼ぶことになる
-    /// </summary>
-    /// <param name="cnt"></param>
-    public void ChangeCost(int cnt)
-    {
-        cost = cnt;
-        if (cost < 0)
-        {
-            cost = 0;
-        }
     }
     /// <summary>
     /// コストを指定された値増減する 基本的にCardControllerを通して呼ぶことになる
@@ -234,12 +220,20 @@ public class CardModel
     {
         this.isActiveDoubleAction = isActiveDoubleAction;
     }
+    /// <summary>
+    /// 封印を設定する
+    /// </summary>
+    /// <param name="isSeal"></param>
     public void SetIsSeal(bool isSeal)
     {
         this.isSeal = isSeal;
-        SetDefaultStats();
-        isTaunt = false;
+        SetDefaultStats(); //元のスタッツに戻す
+        isTaunt = false; //挑発中を外す
     }
+    /// <summary>
+    /// 攻撃できない効果を持っているかを設定する
+    /// </summary>
+    /// <param name="hasCannotAttack"></param>
     public void SetHasCannotAttack(bool hasCannotAttack)
     {
         this.hasCannotAttack = hasCannotAttack;

@@ -17,7 +17,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit011
+    name: ucommon011
     cost: 0
     atk: 1
     hp: 1
@@ -30,7 +30,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit122
+    name: ucommon122
     cost: 1
     atk: 2
     hp: 2
@@ -43,7 +43,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit102
+    name: ucommon102
     cost: 1
     atk: 0
     hp: 2
@@ -56,7 +56,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit121
+    name: ucommon121
     cost: 1
     atk: 2
     hp: 1
@@ -95,7 +95,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit222
+    name: ucommon222
     cost: 2
     atk: 2
     hp: 2
@@ -108,7 +108,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit232
+    name: ucommon232
     cost: 2
     atk: 3
     hp: 2
@@ -134,7 +134,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit321
+    name: ucommon321
     cost: 3
     atk: 2
     hp: 1
@@ -147,7 +147,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit333
+    name: ucommon333
     cost: 3
     atk: 3
     hp: 3
@@ -160,7 +160,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit322
+    name: ucommon322
     cost: 3
     atk: 2
     hp: 2
@@ -186,7 +186,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit445
+    name: ucommon445
     cost: 4
     atk: 4
     hp: 5
@@ -199,7 +199,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit443
+    name: ucommon443
     cost: 4
     atk: 4
     hp: 3
@@ -212,7 +212,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit434
+    name: ucommon434
     cost: 4
     atk: 3
     hp: 4
@@ -238,7 +238,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit521
+    name: ucommon521
     cost: 5
     atk: 2
     hp: 1
@@ -251,7 +251,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit517
+    name: ucommon517
     cost: 5
     atk: 1
     hp: 7
@@ -277,7 +277,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit656
+    name: ucommon656
     cost: 6
     atk: 5
     hp: 6
@@ -290,7 +290,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit644
+    name: ucommon644
     cost: 6
     atk: 4
     hp: 4
@@ -303,7 +303,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit633
+    name: ucommon633
     cost: 6
     atk: 3
     hp: 3
@@ -316,7 +316,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit777
+    name: ucommon777
     cost: 7
     atk: 7
     hp: 7
@@ -329,7 +329,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit746
+    name: ucommon746
     cost: 7
     atk: 4
     hp: 6
@@ -355,7 +355,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 0
-    name: unit877
+    name: ucommon877
     cost: 8
     atk: 7
     hp: 7
@@ -368,7 +368,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit863
+    name: ucommon863
     cost: 8
     atk: 6
     hp: 3
@@ -394,7 +394,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit925
+    name: ucommon925
     cost: 9
     atk: 2
     hp: 5
@@ -407,7 +407,7 @@ MonoBehaviour:
     hero: 0
     category: 0
     rarity: 1
-    name: unit945
+    name: ucommon945
     cost: 9
     atk: 4
     hp: 5
@@ -715,7 +715,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 8
-    text: "\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B1\u30C0\u30E1\u30FC\u30B8"
+    text: "\u5168\u3066\u306E\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n\u5473\u65B9\u30D2\u30FC\u30ED\u30FC\u306B\\n1\u30C0\u30E1\u30FC\u30B8"
   - ID: 55
     hero: 2
     category: 0
@@ -766,8 +766,8 @@ MonoBehaviour:
     skill1: 0
     skill2: 0
     skill3: 0
-    target: 5
-    text: "HP\u30923\u56DE\u5FA9\u3059\u308B\\n\u30AB\u30FC\u30C9\u30921\u679A\u5F15\u304F"
+    target: 7
+    text: "\u5473\u65B9\u306EHP\u3092\\n3\u56DE\u5FA9\u3059\u308B\\n\u30AB\u30FC\u30C9\u30921\u679A\u5F15\u304F"
   - ID: 59
     hero: 2
     category: 0
@@ -844,8 +844,8 @@ MonoBehaviour:
     skill1: 0
     skill2: 0
     skill3: 0
-    target: 5
-    text: "HP\u30926\u56DE\u5FA9\u3059\u308B\\n\u30AB\u30FC\u30C9\u30922\u679A\u5F15\u304F"
+    target: 7
+    text: "\u5473\u65B9\u306EHP\u3092\\n6\u56DE\u5FA9\u3059\u308B\\n\u30AB\u30FC\u30C9\u30922\u679A\u5F15\u304F"
   - ID: 65
     hero: 2
     category: 0
@@ -897,7 +897,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\u4E21\u30D2\u30FC\u30ED\u30FC\u306B\\n7\u30C0\u30E1\u30FC\u30B8"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u4E21\u30D2\u30FC\u30ED\u30FC\u306B\\n7\u30C0\u30E1\u30FC\u30B8"
   - ID: 69
     hero: 2
     category: 0
@@ -1001,7 +1001,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u304C\u5C45\u306A\u3044\u306A\u3089\\n2/1/1\u30922\u4F53\u51FA\u3059"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u304C\u3044\u306A\u3044\u306A\u3089\\n2/1/1\u30922\u4F53\u51FA\u3059"
   - ID: 77
     hero: 3
     category: 1
@@ -1131,7 +1131,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n\u3053\u306E\u5BFE\u6226\u4E2D\u306B\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3092\\n\u4F7F\u7528\u3057\u305F\u56DE\u6570\u5206\u7E70\u308A\u8FD4\u3059"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u30E9\u30F3\u30C0\u30E0\u306A\u6575\u30E6\u30CB\u30C3\u30C8\u306B\\n1\u30C0\u30E1\u30FC\u30B8\\n\u3053\u306E\u5BFE\u6226\u4E2D\u306B\\n\u30A2\u30A4\u30C6\u30E0\u30AB\u30FC\u30C9\u3092\\n\u4F7F\u7528\u3057\u305F\u56DE\u6570\u5206\u884C\u3046"
   - ID: 87
     hero: 3
     category: 0
@@ -1209,7 +1209,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u304C\u5C45\u308B\u306A\u3089\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092\\n+2/+2\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u304C\u5C45\u306A\u3044\u306A\u3089\\n+5/+3"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u304C\u3044\u308B\u306A\u3089\\n\u5168\u3066\u306E\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u3092\\n+2/+2\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C8\u304C\u3044\u306A\u3044\u306A\u3089\\n+5/+3"
   - ID: 93
     hero: 4
     category: 1
@@ -1313,7 +1313,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 3
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u3092-1/-1\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306E\\n\u6700\u5927MP-1"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u5473\u65B9\u30E6\u30CB\u30C3\u30C81\u4F53\u3092-1/-1\\n\u305D\u3046\u3057\u305F\u5834\u5408\u3001\\n\u6575\u30D2\u30FC\u30ED\u30FC\u306E\\n\u6700\u5927MP-1"
   - ID: 101
     hero: 4
     category: 1
@@ -1391,7 +1391,7 @@ MonoBehaviour:
     skill2: 0
     skill3: 0
     target: 0
-    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u6575\u624B\u672D\u306E\\n9\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u30E9\u30F3\u30C0\u30E0\u306A\u30AB\u30FC\u30C9\u306E\\n\u30B3\u30B9\u30C8+1\\n\u3053\u308C\u30922\u56DE\u7E70\u308A\u8FD4\u3059"
+    text: "\u3010\u53EC\u559A\u6642\u3011\\n\u6575\u624B\u672D\u306E\\n9\u30B3\u30B9\u30C8\u4EE5\u4E0B\u306E\\n\u30E9\u30F3\u30C0\u30E0\u306A\u30AB\u30FC\u30C9\u306E\\n\u30B3\u30B9\u30C8+1\\n\u3053\u308C\u30922\u56DE\u884C\u3046"
   - ID: 107
     hero: 4
     category: 1

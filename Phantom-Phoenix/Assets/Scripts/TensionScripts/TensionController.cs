@@ -22,10 +22,16 @@ public class TensionController : MonoBehaviour
 
         SetTensionSpell(useHeroID);
     }
+    /// <summary>
+    /// テンションカードまたはテンションを使える表示の切替
+    /// </summary>
     public void SetCanUseTension(bool canUseTension)
     {
         view.SetActiveSelectablePanel(canUseTension);
     }
+    /// <summary>
+    /// テンションカードを使う
+    /// </summary>
     public void UseTensionCard()
     {
         if (GameManager.instance.GetHeroMP(isPlayer) <= 0) { return; }
@@ -33,6 +39,9 @@ public class TensionController : MonoBehaviour
         model.UseTensionCard();
         view.ReShow(model);
     }
+    /// <summary>
+    /// テンションの値を設定する　hasSoundがtrueなら増減音を鳴らす
+    /// </summary>
     public void SetTension(int tension, bool hasSound = true)
     {
         if(0 <= tension && tension <= 3)
@@ -51,11 +60,16 @@ public class TensionController : MonoBehaviour
         if(GameManager.instance.gameState != GameManager.eGameState.isStarted) { return; }
         GameManager.instance.SetCanUsetension(model.isPlayer);
     }
+    /// <summary>
+    /// テンションカードを使うことができるかを設定　テンションを使った時に呼ばれるため、表示を変える
+    /// </summary>
     public void CanUsetensionCard(bool canUseTensionCard)
     {
         model.CanUseTensionCard(canUseTensionCard);
         view.ReShow(model);
     }
+    #region テンションスペルの実体
+    //スペルカードと似ている
     /// <summary>
     /// ユニット単体を対象としたスペルの効果を設定
     /// </summary>
@@ -86,11 +100,14 @@ public class TensionController : MonoBehaviour
         SetTension(0, false); model.PlusTensionSpellUsedCnt();
         GameManager.instance.SetCanUsetension(model.isPlayer);
     }
+    /// <summary>
+    /// 各キャラのテンションスペルを設定
+    /// </summary>
     private void SetTensionSpell(int useHeroID)
     {
         switch (useHeroID)
         {
-            case 1: //elf
+            case 1: //エルフ
                 void Summon011()
                 {
                     if (FieldManager.instance.GetEmptyFieldID(model.isPlayer) is var x && x.emptyField != null)
@@ -105,7 +122,7 @@ public class TensionController : MonoBehaviour
                     Summon011();
                 };
                 break;
-            case 2: //witch
+            case 2: //ウィッチ
                 ccSpellContents = (CardController target) =>
                 {
                     if (target.model.isPlayerCard == model.isPlayer)
@@ -130,7 +147,7 @@ public class TensionController : MonoBehaviour
                     }
                 };
                 break;
-            case 3: //king
+            case 3: //キング
                 spellContents = () =>
                 {
                     var target = FieldManager.instance.GetUnitsByIsPlayer(model.isPlayer);
@@ -144,7 +161,7 @@ public class TensionController : MonoBehaviour
                     }
                 };
                 break;
-            case 4: //demon
+            case 4: //デーモン
                 spellContents = () =>
                 {
                     var target = FieldManager.instance.GetUnitsByIsPlayer(!model.isPlayer);
@@ -158,4 +175,5 @@ public class TensionController : MonoBehaviour
         }
         
     }
+    #endregion
 }

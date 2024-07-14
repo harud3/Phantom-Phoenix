@@ -22,27 +22,27 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
             {
                 switch (tensionController.model.tensionID)
                 {
-                    case 1: //elf
+                    case 1: //エルフ
                         tensionController.UseTensionSpell<Controller>(null);
                         if (GameDataManager.instance.isOnlineBattle) //ここに入ってきている時点でccかhcのどちらかは対象となっている
                         {
                             GameManager.instance.SendUseTensionSpell(0);
                         }
                         break;
-                    case 2: //witch
+                    case 2: //ウィッチ
                         if (IsExistTarget(2))
                         {
                             StartCoroutine(waitPlayerClick(tensionController));
                         }
                         break;
-                    case 3: //king
+                    case 3: //キング
                         tensionController.UseTensionSpell<Controller>(null);
                         if (GameDataManager.instance.isOnlineBattle) //ここに入ってきている時点でccかhcのどちらかは対象となっている
                         {
                             GameManager.instance.SendUseTensionSpell(0);
                         }
                         break;
-                    case 4: //demon
+                    case 4: //デーモン
                         tensionController.UseTensionSpell<Controller>(null);
                         if (GameDataManager.instance.isOnlineBattle) //ここに入ってきている時点でccかhcのどちらかは対象となっている
                         {
@@ -66,8 +66,6 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
     /// <summary>
     ///　入力待ち　入力があれば、効果の判定に移る    多分これが一番遅いと思います
     /// </summary>
-    /// <param name="cc"></param>
-    /// <returns></returns>
     IEnumerator waitPlayerClick(TensionController tc)
     {
         HintMessage.SetActive(true); //ヒントの表示
@@ -116,13 +114,11 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
     /// <summary>
     /// 対象となりうる候補がいるか確認
     /// </summary>
-    /// <param name="cc"></param>
-    /// <returns></returns>
     private bool IsExistTarget(int tensionID)
     {
         switch (tensionID)
         {
-            case 2: //witch
+            case 2: //ウィッチ
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray());
                     if (x.Count != 0)
@@ -139,9 +135,6 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
     /// <summary>
     /// 対象の確認 targetsByReceiverは対戦相手に送信される情報
     /// </summary>
-    /// <param name="cc"></param>
-    /// <param name="clickGameObject"></param>
-    /// <returns></returns>
     private (bool passed, HeroController hctarget, CardController cctarget, int targetFieldIDByReceiver) TargetCheck(GameObject clickGameObject, TensionController tc)
     {
 
@@ -152,7 +145,7 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
 
         switch (tc.model.tensionID)
         {
-            case 2:
+            case 2: //ウィッチ
                 {
                     if (c != null)
                     {
@@ -161,14 +154,6 @@ public class TensionMovement : MonoBehaviour, IPointerDownHandler
                     if (hc != null)
                     {
                         return (true, hc, c, hc.model.isPlayer ? 14 : 13); //13は味方ヒーロー 14は敵ヒーローとする 受信者から見た対象なので、ここで敵味方の番号を入れ替えておく
-                    }
-                    return (false, null, null, 0);
-                }
-            case 5:
-                {
-                    if (c != null && c.model.isPlayerCard != tc.model.isPlayer)
-                    {
-                        return (true, hc, c, FieldManager.instance.ChangeFieldID(c.model.thisFieldID));
                     }
                     return (false, null, null, 0);
                 }

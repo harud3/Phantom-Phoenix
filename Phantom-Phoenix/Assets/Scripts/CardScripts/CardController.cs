@@ -17,7 +17,7 @@ using static UnityEngine.Rendering.DebugUI;
 /// </summary>
 public class CardController : Controller
 {
-    CardView view;
+    private CardView view;
     public CardModel model {  get; private set; }
     public CardMovement movement {  get; private set; }
     private void Awake()
@@ -25,6 +25,27 @@ public class CardController : Controller
         view = GetComponent<CardView>();
         movement = GetComponent<CardMovement>();
     }
+    public void Init(int CardID, bool isPlayer = true)
+    {
+        model = new CardModel(CardID, isPlayer);
+        if (isPlayer)
+        {
+            SkillManager.instance.playerHeroController.ccExternalBuff?.Invoke(this); //味方ヒーローが持っている外部バフを起こす
+        }
+        else
+        {
+            SkillManager.instance.enemyHeroController.ccExternalBuff?.Invoke(this); //敵ヒーローが持っている外部バフを起こす
+        }
+        view.SetCard(model);
+        SkillManager.instance.UpdateSkills(this); //受動的なスキルの紐づけ
+
+        //スペルカードならここで効果を設定しておく　
+        if(model.category == CardEntity.Category.spell)
+        {
+            SkillManager.instance.SpecialSkills(this);
+        }
+    }
+    #region 受動的なスキル
     public Action UpdateSkill = null;　//外部要因によって発生する受動的なスキル
     public Action TensionSkill = null;　//テンションによって発生する受動的なスキル
     public void ExecuteTensionSkill()
@@ -36,26 +57,8 @@ public class CardController : Controller
     {
         if (!model.isSeal) SpellUsedSkill?.Invoke();
     }
-    public void Init(int CardID, bool isPlayer = true)
-    {
-        model = new CardModel(CardID, isPlayer);
-        if (isPlayer)
-        {
-            SkillManager.instance.playerHeroController.ccExternalBuff?.Invoke(this);
-        }
-        else
-        {
-            SkillManager.instance.enemyHeroController.ccExternalBuff?.Invoke(this);
-        }
-        view.SetCard(model);
-        SkillManager.instance.UpdateSkills(this);
-
-        //スペルカードならここで効果を設定しておく　
-        if(model.category == CardEntity.Category.spell)
-        {
-            SkillManager.instance.SpecialSkills(this);
-        }
-    }
+    #endregion
+    #region スペル処理
     /// <summary>
     /// ユニット単体を対象としたスペルの効果を設定 CardController target
     /// </summary>
@@ -125,13 +128,14 @@ public class CardController : Controller
             default:
                 returnBool = false; break;
         }
-        if (returnBool == true) //returnBoolのみだと分かりにくいので
+        if (returnBool == true) //returnBoolのみだと分かりにくいので    効果が発動している→returnBoolがtrueとなる→スペルを使ったとなる
         {
             SkillManager.instance.SkillCausedBySpellUsed(model.isPlayerCard);
             FieldManager.instance.AddSpellList(model);
         }
         return returnBool;
     }
+    #endregion
     /// <summary>
     /// フィールドに召喚する時の処理　　まれに、召喚時効果で対象選択を必要とする場合がある
     /// </summary>
@@ -184,7 +188,7 @@ public class CardController : Controller
     public void SetIsMulliganCard()
     {
         model.SetIsMulliganCard();
-        view.SetActiveSelectablePanel(true); //最初は返さない前提とする
+        view.SetActiveSelectablePanel(true); //最初はマリガンで返さない前提とする　マリガンで返さない→光らせる
     }
     /// <summary>
     /// マリガンするかどうか
@@ -270,7 +274,6 @@ public class CardController : Controller
     /// <summary>
     /// 生きているかどうかの判定　生きていないなら破壊する
     /// </summary>
-    /// <returns></returns>
     public IEnumerator CheckAlive()
     {
         if (model.isAlive)
@@ -326,10 +329,17 @@ public class CardController : Controller
             model.SetIsActiveDoubleAction(true);
         }
     }
+    /// <summary>
+    /// このターンに召喚したユニットでないことを示す　封印時の即撃・連撃対策で必要
+    /// </summary>
     public void SetIsNotSummonThisTurn()
     {
         model.SetIsNotSummonThisTurn();
     }
+    /// <summary>
+    /// 召喚可能表示にする
+    /// </summary>
+    /// <param name="canSummon"></param>
     public void SetCanSummon(bool canSummon)
     {
         view.SetActiveSelectablePanel(canSummon);
@@ -370,13 +380,9 @@ public class CardController : Controller
     public void SetIsTaunt(bool isTaunt)
     {
         if (SkillManager.instance.hasTaunt(model)) { return; }
-        if (model.skill4 == CardEntity.Skill.none)
+        if(!model.addSkills.Any(i => i == CardEntity.Skill.taunt))
         {
-            model.skill4 = CardEntity.Skill.taunt;
-        }
-        else if (model.skill5 == CardEntity.Skill.none)
-        {
-            model.skill5 = CardEntity.Skill.taunt;
+            model.addSkills.Add(CardEntity.Skill.taunt);
         }
         if (!SkillManager.instance.IsTaunt(model)) { return; }
         model.SetIsTaunt(true);
@@ -385,26 +391,18 @@ public class CardController : Controller
     public void SetIsSnipe(bool isSnipe)
     {
         if (SkillManager.instance.IsSnipe(model)) { return; }
-        if (model.skill4 == CardEntity.Skill.none)
+        if (!model.addSkills.Any(i => i == CardEntity.Skill.snipe))
         {
-            model.skill4 = CardEntity.Skill.snipe;
-        }
-        else if (model.skill5 == CardEntity.Skill.none)
-        {
-            model.skill5 = CardEntity.Skill.snipe;
+            model.addSkills.Add(CardEntity.Skill.snipe);
         }
         view.SetViewFrameSnipe(isSnipe);
     }
     public void SetIsPierce(bool isPierce)
     {
         if (SkillManager.instance.IsPierce(model)) { return; }
-        if (model.skill4 == CardEntity.Skill.none)
+        if (!model.addSkills.Any(i => i == CardEntity.Skill.pierce))
         {
-            model.skill4 = CardEntity.Skill.pierce;
-        }
-        else if (model.skill5 == CardEntity.Skill.none)
-        {
-            model.skill5 = CardEntity.Skill.pierce;
+            model.addSkills.Add(CardEntity.Skill.pierce);
         }
         view.SetViewFramePierce(isPierce);
     }
@@ -445,13 +443,19 @@ public class CardController : Controller
     /// </summary>
     public Action SpecialSkillAfterBuff = null;
     /// <summary>
-    /// 強化を行う　誘発して発生するバフは、isExecuteSSをfalseにして呼ぶ(バフが無限ループするため)
+    /// 強化を行う　強化に誘発して発生するバフは、isExecuteSSをfalseにして呼ぶ(バフが無限ループするため)
     /// </summary>
     public void Buff(int atk, int hp, bool isExecuteSS = true)
     {
         AudioManager.instance.SoundcCardBuff();
         SilentBuff(atk, hp, isExecuteSS);
     }
+    /// <summary>
+    /// 効果音を発生させずにバフを行う
+    /// </summary>
+    /// <param name="atk"></param>
+    /// <param name="hp"></param>
+    /// <param name="isExecuteSS"></param>
     public void SilentBuff(int atk, int hp, bool isExecuteSS = true)
     {
         model.Buff(atk, hp);
@@ -463,7 +467,7 @@ public class CardController : Controller
     /// </summary>
     public Action<int, int> SpecialSkillAfterDeBuff = null;
     /// <summary>
-    /// 弱化を行う　誘発して発生するデバフは、isExecuteSSをfalseにして呼ぶ(バフが無限ループするため) 
+    /// 弱化を行う　弱化に誘発して発生するデバフは、isExecuteSSをfalseにして呼ぶ(バフが無限ループするため) 
     /// </summary>
     public void DeBuff(int atk, int hp, bool isExecuteSS = true)
     {

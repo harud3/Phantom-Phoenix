@@ -16,43 +16,6 @@ public class FieldManager : MonoBehaviour
     [SerializeField] private GameObject[] playerSelectablePanel = new GameObject[6], enemySelectablePanel = new GameObject[6];
     [SerializeField] private GameObject[] heroSelectablePanel = new GameObject[2];
     private GameObject[] selectablePanel = new GameObject[12];
-    private int _playerFieldOnUnitCnt;
-    public int playerFieldOnUnitCnt
-    {
-        get { return _playerFieldOnUnitCnt; }
-        private set
-        {
-            _playerFieldOnUnitCnt = value;
-            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
-            foreach (Transform item in playerHand)
-            {
-                item.GetComponent<CardController>().UpdateSkill?.Invoke();
-            }
-            if (GameManager.instance.isPlayerTurn)
-            {
-                GameManager.instance.SetCanSummonHandCards();
-            }
-            
-        }
-    }
-    private int _enemyFieldOnUnitCnt;
-    public int enemyFieldOnUnitCnt
-    {
-        get { return _enemyFieldOnUnitCnt; }
-        private set
-        {
-            _enemyFieldOnUnitCnt = value;
-            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
-            foreach (Transform item in enemyHand)
-            {
-                item.GetComponent<CardController>().UpdateSkill?.Invoke();
-            }
-            if (GameManager.instance.isPlayerTurn)
-            {
-                GameManager.instance.SetCanSummonHandCards();
-            }
-        }
-    }
     private void Awake()
     {
         if (instance == null)
@@ -68,8 +31,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// playerかenemyの手札のカードを取得する
     /// </summary>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public List<CardController> GetCardsInHand(bool isPlayerHand)
     {
         return (isPlayerHand ? playerHand : enemyHand).OfType<Transform>().Select(i => i.GetComponent<CardController>()).ToList();
@@ -85,8 +46,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 該当フィールドのCardControllerを全て取得する
     /// </summary>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public List<CardController> GetUnitsByIsPlayer(bool isPlayer)
     {
         if (isPlayer)
@@ -102,8 +61,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// fieldIDから該当フィールドにあるCardControllerを取得する ユニットがいないならnullを返す   fieldIDは1～12 1～6がplayer 7～12がenemy
     /// </summary>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public CardController GetUnitByFieldID(int fieldID)
     {
         if (1 <= fieldID && fieldID <= 6)
@@ -125,8 +82,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// fieldID[]から該当フィールドにあるCardController[]を取得する ユニットがいないならnullを返すと思う...     fieldIDは1～12 1～6がplayer 7～12がenemy
     /// </summary>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public List<CardController> GetUnitsByFieldID(int[] fieldID)
     {
         return fieldID.Select(i => GetUnitByFieldID(i)).Where(i => i != null).ToList();
@@ -134,9 +89,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// fieldIDから該当フィールドにあるCardControllerを取得する ユニットがいないならnullを返す    fieldIDは1～6を指定する　isPlayerがtrueなら味方ユニットを　falseなら敵ユニットを返す つまり、この関数の引数fieldID1～6は、fieldID7～12の性質を併せ持つ
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public CardController GetUnitByIsPlayerAndFieldID(bool isPlayer, int fieldID)
     {
         if (isPlayer && 1 <= fieldID && fieldID <= 6)
@@ -158,8 +110,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// fieldID[]から該当フィールドにあるCardController[]を取得する ユニットがいないならnullを返すと思う...   fieldIDは1～6を指定する　isPlayerがtrueなら味方ユニットを　falseなら敵ユニットを返す つまり、この関数の引数fieldID1～6は、fieldID7～12の性質を併せ持つ
     /// </summary>
-    /// <param name="iPfID"></param>
-    /// <returns></returns>
     public List<CardController> GetUnitsByIsPlayerAndFieldID((bool isPlayer, int fieldID)[] iPfID)
     {
         return iPfID.Select(i => GetUnitByIsPlayerAndFieldID(i.isPlayer, i.fieldID)).Where(i => i != null).ToList();
@@ -167,9 +117,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 該当フィールドの前列にいるCardControllerを取得する ユニットがいないならnullを返す
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public List<CardController> GetFrontUnitsByIsPlayer(bool isPlayer)
     {
         if (isPlayer)
@@ -184,8 +131,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 該当フィールド分類にいるランダムなCardControllerを取得する ユニットがいないならnullを返す
     /// </summary>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public CardController GetRandomUnits(bool isPlayerField, CardController avoidCC = null)
     {
 
@@ -205,8 +150,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 味方fieldIDを敵fieldIDに 敵fieldIDを味方fieldIDに変換する　通信対戦用
     /// </summary>
-    /// <param name="fieldID"></param>
-    /// <returns></returns>
     public int ChangeFieldID(int fieldID)
     {
         if (1 <= fieldID && fieldID <= 6)
@@ -222,8 +165,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 空きのあるフィールドを取得する
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public (Transform emptyField, int fieldID) GetEmptyFieldID(bool isPlayer, int avoidFieldID = 99)
     {
         avoidFieldID = avoidFieldID != 99 ? avoidFieldID % 6 : 99;
@@ -236,10 +177,8 @@ public class FieldManager : MonoBehaviour
         return (null, 0); //フィールドが全て埋まっている時
     }
     /// <summary>
-    /// 空きのあるフィールドを取得する
+    /// 空きのあるフィールド群を取得する
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public List<(Transform emptyField, int fieldID)> GetEmptyFieldIDs(bool isPlayer, int avoidFieldID = 99)
     {
         var x = new List<(Transform emptyField, int fieldID)>();
@@ -262,8 +201,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 指定されたフィールドが空いているなら取得する　そうでなければ(null,0)を返す
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public (Transform emptyField, int fieldID) GetEmptyFieldIDByFieldID(int fieldID)
     {
         if (fieldID <= 6)
@@ -279,6 +216,9 @@ public class FieldManager : MonoBehaviour
     {
         return fieldsID.ToList().Select(fieldID => GetEmptyFieldIDByFieldID(fieldID)).ToList();
     }
+    /// <summary>
+    /// そのフィールドが前列かどうか
+    /// </summary>
     public bool IsFront(int fieldID)
     {
         switch (fieldID)
@@ -292,8 +232,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 空きのある前列のフィールドを取得する
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public (Transform emptyField, int fieldID) GetEmptyFrontFieldID(bool isPlayer)
     {
         if (GetUnitByFieldID(isPlayer ? 1 : 7) == null) { return isPlayer ? (playerFields[0], 1) : (enemyFields[0], 7); }
@@ -304,8 +242,6 @@ public class FieldManager : MonoBehaviour
     /// <summary>
     /// 空きのある後列のフィールドを取得する
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public (Transform emptyField, int fieldID) GetEmptyBackFieldID(bool isPlayer)
     {
         if (GetUnitByFieldID(isPlayer ? 4 : 10) == null) { return isPlayer ? (playerFields[3], 4) : (enemyFields[3], 10); }
@@ -314,10 +250,8 @@ public class FieldManager : MonoBehaviour
         return (null, 0); //フィールドが全て埋まっている時
     }
     /// <summary>
-    /// 空きのある上下のフィールドを取得する
+    /// 空きのある上下のフィールド群を取得する
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public List<(Transform emptyField, int fieldID)> GetEmptyUpDownFieldID(int fieldID)
     {
         if (fieldID < 1 || 12 < fieldID) { return null; } //想定外の値対策
@@ -326,46 +260,8 @@ public class FieldManager : MonoBehaviour
         else { return GetEmptyFieldIDsByFieldID(new int[] { fieldID - 1 }); } //fieldIDが下段
     }
     /// <summary>
-    /// 各フィールドのユニット数を設定する
-    /// </summary>
-    public void SetFieldOnUnitcnt(bool isPlayerField)
-    {
-        if (isPlayerField)
-        {
-            playerFieldOnUnitCnt = GetUnitsByFieldID(new int[] { 1, 2, 3, 4, 5, 6 })?.Count ?? 0;
-        }
-        else
-        {
-            enemyFieldOnUnitCnt = GetUnitsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 })?.Count ?? 0;
-        }
-    }
-    /// <summary>
-    /// フィールドにいるユニットの数を減らす
-    /// </summary>
-    /// <param name="isPlayerField"></param>
-    public void Minus1FieldOnUnitCnt(bool isPlayerField)
-    {
-        if (isPlayerField)
-        {
-            if(playerFieldOnUnitCnt > 0)
-            {
-                playerFieldOnUnitCnt -= 1;
-            }
-        }
-        else
-        {
-            if (enemyFieldOnUnitCnt > 0)
-            {
-                enemyFieldOnUnitCnt -= 1;
-            }
-        }
-    }
-    /// <summary>
     /// 対象ユニットを攻撃可能かどうかを判定する
     /// </summary>
-    /// <param name="attacker"></param>
-    /// <param name="target"></param>
-    /// <returns></returns>
     public bool CheckCanAttackUnit(CardController attacker, CardController target)
     {
         //ブロックや挑発がされているならをゴリ押し構文で判定する スマートな方法を思いつけなかった…
@@ -397,12 +293,11 @@ public class FieldManager : MonoBehaviour
         }
         return true;
     }
+    #endregion
+    #region 盤面処理
     /// <summary>
     /// 対象ヒーローを攻撃可能かどうか判定する
     /// </summary>
-    /// <param name="attacker"></param>
-    /// <param name="target"></param>
-    /// <returns></returns>
     public bool CheckCanAttackHero(CardController attacker, HeroController target)
     {
         //ブロックや挑発がされているならをゴリ押し構文で判定する スマートな方法を思いつけなかった…
@@ -469,7 +364,81 @@ public class FieldManager : MonoBehaviour
         else { selectablePanel[fieldID - 1].GetComponent<Image>().color = new Color(255, 0, 0); }
     }
     #endregion
-    #region 墓地取得
+    #region フィールドユニット数
+    /// <summary>
+    /// 各フィールドのユニット数を設定する
+    /// </summary>
+    public void SetFieldOnUnitcnt(bool isPlayerField)
+    {
+        if (isPlayerField)
+        {
+            playerFieldOnUnitCnt = GetUnitsByFieldID(new int[] { 1, 2, 3, 4, 5, 6 })?.Count ?? 0;
+        }
+        else
+        {
+            enemyFieldOnUnitCnt = GetUnitsByFieldID(new int[] { 7, 8, 9, 10, 11, 12 })?.Count ?? 0;
+        }
+    }
+    /// <summary>
+    /// フィールドにいるユニットの数を減らす
+    /// </summary>
+    /// <param name="isPlayerField"></param>
+    public void Minus1FieldOnUnitCnt(bool isPlayerField)
+    {
+        if (isPlayerField)
+        {
+            if (playerFieldOnUnitCnt > 0)
+            {
+                playerFieldOnUnitCnt -= 1;
+            }
+        }
+        else
+        {
+            if (enemyFieldOnUnitCnt > 0)
+            {
+                enemyFieldOnUnitCnt -= 1;
+            }
+        }
+    }
+    private int _playerFieldOnUnitCnt;
+    public int playerFieldOnUnitCnt
+    {
+        get { return _playerFieldOnUnitCnt; }
+        private set
+        {
+            _playerFieldOnUnitCnt = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in playerHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
+
+        }
+    }
+    private int _enemyFieldOnUnitCnt;
+    public int enemyFieldOnUnitCnt
+    {
+        get { return _enemyFieldOnUnitCnt; }
+        private set
+        {
+            _enemyFieldOnUnitCnt = value;
+            GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray())?.ForEach(i => i.UpdateSkill?.Invoke());
+            foreach (Transform item in enemyHand)
+            {
+                item.GetComponent<CardController>().UpdateSkill?.Invoke();
+            }
+            if (GameManager.instance.isPlayerTurn)
+            {
+                GameManager.instance.SetCanSummonHandCards();
+            }
+        }
+    }
+    #endregion
+    #region 墓地
     private List<(int cardID, int cost)> _playerCatacombe = new List<(int cardID, int cost)>();
     private List<(int cardID, int cost)> _enemyCatacombe = new List<(int cardID, int cost)>();
     public List<(int cardID, int cost)> playerCatacombe { get { return _playerCatacombe; } private set { _playerCatacombe = value; } }

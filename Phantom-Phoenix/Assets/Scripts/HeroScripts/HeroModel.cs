@@ -112,6 +112,9 @@ public class HeroModel
             mp = maxMP;
         }
     }
+    /// <summary>
+    /// スペルダメージバフの増減
+    /// </summary>
     public void spellDamageBuff(int buff)
     {
         plusSpellDamage += buff;
@@ -121,14 +124,4 @@ public class HeroModel
         }
 
     }
-    public void SetMinusSpellCost(int minus)
-    {
-        minusSpellCost = minus;
-        if (plusSpellDamage < 0)
-        {
-            plusSpellDamage = 0;
-        }
-
-    }
-
 }

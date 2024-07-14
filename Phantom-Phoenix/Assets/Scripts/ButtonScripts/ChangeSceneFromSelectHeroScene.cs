@@ -10,7 +10,7 @@ public class ChangeSceneFromSelectHeroScene : MonoBehaviour
     Button buttonOK;
     public void Start()
     {
-        if (GameDataManager.instance.scene == GameDataManager.Scene.deck)
+        if (GameDataManager.instance.scene == GameDataManager.Scene.deck) //デッキ編成
         {
             buttonOK.onClick.AddListener(() =>
             {
@@ -20,7 +20,7 @@ public class ChangeSceneFromSelectHeroScene : MonoBehaviour
         }
         else if (GameDataManager.instance.scene == GameDataManager.Scene.battle)
         {
-            if (GameDataManager.instance.isOnlineBattle)
+            if (GameDataManager.instance.isOnlineBattle) //対人戦
             {
                 buttonOK.onClick.AddListener(() =>
                 {
@@ -28,7 +28,7 @@ public class ChangeSceneFromSelectHeroScene : MonoBehaviour
                     AudioManager.instance.SoundButtonClick1();
                 });
             }
-            else
+            else //AI戦
             {
                 buttonOK.onClick.AddListener(() =>
                 {

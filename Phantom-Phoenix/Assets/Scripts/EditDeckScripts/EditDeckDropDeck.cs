@@ -25,7 +25,7 @@ public class EditDeckDropDeck : MonoBehaviour, IDropHandler
             int maxCount = rarity == CardEntity.Rarity.SSR ? 1 : 3 ; //レア度で上限枚数が変わる
             var cardcount = 1;
 #if UNITY_EDITOR
-            maxCount = 30;
+            maxCount = 30; //テスト用
 #endif
             foreach (Transform t in this.transform)
             {
@@ -34,7 +34,7 @@ public class EditDeckDropDeck : MonoBehaviour, IDropHandler
                 if (cardcount > maxCount) //欲張りだよそれは
                 {
                     StopAllCoroutines();
-                    StartCoroutine(ChangeText());
+                    StartCoroutine(ChangeText1());
                     return;
                 }
             }
@@ -42,10 +42,23 @@ public class EditDeckDropDeck : MonoBehaviour, IDropHandler
             //カードをデッキの子にする
             cc.movement.SetDefaultParent(this.transform);
         }
+        else
+        {
+            StopAllCoroutines();
+            StartCoroutine(ChangeText2());
+            return;
+        }
     }
-    IEnumerator ChangeText()
+    IEnumerator ChangeText1()
     {
         hintText.text = "R/SRは3枚　SSR は1枚 まで";
+        yield return new WaitForSeconds(2f);
+        hintText.text = "カードをデッキにドラッグ&ドロップ";
+        StopAllCoroutines();
+    }
+    IEnumerator ChangeText2()
+    {
+        hintText.text = "デッキは30枚です";
         yield return new WaitForSeconds(2f);
         hintText.text = "カードをデッキにドラッグ&ドロップ";
         StopAllCoroutines();

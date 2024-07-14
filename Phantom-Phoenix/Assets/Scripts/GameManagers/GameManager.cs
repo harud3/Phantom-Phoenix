@@ -116,12 +116,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
-        if(gameState == eGameState.isGotPlayerTurn){ //Ai戦はこの状態を飛ばしているので、オンラインチェックなし
+        if(gameState == eGameState.isStarted) { return; }
+        else if(gameState == eGameState.isGotPlayerTurn){ //AI戦はこの状態を飛ばしているので、オンラインチェックなし
             gameState = eGameState.isWaitEnemyHeroID;
             SendUseHeroID(playerDeck.useHeroID);
         }
-        //オンライン対戦では、相手のデッキがなければ始められないので、ここで開始する それに伴い、AI戦もここで開始する
-        else if (gameState == eGameState.isWaitEnemyHeroID &&  enemyUseHeroID != 0)
+        //オンライン対戦では、相手のデッキがなければ始められないので、Update()で開始する それに伴い、AI戦もここで開始する
+        else if (gameState == eGameState.isWaitEnemyHeroID &&  enemyUseHeroID != 0) //テンション,ヒーロー設定→マリガン入力待ち
         {
             SettingInitHero();
             playerTensionController.Init(playerDeck.useHeroID);
@@ -172,7 +173,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// マリガン入力待ち→マリガン処理
     /// </summary>
-    /// <returns></returns>
     IEnumerator WaitMulligan()
     {
         for(var i = 0; i < (isPlayerTurn ? 3 : 4); i++)
@@ -913,8 +913,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// ヒーローのMPを取得する
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public int GetHeroMP(bool isPlayer)
     {
         return isPlayer ? playerHeroController.model.mp : enemyHeroController.model.mp;
@@ -942,8 +940,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// ヒーローのスペルダメージバフを取得する
     /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <returns></returns>
     public int GetPlusSpellDamage(bool isPlayer)
     {
         return isPlayer ? playerHeroController.model.plusSpellDamage : enemyHeroController.model.plusSpellDamage;

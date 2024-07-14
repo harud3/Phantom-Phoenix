@@ -56,8 +56,6 @@ public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
     /// <summary>
     ///　入力待ち　入力があれば、効果の判定に移る    多分これが一番遅いと思います
     /// </summary>
-    /// <param name="cc"></param>
-    /// <returns></returns>
     IEnumerator waitPlayerClick(CardController cc)
     {
         FieldManager.instance.ChangeSelectablePanelColor(fieldID, true); //召喚予定フィールドのパネル色変更　赤→緑
@@ -110,8 +108,6 @@ public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
     /// <summary>
     /// 対象となりうる候補がいるか確認
     /// </summary>
-    /// <param name="cc"></param>
-    /// <returns></returns>
     private bool IsExistTarget(CardController cc)
     {
         switch (cc.model.target)
@@ -146,6 +142,16 @@ public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
                     }
                     break;
                 }
+            case CardEntity.Target.player:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 6).ToArray());
+                    if (x.Count != 0)
+                    {
+                        FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
+                    }
+                    FieldManager.instance.SetHeroSelectablePanel(new int[] { 1 }, true); //味方ヒーローは確定で対象となる
+                    return true;
+                }
             case CardEntity.Target.enemy:
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
@@ -153,7 +159,7 @@ public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
                     {
                         FieldManager.instance.SetSelectablePanel(x.Select(i => i.model.thisFieldID).ToArray(), true); //取得したカード群からfieldIDを取得し、該当フィールドに選択可能パネルを表示する
                     }
-                    FieldManager.instance.SetHeroSelectablePanel(new int[] { 2 }, true); //敵ヒーローは対象となる
+                    FieldManager.instance.SetHeroSelectablePanel(new int[] { 2 }, true); //敵ヒーローは確定で対象となる
                     return true;
                 }
         }
@@ -163,9 +169,6 @@ public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
     /// <summary>
     /// 対象の確認 targetsByReceiverは対戦相手に送信される情報
     /// </summary>
-    /// <param name="cc"></param>
-    /// <param name="clickGameObject"></param>
-    /// <returns></returns>
     private (bool passed, CardController[] cctargets, HeroController hctarget, int[] targetsByReceiver) TargetCheck(CardController cc, GameObject clickGameObject)
     {
         HeroController hc = null;
@@ -210,6 +213,22 @@ public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
                     }
                     break;
                 }
+            case CardEntity.Target.player:
+                {
+                    var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 6).ToArray());
+                    if (x.Count != 0 && c != null)
+                    {
+                        var y = x.Where(i => i.model.thisFieldID == c.model.thisFieldID);
+                        if (y.Count() == 0) { return (false, null, null, null); }
+                        else { return (true, y.ToArray(), null, y.Select(i => i.model.thisFieldID - 6).ToArray()); }//現状では該当するの最大1個しかないけど、複数選択可能化を見据えて配列にしておく
+                                                                                                                    //ex) targetsは選んだ対象であり、送信者目線で味方のfieldID1なら、受信者目線では敵のfieldID7となる
+                    }
+                    else if (hc != null)
+                    {
+                        return (true, null, hc, new int[] { 14 }); //14番は敵ヒーロー　受信者向けに値を入れ替えておく
+                    }
+                    break;
+                }
             case CardEntity.Target.enemy:
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(7, 6).ToArray());
@@ -222,7 +241,7 @@ public class DropUnitField : MonoBehaviourPunCallbacks, IDropHandler
                     }
                     else if(hc != null)
                     {
-                        return (true, null, hc, new int[] { (hc.model.isPlayer ? 14 : 13) }); //13番は味方ヒーロー　14番は敵ヒーロー　受信者向けに値を入れ替えておく
+                        return (true, null, hc, new int[] { 13 }); //13番は味方ヒーロー　受信者向けに値を入れ替えておく
                     }
                     break;
                 }

@@ -48,24 +48,27 @@ public class TensionView : MonoBehaviour
     {
         panelSelectable.SetActive(isActive);
     }
+    /// <summary>
+    /// 各種ヒーローのテンションスペルの表示
+    /// </summary>
     private void SetTensionSpell(TensionModel model)
     {
         textCost.text = "0";
         switch (model.tensionID)
         {
-            case 1: //elf
+            case 1: //エルフ
                 imageTensionCard.sprite = tensionElf;
                 textTension.text = "味方フィールドに\n2/2/2 即撃 を1体出す";
                 break;
-            case 2: //witch
+            case 2: //ウィッチ
                 imageTensionCard.sprite = tensionWitch;
                 textTension.text = "1体を選択する\n味方なら3回復\n敵なら2ダメージ";
                 break;
-            case 3: //king
+            case 3: //キング
                 imageTensionCard.sprite = tensionKing;
                 textTension.text = "全ての味方ユニットを\n+1/+1\n味方ユニットが1体なら\n代わりに+2/+2";
                 break;
-            case 4: //demon
+            case 4: //デーモン
                 imageTensionCard.sprite = tensionDemon;
                 textTension.text = "全ての敵ユニットを-1/-1\n敵手札の直近で\n引いたカードの\nコスト+1";
                 break;

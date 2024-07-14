@@ -9,7 +9,7 @@ public class OnlineManager : MonoBehaviourPunCallbacks
     bool isMatching = false;
     public void Start()
     {
-        if (!PlayerPrefs.HasKey("PlayerDeckData"))
+        if (!PlayerPrefs.HasKey($"PlayerDeckData{GameDataManager.instance.DeckHeroID}"))
         {
             Debug.Log("PlayerDeckData‚ª‘¶İ‚µ‚Ü‚¹‚ñ");
             return;

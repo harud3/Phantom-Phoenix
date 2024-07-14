@@ -8,6 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "HeroEntity", menuName = "Create HeroEntity")]
 public class HeroEntity : ScriptableObject
 {
+    //‚»‚ê‚Ù‚Ç”‚ª‚È‚¢‚Ì‚ÅScriptableObject‚Å‚¢‚¯‚é
     public Sprite character;
     public new string name;
     public int hp;

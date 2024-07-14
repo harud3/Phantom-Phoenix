@@ -6,15 +6,15 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 /// <summary>
-/// バトル画面　ButtonConcedeの処理　コンシしたことにしてシーン遷移を起こす
+/// バトル画面　ButtonConcedeの処理　コンシ処理を起こす
 /// </summary>
-public class ChangeSceneFromBattleScene : MonoBehaviour
+public class ButtonConcede : MonoBehaviour
 {
     [SerializeField]
-    Button button;
+    Button buttonConcede;
     public void Start()
     {
-        button.onClick.AddListener(() =>
+        buttonConcede.onClick.AddListener(() =>
         {
             if (GameDataManager.instance.isOnlineBattle)
             {

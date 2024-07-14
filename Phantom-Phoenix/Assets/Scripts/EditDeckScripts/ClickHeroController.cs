@@ -17,6 +17,7 @@ public class ClickHeroController : MonoBehaviour
         var heroID = 1;
         foreach ((Button ButtonHero, int heroID) hero in heros.Select((h, i) => (h, heroID++)))
         {
+            //ヒーローボタンを押したら、使用するヒーローを変えて保持する
             hero.ButtonHero.onClick.AddListener(() =>
             {
                 if(GameDataManager.instance.DeckHeroID != hero.heroID)

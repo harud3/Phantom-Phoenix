@@ -25,7 +25,7 @@ public class QuitMatch : MonoBehaviour
         });
     }
     [Obsolete]
-    IEnumerator ChangeMenuScene() //使ったらPhotonがnullエラーを起こすのだが…
+    private IEnumerator ChangeMenuScene() //使ったらPhotonがnullエラーを起こすのだが…
     {
         AudioManager.instance.SoundButtonClick3();
         yield return new WaitForSeconds(0.7f);

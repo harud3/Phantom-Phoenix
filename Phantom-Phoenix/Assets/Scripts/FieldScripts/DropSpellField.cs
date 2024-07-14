@@ -20,9 +20,12 @@ public class DropSpellField : MonoBehaviour, IDropHandler
         if(targetC != null && !targetC.model.isFieldCard) { return; }　//手札にあるカードを対象にしてはいけない
         if (eventData.pointerDrag.GetComponent<CardController>() is var spell)
         {
-            
-            if (spell == null || spell.model.cost > GameManager.instance.GetHeroMP(spell.model.isPlayerCard) || spell.model.category != CardEntity.Category.spell) { return; } //MP超過のスペルやスペル以外は通さない
-            var handIndex = spell.GetComponent<CardMovement>().siblingIndex;
+            //MP超過のスペルやスペル以外は通さない
+            if (spell == null || spell.model.cost > GameManager.instance.GetHeroMP(spell.model.isPlayerCard) || spell.model.category != CardEntity.Category.spell) { return; }
+
+            var handIndex = spell.GetComponent<CardMovement>().siblingIndex; //対戦相手に手札のどのカードを使うかを送信するので
+
+            //ターゲット情報を送る　ExecuteSpellContentsの方で、対象区分を基に分類を行い実行可否を決める  そのため、 とりあえず対象を送っておけばいい
             if (targetC != null)
             {
                 //とりあえず、CardControllerを渡しておく
@@ -53,6 +56,7 @@ public class DropSpellField : MonoBehaviour, IDropHandler
 
     private void SendExecuteSpellContents(int handIndex, int targetID = 0)
     {
+        //targetIDは味方目線なので、敵目線に変換しておく
         if(1 <= targetID && targetID <= 12) { targetID = FieldManager.instance.ChangeFieldID(targetID); }
         targetID = targetID == 13 ? 14 : targetID == 14 ? 13 : targetID; //13→14 14→13 他はそのまま
         GameManager.instance.SendExecuteSpellContents(handIndex, targetID);

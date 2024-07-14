@@ -41,7 +41,7 @@ public class SkillManager : MonoBehaviour
     #region 5大スキル
     public bool IsFast(CardModel model) //即撃
     {
-        if (model.skill1 == CardEntity.Skill.fast || model.skill2 == CardEntity.Skill.fast || model.skill3 == CardEntity.Skill.fast || model.skill4 == CardEntity.Skill.fast || model.skill5 == CardEntity.Skill.fast)
+        if (model.skill1 == CardEntity.Skill.fast || model.skill2 == CardEntity.Skill.fast || model.skill3 == CardEntity.Skill.fast || model.addSkills.Any(i => i == CardEntity.Skill.fast))
         {
             return true;
         }
@@ -49,7 +49,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool hasTaunt(CardModel model)
     {
-        if (model.skill1 == CardEntity.Skill.taunt || model.skill2 == CardEntity.Skill.taunt || model.skill3 == CardEntity.Skill.taunt || model.skill4 == CardEntity.Skill.taunt || model.skill5 == CardEntity.Skill.taunt)
+        if (model.skill1 == CardEntity.Skill.taunt || model.skill2 == CardEntity.Skill.taunt || model.skill3 == CardEntity.Skill.taunt || model.addSkills.Any(i => i == CardEntity.Skill.taunt))
         {
             return true;
         }
@@ -71,7 +71,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool IsSnipe(CardModel model) //狙撃
     {
-        if (!model.isSeal && (model.skill1 == CardEntity.Skill.snipe || model.skill2 == CardEntity.Skill.snipe || model.skill3 == CardEntity.Skill.snipe) || model.skill4 == CardEntity.Skill.snipe || model.skill5 == CardEntity.Skill.snipe)
+        if (!model.isSeal && (model.skill1 == CardEntity.Skill.snipe || model.skill2 == CardEntity.Skill.snipe || model.skill3 == CardEntity.Skill.snipe) || model.addSkills.Any(i => i == CardEntity.Skill.snipe))
         {
             return true;
         }
@@ -79,7 +79,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool IsPierce(CardModel model) //貫通
     {
-        if (!model.isSeal &&  (model.skill1 == CardEntity.Skill.pierce || model.skill2 == CardEntity.Skill.pierce || model.skill3 == CardEntity.Skill.pierce) || model.skill4 == CardEntity.Skill.pierce || model.skill5 == CardEntity.Skill.pierce)
+        if (!model.isSeal && (model.skill1 == CardEntity.Skill.pierce || model.skill2 == CardEntity.Skill.pierce || model.skill3 == CardEntity.Skill.pierce || model.addSkills.Any(i => i == CardEntity.Skill.pierce)))
         {
             return true;
         }
@@ -95,7 +95,7 @@ public class SkillManager : MonoBehaviour
     }
     public bool IsDoubleAction(CardModel model) //連撃
     {
-        if (!model.isSeal && ( model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction || model.skill4 == CardEntity.Skill.doubleAction || model.skill5 == CardEntity.Skill.doubleAction))
+        if (!model.isSeal && ( model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction || model.addSkills.Any(i => i == CardEntity.Skill.doubleAction)))
         {
             return true;
         }
@@ -104,11 +104,10 @@ public class SkillManager : MonoBehaviour
     /// <summary>
     /// 封印用　連撃効果を持っていると、召喚時とターン開始時に連撃権がtrueとなる  つまり、連撃効果持ちで連撃権がfalseの時は、1回目の攻撃を済ませている    よって、その時は行動できないようにしたい
     /// </summary>
-    /// <param name="model"></param>
-    /// <returns></returns>
     public bool HasDoubleActionAndIsNotActiveDoubleAction(CardModel model)
     {
-        if (!model.isActiveDoubleAction && (model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction || model.skill4 == CardEntity.Skill.doubleAction || model.skill5 == CardEntity.Skill.doubleAction))
+        if (!model.isActiveDoubleAction && (model.skill1 == CardEntity.Skill.doubleAction || model.skill2 == CardEntity.Skill.doubleAction || model.skill3 == CardEntity.Skill.doubleAction || model.addSkills.Any
+            (i => i == CardEntity.Skill.doubleAction) ))
         {
             return true;
         }
@@ -118,8 +117,6 @@ public class SkillManager : MonoBehaviour
     /// <summary>
     /// 何らかの挑発が存在しているか
     /// </summary>
-    /// <param name="isPlayerField"></param>
-    /// <returns></returns>
     public bool IsAnyTaunt(bool isPlayerField)
     {
 
@@ -138,9 +135,6 @@ public class SkillManager : MonoBehaviour
     /// <summary>
     /// ブロックされているか
     /// </summary>
-    /// <param name="isPlayerField"></param>
-    /// <param name="thisFieldID"></param>
-    /// <returns></returns>
     public bool IsBlock(bool isPlayerField, int thisFieldID)
     {
         //fieldIDは、　
@@ -172,8 +166,6 @@ public class SkillManager : MonoBehaviour
     /// <summary>
     /// ウォールとなっているか
     /// </summary>
-    /// <param name="isPlayerField"></param>
-    /// <returns></returns>
     public bool IsWall(bool isPlayerField)
     {
         if (isPlayerField
@@ -242,13 +234,14 @@ public class SkillManager : MonoBehaviour
 
         switch (c.model.cardID)
         {
-            //011
+            #region トークン以外
+            //ucommon011
             case 1: { break; } //なし
-            //122
+            //ucommon122
             case 2: { break; } //なし
-            //102
+            //ucommon102
             case 3: { break; } //挑発
-            //121
+            //ucommon121
             case 4: { break; } //狙撃
             //Dwarf
             case 5: { break; } //即撃狙撃連撃
@@ -258,20 +251,20 @@ public class SkillManager : MonoBehaviour
                     h.ChangeMaxMP(-1);
                     break;
                 }
-            //222
+            //ucommon222
             case 7: { break; } //挑発
-            //232
+            //ucommon232
             case 8: { break; } //貫通
             //Cerberus
             case 9: { break; } //即撃
-            //321
+            //ucommon321
             case 10: //両ヒーローはカードを2枚引く
                 {
                     GameManager.instance.GiveCards(h.model.isPlayer, 2);
                     GameManager.instance.GiveCards(!h.model.isPlayer, 2);
                     break;
                 }
-            //333 
+            //ucommon333 
             case 11: //味方ターン終了時:HP1回復
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
@@ -283,7 +276,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //322
+            //ucommon322
             case 12: //味方ターン終了時:ランダムな敵ユニット1体に1ダメージ
                 {
                     c.SpecialSkillEndTurn = (bool isPlayerTurn) =>
@@ -317,9 +310,9 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //445
+            //ucommon445
             case 14: { break; }　//なし
-            //443
+            //ucommon443
             case 15: //召喚時:敵ユニット1体に2ダメージ
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
@@ -336,7 +329,7 @@ public class SkillManager : MonoBehaviour
                     }
                     break;
                 }
-            //434
+            //ucommon434
             case 16: //召喚時:ユニット1体を封印する
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
@@ -362,7 +355,7 @@ public class SkillManager : MonoBehaviour
                 }
             //king
             case 17: { h.Heal(5); break; } //召喚時:味方ヒーローのHP5回復
-            //501
+            //ucommon501
             case 18: //死亡時:全ての敵ユニットを燃焼させる
                 {
                     c.SpecialSkillBeforeDie = () =>
@@ -382,7 +375,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //517
+            //ucommon517
             case 19: //貫通 攻撃時:味方ヒーローはカードを1枚引く
                 {
                     c.SpecialSkillBeforeAttack = (bool isAttacker) =>
@@ -406,7 +399,7 @@ public class SkillManager : MonoBehaviour
                     h.ccExternalBuff += (CardController cc) => { if (cc.model.defaultATK <= 2) { cc.SilentBuff(1, 1); } };
                     break;
                 }
-            //656
+            //ucommon656
             case 21: //狙撃
                 { break; }
             case 22: //召喚時&味方ターン終了時: 味方フィールドに、cardID1の0/1/1を1体出す
@@ -431,11 +424,11 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //633
+            //ucommon633
             case 23: { break; } //即撃 味方フィールドの\nユニットの数分、コスト-1
-            //777
+            //ucommon777
             case 24: { break; } //挑発
-            //746
+            //ucommon746
             case 25: //ユニットを選択　味方なら4回復 敵なら4ダメージ
                 {
                     if (!GameDataManager.instance.isOnlineBattle && !c.model.isPlayerCard) //AI処理
@@ -485,7 +478,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //unit877
+            //ucommon877
             case 27: //ATKを1～13のランダムな値にして、HPをATK-13の値にする
                 {
                     var i = Random.Range(1, 14);
@@ -501,7 +494,7 @@ public class SkillManager : MonoBehaviour
                     }
                     break;
                 }
-            //unit863
+            //ucommon863
             case 28: //ランダムな味方ユニット1体を死亡させたら、ランダムな敵ユニット1体を死亡させる
                 {
                     if (FieldManager.instance.GetRandomUnits(c.model.isPlayerCard, c) is var x && x != null)
@@ -534,7 +527,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
-            //unit925
+            //ucommon925
             case 30: //召喚時:全てのユニットに4ダメージ
                 {
                     var x = FieldManager.instance.GetUnitsByFieldID(Enumerable.Range(1, 12).ToArray()).Where(i => i.model.thisFieldID != c.model.thisFieldID).ToList();
@@ -544,7 +537,7 @@ public class SkillManager : MonoBehaviour
                     }
                     break;
                 }
-            //unit945
+            //ucommon945
             case 31: //召喚時:cardID3,4,7,8を出す
                 {
                     bool SummonCard(int cardID)
@@ -582,22 +575,22 @@ public class SkillManager : MonoBehaviour
                     }
                     break;
                 }
-
-                void SummonTelf111(int avoidFieldID = 99)
+            //エルフトークンユニットの召喚処理
+            void SummonTelf111(int avoidFieldID = 99)
+            {
+                if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard, avoidFieldID) is var x && x.emptyField != null)
                 {
-                    if (FieldManager.instance.GetEmptyFieldID(c.model.isPlayerCard, avoidFieldID) is var x && x.emptyField != null)
-                    {
-                        CardController cc = Instantiate(cardPrefab, x.emptyField);
-                        cc.Init(10002, c.model.isPlayerCard); // cardID10002 = telf111;
-                        cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
-                    }
+                    CardController cc = Instantiate(cardPrefab, x.emptyField);
+                    cc.Init(10002, c.model.isPlayerCard); // cardID10002 = telf111;
+                    cc.SummonOnField(x.fieldID, ExecuteReduceMP: false);
                 }
-                void SummonTelf111ByFieldID(Transform field, int fieldID, bool changePlayerCard = false)
-                {
-                    CardController cc = Instantiate(cardPrefab, field);
-                    cc.Init(10002, changePlayerCard ? !c.model.isPlayerCard : c.model.isPlayerCard);
-                    cc.SummonOnField(fieldID, ExecuteReduceMP: false);
-                }
+            }
+            void SummonTelf111ByFieldID(Transform field, int fieldID, bool changePlayerCard = false)
+            {
+                CardController cc = Instantiate(cardPrefab, field);
+                cc.Init(10002, changePlayerCard ? !c.model.isPlayerCard : c.model.isPlayerCard);
+                cc.SummonOnField(fieldID, ExecuteReduceMP: false);
+            }
             //uelf101 
             case 33: //死亡時:telf111を出す
                 {
@@ -655,7 +648,7 @@ public class SkillManager : MonoBehaviour
                     FieldManager.instance.GetEmptyUpDownFieldID(c.model.thisFieldID)?.Where(i => i.emptyField != null).ToList().ForEach(i => SummonTelf111ByFieldID(i.emptyField, i.fieldID));
                     break;
                 }
-            //unit301
+            //uelf301
             case 39: //1コスト以下の味方ユニットを死亡させ、その数分+1/+1
                 {
                     if (FieldManager.instance.GetUnitsByIsPlayer(c.model.isPlayerCard) is var x && x != null)
@@ -1020,6 +1013,7 @@ public class SkillManager : MonoBehaviour
                     c.ccSpellContents = (CardController cc) => { cc.DamageFromSpell(6, c.model.isPlayerCard); h.Damage(3); };
                     break;
                 }
+            //キングアイテムカードの手札追加処理
             void GetItemCard(int cnt)
             {
                     if(cnt <= 0) {  return; }
@@ -1516,6 +1510,8 @@ public class SkillManager : MonoBehaviour
                     h.ChangeMaxMP(-3);
                     break;
                 }
+            #endregion
+            #region トークン
             //telf122
             case 10001: { break; } //即撃
             //telf111
@@ -1550,6 +1546,7 @@ public class SkillManager : MonoBehaviour
                     };
                     break;
                 }
+                #endregion
         }
 
     }
@@ -1561,7 +1558,7 @@ public class SkillManager : MonoBehaviour
     {
         switch (c.model.cardID)
         {
-            //633 //即撃 味方フィールドの\nユニットの数分、コスト-1
+            //ucommon633 //即撃 味方フィールドの\nユニットの数分、コスト-1
             case 23:
                 {
                     var recordFieldCnt = 0;

@@ -86,7 +86,7 @@ public class EditDeckCardMovement : MonoBehaviour, IDragHandler, IBeginDragHandl
             children.Add(t);
         }
         var siblingIndex = 0;
-        foreach (var sortedItem in children.OrderBy(x => x.GetComponent<EditDeckCardController>().model.cardID))
+        foreach (var sortedItem in children.OrderBy(x => x.GetComponent<EditDeckCardController>().model.cost).ThenBy(x => x.GetComponent<EditDeckCardController>().model.cardID)) //â‘Îd‚¢
         {
             sortedItem.SetSiblingIndex(siblingIndex++);
         }

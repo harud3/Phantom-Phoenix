@@ -9,7 +9,7 @@ public class AttackedCard : MonoBehaviour, IDropHandler
 {
     public void OnDrop(PointerEventData eventData)
     {
-        //攻撃側が攻撃可能で、playerとenemyの関係なら
+        //攻撃側が攻撃可能で、playerとenemyの関係で、プレイヤーターンなら
         if(eventData.pointerDrag.GetComponent<CardController>() is var attacker
             && GetComponent<CardController>() is var target
             && attacker.model.canAttack
