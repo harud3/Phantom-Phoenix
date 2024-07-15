@@ -80,6 +80,7 @@ public class CardModel
         isAlive = true;
         isSummonThisTurn = true;
         canAttack = false;
+        hasCannotAttack = false;
 
         isTaunt = false;
         isActiveDoubleAction = true;

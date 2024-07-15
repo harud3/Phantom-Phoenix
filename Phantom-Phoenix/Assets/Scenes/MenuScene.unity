@@ -1345,7 +1345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6ea4714947d6043b6ff29e3ced3f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardlist: {fileID: 11400000, guid: 951d0f9a4c75c5645924b2f65d72037d, type: 2}
+  cardlist: {fileID: 11400000, guid: 9c9dd4edb7c9c5e40baa0d237fa9f635, type: 2}
 --- !u!4 &1450366124
 Transform:
   m_ObjectHideFlags: 0

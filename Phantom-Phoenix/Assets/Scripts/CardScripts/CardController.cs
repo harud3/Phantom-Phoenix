@@ -423,6 +423,7 @@ public class CardController : Controller
         view.SetViewFrameDoubleAction(!isSeal);
         view.SetViewFramePierce(!isSeal);
         view.SetViewFrameBurning(!isSeal);
+        model.SetHasCannotAttack(!isSeal);
         if (model.isSummonThisTurn || SkillManager.instance.HasDoubleActionAndIsNotActiveDoubleAction(model))//‘¦Œ‚‘Îô ˜AŒ‚‘Îô
         {
             SetCanAttack(false);
