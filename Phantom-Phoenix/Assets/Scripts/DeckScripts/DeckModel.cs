@@ -8,7 +8,8 @@ public class DeckModel
 {
     [NonSerialized]
     public int useHeroID;
-
+    [NonSerialized]
+    public List<int> defaultDeck;
     [NonSerialized]
     public List<int> deck;
     public DeckModel Init()
@@ -20,6 +21,7 @@ public class DeckModel
             string json = PlayerPrefs.GetString($"PlayerDeckData{DeckHeroID}");
             DeckData data = JsonUtility.FromJson<DeckData>(json);
             useHeroID = data.useHeroID;
+            defaultDeck = data.deck;
             deck = data.deck.OrderBy(i => Guid.NewGuid()).ToList();
         }
         else

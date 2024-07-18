@@ -39,7 +39,7 @@ public class EditDeckManager : MonoBehaviour
         DeckModel deckmodel = new DeckModel().Init();
         if(deckmodel.useHeroID == heroID)
         {
-            deckmodel.deck.OrderBy(i => i).ToList().ForEach(i =>
+            deckmodel.defaultDeck.ForEach(i =>
             {
                 Instantiate(cardPrefab, Deck).GetComponent<EditDeckCardController>().Init(i);
             });

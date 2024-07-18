@@ -481,7 +481,7 @@ public class SkillManager : MonoBehaviour
             //ucommon877
             case 27: //ATKを1～13のランダムな値にして、HPをATK-13の値にする
                 {
-                    var i = Random.Range(1, 14);
+                    var i = UnityEngine.Random.Range(1, 14);
                     if (i > 7)
                     {
                         c.DeBuff(0, i - 7);
@@ -1011,7 +1011,7 @@ public class SkillManager : MonoBehaviour
             void GetItemCard(int cnt)
             {
                     if(cnt <= 0) {  return; }
-                    int[] cardIDs = Enumerable.Range(0, cnt).Select(i => Random.Range(10003, 10006)).ToArray();
+                    int[] cardIDs = Enumerable.Range(0, cnt).Select(i => UnityEngine.Random.Range(10003, 10006)).ToArray();
                     GameManager.instance.GiveSpecificCards(c.model.isPlayerCard, cardIDs);
             }
             //uking111
@@ -1029,14 +1029,14 @@ public class SkillManager : MonoBehaviour
                 {
                     c.SpellContents = () =>
                     {
-                        GetItemCard(Random.Range(2,4));
+                        GetItemCard(UnityEngine.Random.Range(2,4));
                     };
                     break;
                 }
             //uking222
             case 75: //召喚時:アイテムカードを1～2枚加える
                 {
-                    GetItemCard(Random.Range(1, 3));
+                    GetItemCard(UnityEngine.Random.Range(1, 3));
                     break;
                 }
             //uking211
@@ -1475,7 +1475,7 @@ public class SkillManager : MonoBehaviour
                     {
                         if (isPlayerTurn == c.model.isPlayerCard)
                         {
-                            if(Random.Range(0, 2) == 0)
+                            if(UnityEngine.Random.Range(0, 2) == 0)
                             {
                                 FieldManager.instance.GetRandomUnits(!c.model.isPlayerCard)?.DeBuff(2, 0);
                             }

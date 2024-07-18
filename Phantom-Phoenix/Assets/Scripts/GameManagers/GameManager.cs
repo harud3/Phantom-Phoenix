@@ -56,6 +56,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     DeckModel playerDeck = null;
     DeckModel enemyDeck = null; int enemyUseHeroID = 0;
+
+    private bool setSeed = false;
+
     #region 初期設定
     /// <summary>
     /// ゲームの状態 通信対戦において、最初に相互データ通信(デッキ、シード値)があるので管理必須
@@ -144,9 +147,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             gameState = eGameState.isStarted;
             if (GameDataManager.instance.isOnlineBattle)
             {
-                int seed = int.Parse(DateTime.Now.ToString("ddHHmmss")); //ランダム要素をプレイヤー間で揃えるため、シード値を共有することで対応する
-                UnityEngine.Random.InitState(seed);
-                SendSetSeed(seed); //厳密にはシード値が正しく受信されたかチェックすべきな気もする
+                if (!setSeed && GameDataManager.instance.isMaster)
+                {
+                    int seed = int.Parse(DateTime.Now.ToString("ddHHmmss")); //ランダム要素をプレイヤー間で揃えるため、シード値を共有することで対応する
+                    UnityEngine.Random.InitState(seed);
+                    SendSetSeed(seed); //厳密にはシード値が正しく受信されたかチェックすべきな気もする
+                }
             }
             SetTime();
             SettingInitHand();
@@ -252,6 +258,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RPCSetSeed(int seed)
     {
         UnityEngine.Random.InitState(seed);
+        setSeed = true;
     }
     /// <summary>
     /// ヒーローの設定
@@ -584,6 +591,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <param name="setCanNotSummon"></param>
     public void SetCanSummonHandCard(CardController cc, bool setCanNotSummon = false)
     {
+        if (cc.model.isFieldCard) { return; }
         if (cc.model.isPlayerCard && cc.model.cost <= GetHeroMP(true) && !setCanNotSummon && isPlayerTurn) //誤って敵手札が通らないように setCanNotSummonがtrueなら、召喚不可にする
         {
             cc.SetCanSummon(true);
