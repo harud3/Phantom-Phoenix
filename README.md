@@ -1,3 +1,2 @@
-# Phantom-Phoenix
- ポートフォリオ1
- ソースコード→Phantom-Phoenix/Assets/Scripts
+# Phantom-Phoenix  
+ ポートフォリオ1\nソースコード→Phantom-Phoenix/Assets/Scripts
